@@ -29,6 +29,7 @@ pos_changes, neg_changes, change_points = detector.detect_change_points(data)
 # Plot detected change points and cumulative sums
 detector.plot_change_points(data, change_points, pos_changes, neg_changes)
 ```
+![Image Alt Text](img/cusum.png)
 
 ### **2. Probabilistic Cumulative Sum (CUSUM) Detector**
 
@@ -50,3 +51,4 @@ probabilities, change_points = detector.detect_change_points(data)
 detector.plot_change_points(data, change_points, probabilities)
 
 ```
+![Image Alt Text](img/probcusum.png)
