@@ -48,28 +48,27 @@ class CUSUM_Detector:
         - is_changepoint (bool): Indicates if a change point is detected.
         """
         self._update_data(observation)
+        if self.current_t < self.warmup_period:
+            self.S_pos = 0
+            self.S_neg = 0
         if self.current_t == self.warmup_period:
             self._init_params()
-
         if self.current_t > self.warmup_period:
             self._compute_cumusum()
             is_changepoint = self._detect_changepoint()
+            
             if is_changepoint:
                 self._reset()
-            return self.pos_change, self.neg_change, is_changepoint
+            return self.S_pos, self.S_neg, is_changepoint
         else:
-            return self.pos_change, self.neg_change, False
+            return self.S_pos, self.S_neg, False
 
     def _reset(self):
         """Resets the internal state of the detector."""
         self.current_t = 0
+        self.current_mean = 0
+        self.current_std = 0
         self.current_obs = []
-        self.current_mean = None
-        self.current_std = None
-        self.z = None
-        self.pos_change = np.array([0.0])
-        self.neg_change = np.array([0.0])
-        self.drift = []
 
     def _update_data(self, observation):
         """Updates the observed data with new data points."""
@@ -81,18 +80,17 @@ class CUSUM_Detector:
 
         self.current_mean = np.nanmean(np.array(self.current_obs))
         self.current_std = np.nanstd(np.array(self.current_obs))
-        self.cumulative_sum_pos = [0.0]
-        self.cumulative_sum_neg = [0.0]
+        self.z = 0
+        self.S_pos = 0
+        self.S_neg = 0
         if math.isnan(self.current_mean) or math.isnan(self.current_std):
             raise ValueError("Mean or standard deviation cannot be NaN")
 
     def _compute_cumusum(self):
         """Computes the cumulative sums for positive and negative changes."""
         self.z = (self.current_obs[-1] - self.current_mean) / self.current_std  
-        self.pos_change = max(0, self.cumulative_sum_pos[-1] + self.z - self.delta) 
-        self.neg_change = max(0, self.cumulative_sum_neg[-1] - self.z - self.delta) 
-        self.cumulative_sum_pos.append(self.pos_change)
-        self.cumulative_sum_neg.append(self.neg_change)
+        self.S_pos += max(0, self.S_pos + self.z - self.delta) 
+        self.S_neg += max(0, self.S_neg - self.z - self.delta) 
 
     def _detect_changepoint(self):
         """
@@ -101,8 +99,7 @@ class CUSUM_Detector:
         Returns:
         - is_changepoint (bool): Indicates if a change point is detected.
         """
-        if self.cumulative_sum_pos[-1] > self.threshold or self.cumulative_sum_neg[-1] > self.threshold:
-            self.drift.append(self.current_t)
+        if self.S_pos > self.threshold or self.S_neg > self.threshold:
             return True
         else:
             return False
@@ -131,7 +128,7 @@ class CUSUM_Detector:
         is_drift = [row[2] for row in outs]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
 
-        return pos_changes, neg_changes, change_points
+        return pos_changes , neg_changes , change_points
 
     def plot_change_points(self, data, change_points, pos_changes, neg_changes):
         """
@@ -157,8 +154,12 @@ class CUSUM_Detector:
         plt.grid(True)
 
         plt.subplot(2, 1, 2)
+        plt.axhline(self.threshold , color="red", linestyle="dashed", lw=2)
         plt.plot(pos_changes, color='green', label='Positive Cumulative Sum')
         plt.plot(neg_changes, color='orange', label='Negative Cumulative Sum')
+        # if len(change_points) != 0:
+        #     plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
+        #     [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
         plt.xlabel('Time')
         plt.ylabel('Cumulative Sum')
         plt.legend()
@@ -327,7 +328,7 @@ class ProbCUSUM_Detector:
         plt.plot(data, color='blue', label='Data', linestyle="--")
         X, Y = np.meshgrid(np.arange(len(data)), np.linspace(0, max(data)))
         Z = probabilities[X]
-        plt.contourf(X, Y, Z, alpha=0.1, cmap="Reds")
+        plt.contourf(X, Y, Z, alpha=0.1, cmap="Greys")
         if len(change_points) != 0:
             for cp in change_points:
                 plt.axvline(cp, color="red", linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
@@ -338,9 +339,13 @@ class ProbCUSUM_Detector:
         plt.grid(True)
 
         plt.subplot(2, 1, 2)
-        plt.plot(probabilities, color='red', label='Probability', linestyle="dashed")
+        plt.axhline((1-self.threshold_probability), color="red", alpha=0.5, linestyle="dashed", lw=2)
+        plt.plot(probabilities, color='gray', alpha=0.5, label='Alert Probability')
+        if len(change_points) != 0:
+            for cp in change_points:
+                plt.axvline(cp, color="red", alpha=0.5, linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
         plt.xlabel('Time')
-        plt.ylabel('Probability')
+        plt.ylabel('Alert Probability')
         plt.legend()
         plt.grid(True)
 
