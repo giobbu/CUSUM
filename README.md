@@ -15,7 +15,7 @@ The CUSUM detector monitors the cumulative sum of deviations between observed da
 #### Example
 
 ```python
-from drift.cusum import CUSUM_Detector
+from detector.cusum import CUSUM_Detector
 
 # Initialize CUSUM detector with custom parameters
 detector = CUSUM_Detector(warmup_period=10, delta=1, threshold=3)
@@ -37,7 +37,7 @@ The Probabilistic CUSUM detector extends the CUSUM method by incorporating stati
 
 #### Example
 ```python
-from drift.cusum import ProbCUSUM_Detector
+from detector.cusum import ProbCUSUM_Detector
 
 # Initialize Probabilistic CUSUM detector with custom parameters
 detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.001)
