@@ -147,8 +147,9 @@ class CUSUM_Detector:
 
         plt.subplot(2, 1, 1)
         plt.plot(data, color='blue', label='Data', linestyle="--")
-        plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
-        [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
+        if len(change_points) != 0:
+            plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
+            [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('Sequential CUSUM Change Point Detection')
@@ -327,8 +328,9 @@ class ProbCUSUM_Detector:
         X, Y = np.meshgrid(np.arange(len(data)), np.linspace(0, max(data)))
         Z = probabilities[X]
         plt.contourf(X, Y, Z, alpha=0.1, cmap="Reds")
-        for cp in change_points:
-            plt.axvline(cp, color="red", linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
+        if len(change_points) != 0:
+            for cp in change_points:
+                plt.axvline(cp, color="red", linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('Sequential Probabilistic CUSUM Change Point Detection')
