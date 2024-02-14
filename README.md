@@ -12,7 +12,7 @@ Two commonly used drift detectors are:
 
 The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a concept drift.
 
-#### Examples
+#### Example
 
 ```python
 from drift.cusum import CUSUM_Detector
@@ -31,10 +31,11 @@ detector.plot_change_points(data, change_points, pos_changes, neg_changes)
 ```
 ![Image Alt Text](img/cusum.png)
 
-### **2. Probabilistic Cumulative Sum (CUSUM) Detector**
+### **2. Probabilistic Cumulative Sum (ProbCUSUM) Detector**
 
 The Probabilistic CUSUM detector extends the CUSUM method by incorporating statistical probability measures. It evaluates the probability of observing deviations between data points, making it more robust to variations in data distribution.
 
+#### Example
 ```python
 from drift.cusum import ProbCUSUM_Detector
 
