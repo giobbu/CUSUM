@@ -21,7 +21,7 @@ from detector.cusum import CUSUM_Detector
 detector = CUSUM_Detector(warmup_period=10, delta=1, threshold=3)
 
 # Provide sequential data for drift detection
-data = np.array([20.3, 18.5, 15.6, 16.8, 15.9, 12.3, 21.8, 22.5, 15, 17.9, 20.2, 25.7, 100.2, 32.5, 32.9, 33.0, 32.2, 31.8, 30.5, 30.1])
+data = np.array([20.3, 18.5, 15.6, 16.8, 15.9, 12.3, 21.8, 22.5, 15, 17.9, 10.2, 20.7, 100.2, 32.5, 32.9, 33.0, 32.2, 31.8, 30.5, 30.1])
 
 # Detect change points in the data
 pos_changes, neg_changes, change_points = detector.detect_change_points(data)
