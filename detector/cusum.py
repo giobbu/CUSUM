@@ -89,8 +89,8 @@ class CUSUM_Detector:
     def _compute_cumusum(self):
         """Computes the cumulative sums for positive and negative changes."""
         self.z = (self.current_obs[-1] - self.current_mean) / self.current_std  
-        self.S_pos += max(0, self.S_pos + self.z - self.delta) 
-        self.S_neg += max(0, self.S_neg - self.z - self.delta) 
+        self.S_pos = max(0, self.S_pos + self.z - self.delta) 
+        self.S_neg = max(0, self.S_neg - self.z - self.delta) 
 
     def _detect_changepoint(self):
         """
