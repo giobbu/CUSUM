@@ -61,12 +61,6 @@ class RecurrentLeastSquares:
             observation = np.transpose(np.matrix(observations[i]))
             self.update(observation, labels[i])
 
-    def compute_rmse(self):
-        """
-        Compute the root mean square error (RMSE) of the model.
-        """
-        self.rmse += (self.residual - self.rmse) / self.num_observations
-
     def predict(self, observation):
         """
         Predict the value of a new observation.
