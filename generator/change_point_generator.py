@@ -97,3 +97,42 @@ class ChangePointGenerator:
         plt.legend()
         plt.grid(True)
         plt.show()
+
+    def generate_data_with_nans(self, nan_percentage):
+        """
+        Generate data with a specified percentage of NaN values.
+
+        Parameters:
+        - nan_percentage: float, percentage of NaN values desired in the data
+
+        Returns:
+        - data_with_nans: numpy array, data with NaN values
+        """
+
+        if not 0 <= nan_percentage <= 1:
+            raise ValueError("nan_percentage must be between 0 and 1.")
+
+        array_size = len(self.data)
+        num_nan = int(array_size * nan_percentage)
+
+        nan_indices = np.random.choice(array_size, size=num_nan, replace=False)
+        data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
+        data_with_nans[nan_indices] = np.nan
+
+        return data_with_nans
+
+    def plot_data_with_nans(self, data_with_nans):
+        """
+        Plot the generated time series data with NaN values.
+
+        Parameters:
+        - data_with_nans: numpy array, data with NaN values
+        """
+        plt.figure(figsize=(20, 6))
+        plt.plot(data_with_nans, color='red', label='Time Series Data with NaNs')
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.title('Generated Time Series Data with NaNs')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
