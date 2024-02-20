@@ -3,3 +3,7 @@
 
 # Ignore Python bytecode cache
 **/__pycache__/
+
+
+# Ignore example_1.ipynb
+**/example_1.ipynb
