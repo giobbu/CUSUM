@@ -98,7 +98,7 @@ class ChangePointGenerator:
         plt.grid(True)
         plt.show()
 
-    def generate_data_with_nans(self, nan_percentage):
+    def generate_random_nans(self, nan_percentage):
         """
         Generate data with a specified percentage of NaN values.
 
@@ -119,6 +119,52 @@ class ChangePointGenerator:
         data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
         data_with_nans[nan_indices] = np.nan
 
+        return data_with_nans
+
+    def generate_no_random_nans(self, percentage, min_block_size, max_block_size):
+        
+        """
+        Replaces a percentage of values in a NumPy array with NaNs
+        arranged in blocks of consecutive NaNs.
+
+        Parameters:
+        - array (numpy.ndarray): The input NumPy array.
+        - percentage (float): The percentage of values to replace with NaNs.
+                                Should be between 0 and 1.
+        - min_block_size (int): The minimum size of each block of consecutive NaNs.
+        - max_block_size (int): The maximum size of each block of consecutive NaNs.
+
+        Returns:
+        - data_with_nans (numpy.ndarray): The array with NaNs replacing
+                                            the specified percentage of values
+                                            in blocks of consecutive NaNs.
+        """
+        if percentage < 0 or percentage > 1:
+            raise ValueError("Percentage should be between 0 and 1")
+
+        if min_block_size <= 0 or max_block_size <= 0 or min_block_size > max_block_size:
+            raise ValueError("Invalid block sizes")
+
+        # Calculate the number of elements to replace with NaNs
+        num_elements = len(self.data)
+        num_nans = int(num_elements * percentage)
+
+        # Calculate the number of blocks
+        num_blocks = num_nans // min_block_size
+
+        # Get random start indices for blocks
+        start_indices = np.random.choice(num_elements - min_block_size + 1, num_blocks, replace=False)
+
+        # Create a copy of the original array to modify
+        data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
+
+        # Replace values with NaNs in blocks
+        for start_index in start_indices:
+            # Randomly select block size
+            block_size = np.random.randint(min_block_size, max_block_size + 1)
+            end_index = start_index + block_size
+            data_with_nans[start_index:end_index] = np.nan
+            
         return data_with_nans
 
     def plot_data_with_nans(self, data_with_nans):
