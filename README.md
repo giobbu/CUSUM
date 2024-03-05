@@ -8,21 +8,25 @@ Change point detectors are algorithms designed to detect change points in stream
 
 Two commonly used drift detectors are:
 
-### **1. Cumulative Sum Detector**
+### **1. CUSUM Detector**
 
 The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
 
 ![Image Alt Text](img/cusum.png)
 
-### **2. Probabilistic Cumulative Sum Detector**
+### **2. Probabilistic CUSUM Detector**
 
 The Probabilistic CUSUM detector extends the CUSUM method by incorporating statistical probability measures. It evaluates the probability of observing deviations between data points, making it more robust to variations in data distribution.
 
 ![Image Alt Text](img/probcusum.png)
 
 
-### **3. Cumulative Sum Control Chart Detector**
+### **3. CUSUM Control Chart Detector**
 
 The Control Chart CUSUM detector is a specialized form of CUSUM change point detection algorithm commonly used in quality control and process monitoring applications.
 
-![Image Alt Text](img/chartcusum.png)
+##### **3.1 CUSUM of Deviations**
+![Image Alt Text](img/chartcusum_dev.png)
+
+##### **3.2 CUSUM of Squares**
+![Image Alt Text](img/chartcusum_sqr.png)
