@@ -431,11 +431,11 @@ class ChartCUSUM_Detector:
             self.warmup_cusum = np.nancumsum((np.array(self.current_obs) - self.window_mean) ** 2)
         else:
             self.warmup_cusum = np.nancumsum(np.array(self.current_obs) - self.window_mean)
-        self.cusum = self.warmup_cusum[-1]
-        self.cusum_mean = np.nanmean(np.array(self.warmup_cusum))
-        self.cusum_std = np.nanstd(np.array(self.warmup_cusum))
-        self.upper = self.cusum_mean + self.level * self.cusum_std
-        self.lower = self.cusum_mean - self.level * self.cusum_std
+        self.cusum = 0
+        self.cusum_mean = 0
+        self.cusum_std = 0
+        self.upper = 0
+        self.lower = 0
 
     def _update_chart_stats(self):
         """
