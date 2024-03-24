@@ -82,8 +82,8 @@ class CUSUM_Detector:
         self.z = 0
         self.S_pos = 0
         self.S_neg = 0
-        if math.isnan(self.current_mean) or math.isnan(self.current_std):
-            raise ValueError("Mean or standard deviation cannot be NaN")
+        # if math.isnan(self.current_mean) or math.isnan(self.current_std):
+        #     raise ValueError("Mean or standard deviation cannot be NaN")
 
     def _compute_cumusum(self):
         """Computes the cumulative sums for positive and negative changes."""
