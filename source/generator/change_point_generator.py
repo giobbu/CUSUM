@@ -89,7 +89,7 @@ class ChangePointGenerator:
         """
         Plot the generated time series data.
         """
-        plt.figure(figsize=(20, 6))
+        plt.figure(figsize=(25, 5))
         plt.plot(self.data, color='blue', label='Time Series Data')
         plt.xlabel('Time')
         plt.ylabel('Value')
@@ -174,7 +174,7 @@ class ChangePointGenerator:
         Parameters:
         - data_with_nans: numpy array, data with NaN values
         """
-        plt.figure(figsize=(20, 6))
+        plt.figure(figsize=(25, 5))
         plt.plot(data_with_nans, color='red', label='Time Series Data with NaNs')
         plt.xlabel('Time')
         plt.ylabel('Value')
