@@ -44,7 +44,7 @@ class RecurrentLeastSquares:
         self.A -= alpha * z @ z.T
         self.num_observations += 1
         self.residual = label - self.w.T @ observation
-        self.residual_sqr = self.residual ** 2
+        self.residual_sqr = (label - self.w.T @ observation) ** 2
 
     def fit(self, observations, labels):
         """
