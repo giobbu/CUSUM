@@ -212,7 +212,7 @@ class ProbCUSUM_Detector:
         self._update_data(observation)
         if self.current_t == self.warmup_period:
             self._init_params()
-        if self.current_t >= self.warmup_period:
+        if self.current_t > self.warmup_period:
             probability, is_changepoint = self._detect_changepoint()
             if is_changepoint:
                 self._reset()
