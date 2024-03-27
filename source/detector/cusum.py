@@ -372,6 +372,10 @@ class ChartCUSUM_Detector:
         """
         if not isinstance(warmup_period, int) or warmup_period < 10:
             raise ValueError("warmup_period must be equal or greater than 10.")
+
+        if deviation_type not in ['sqr-dev', 'dev']:
+            raise ValueError("deviation_type must be 'sqr-dev' or 'dev'.")
+
         self.warmup_period = warmup_period
         self.level = level
         self.deviation_type = deviation_type
