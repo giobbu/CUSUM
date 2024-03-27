@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.dirname(sys.path[0]))
 from source.detector.cusum import ProbCUSUM_Detector
 import pytest
-import numpy as np
+
 
 
 @pytest.fixture
