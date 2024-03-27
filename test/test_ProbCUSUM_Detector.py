@@ -40,7 +40,8 @@ def test_predict_next_after_warmup_period_without_changepoint(detector):
     #Predict next observations without any change point
     observations = range(1, detector.warmup_period + 1)
     for observation in observations:
-        _, is_changepoint = detector.predict_next(observation)
+        probability, is_changepoint = detector.predict_next(observation)
+        assert (1-probability) > detector.threshold_probability
         assert not is_changepoint
     changepoint = 1
     probability, is_changepoint = detector.predict_next(detector.warmup_period + changepoint)
@@ -52,7 +53,8 @@ def test_predict_next_after_warmup_period_with_changepoint(detector):
     """Test predict_next method after the warmup period with a changepoint."""
     observations = range(1, detector.warmup_period + 1)
     for observation in observations:
-        _, is_changepoint = detector.predict_next(observation)
+        probability, is_changepoint = detector.predict_next(observation)
+        assert (1-probability) > detector.threshold_probability
         assert not is_changepoint
     changepoint = 100
     probability, is_changepoint = detector.predict_next(detector.warmup_period + changepoint)
