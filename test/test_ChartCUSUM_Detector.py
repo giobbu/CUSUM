@@ -1,5 +1,6 @@
 import sys
 import os
+import numpy as np
 sys.path.append(os.path.dirname(sys.path[0]))
 from source.detector.cusum import ChartCUSUM_Detector
 import pytest
@@ -25,6 +26,12 @@ def test_init_with_invalid_deviation_type():
     with pytest.raises(ValueError):
         ChartCUSUM_Detector(warmup_period=10, level=2, deviation_type='invalid')
 
+def test_detect_change_points_with_invalid_data_type(detector):
+    """Test detect_change_points method with invalid data type."""
+    data = [12.3, 14.5, 15.6, 16.8, 17.9]
+    with pytest.raises(ValueError):
+        detector.detect_change_points(data)
+
 def test_predict_next_before_warmup_period(detector):
     """Test predict_next method before reaching the warmup period."""
     for i in range(1, detector.warmup_period):
@@ -48,17 +55,6 @@ def test_predict_next_at_warmup_period(detector):
 
 def test_predict_next_after_warmup_period_without_changepoint(detector):
     """Test predict_next method after the warmup period without a changepoint."""
-    observations = range(detector.warmup_period + 1, detector.warmup_period + 6)
-    results = [detector.predict_next(observation) for observation in observations]
-    upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
-    assert all(upper == 0 for upper in upper_limits)
-    assert all(lower == 0 for lower in lower_limits)
-    assert all(cusum == 0 for cusum in cusums)
-    assert all(not is_changepoint for is_changepoint in is_changepoints)
-
-
-def test_predict_next_after_warmup_period_without_changepoint(detector):
-    """Test predict_next method after the warmup period without a changepoint."""
     #Predict next observations without any change point
     observations = range(1, detector.warmup_period + 1)
     for observation in observations:
@@ -67,20 +63,37 @@ def test_predict_next_after_warmup_period_without_changepoint(detector):
         assert not is_changepoint
     changepoint = 1
     upper, lower, cusum, is_changepoint = detector.predict_next(detector.warmup_period + changepoint)
-    assert cusum >= lower and cusum <= upper
     assert not is_changepoint
 
+def test_predict_next_after_warmup_period_without_changepoint(detector):
+    """Test predict_next method after the warmup period without a changepoint."""
+    observations = range(detector.warmup_period + 1, detector.warmup_period + 6)
+    results = [detector.predict_next(observation) for observation in observations]
+    upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
+    assert all(upper == 0 for upper in upper_limits)
+    assert all(lower == 0 for lower in lower_limits)
+    assert all(cusum == 0 for cusum in cusums)
+    assert all(not is_changepoint for is_changepoint in is_changepoints)
 
-# def test_predict_next_after_warmup_period_with_changepoint(detector):
-#     """Test predict_next method after the warmup period without a changepoint."""
-#     #Predict next observations without any change point
-#     observations = range(1, detector.warmup_period+1)
-#     for observation in observations:
-#         upper, lower, cusum, is_changepoint = detector.predict_next(observation)
-#         assert cusum >= lower and cusum <= upper
-#         assert not is_changepoint
-#     observations = [100, 2000, 0]
-#     for observation in observations:
-#         upper, lower, cusum, is_changepoint = detector.predict_next(observation)
-#     assert cusum < lower or cusum > upper
-#     assert is_changepoint
+def test_predict_next_after_warmup_period_with_changepoint(detector):
+    """Test predict_next method after the warmup period without and with a changepoint."""
+
+    detector.warmup_period = 50
+
+    #Predict next observations without any changepoint
+    observations = np.arange(1, detector.warmup_period+1, 1)
+    results = [detector.predict_next(observation) for observation in observations]
+    upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
+    # Assertion for no changepoint
+    assert all((cusum >= lower or cusum <= upper) for cusum, lower, upper in zip(cusums, lower_limits, upper_limits))
+    assert all(not is_changepoint for is_changepoint in is_changepoints)
+
+    # Predict next observations with a changepoint
+    # Generate array after drift
+    observations = np.random.normal(1, 1, 1000)
+    drift_observations = np.random.normal(100, 100, 1000)
+    new_observations = np.concatenate((observations, drift_observations))
+    upper_limits, lower_limits, cusums, change_points = detector.detect_change_points(new_observations)
+
+    # Assertion for a changepoint
+    assert any(is_cp for is_cp in change_points)

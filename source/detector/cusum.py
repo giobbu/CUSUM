@@ -55,7 +55,6 @@ class CUSUM_Detector:
         if self.current_t > self.warmup_period:
             self._compute_cumusum()
             is_changepoint = self._detect_changepoint()
-            
             if is_changepoint:
                 self._reset()
             return self.S_pos, self.S_neg, is_changepoint
@@ -76,7 +75,6 @@ class CUSUM_Detector:
 
     def _init_params(self):
         """Initializes the parameters required for CUSUM computation."""
-
         self.current_mean = np.nanmean(np.array(self.current_obs))
         self.current_std = np.nanstd(np.array(self.current_obs))
         self.z = 0
