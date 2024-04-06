@@ -55,18 +55,6 @@ def test_predict_next_at_warmup_period(detector):
 
 def test_predict_next_after_warmup_period_without_changepoint(detector):
     """Test predict_next method after the warmup period without a changepoint."""
-    #Predict next observations without any change point
-    observations = range(1, detector.warmup_period + 1)
-    for observation in observations:
-        upper, lower, cusum, is_changepoint = detector.predict_next(observation)
-        assert cusum >= lower and cusum <= upper
-        assert not is_changepoint
-    changepoint = 1
-    upper, lower, cusum, is_changepoint = detector.predict_next(detector.warmup_period + changepoint)
-    assert not is_changepoint
-
-def test_predict_next_after_warmup_period_without_changepoint(detector):
-    """Test predict_next method after the warmup period without a changepoint."""
     observations = range(detector.warmup_period + 1, detector.warmup_period + 6)
     results = [detector.predict_next(observation) for observation in observations]
     upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
