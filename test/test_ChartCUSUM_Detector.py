@@ -43,7 +43,6 @@ def test_predict_next_before_warmup_period(detector):
 
 def test_predict_next_at_warmup_period(detector):
     """Test predict_next method at the warmup period."""
-
     observation = detector.warmup_period
     upper, lower, cusum, is_changepoint = detector.predict_next(observation)
     assert upper == 0
@@ -81,7 +80,7 @@ def test_predict_next_after_warmup_period_with_changepoint(detector):
     observations = np.random.normal(1, 1, 1000)
     drift_observations = np.random.normal(100, 100, 1000)
     new_observations = np.concatenate((observations, drift_observations))
-    upper_limits, lower_limits, cusums, change_points = detector.detect_change_points(new_observations)
-
+    results = [detector.predict_next(observation) for observation in new_observations]
+    upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
     # Assertion for a changepoint
-    assert any(is_cp for is_cp in change_points)
+    assert any(is_cp for is_cp in is_changepoints)
