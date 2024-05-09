@@ -25,7 +25,7 @@ generator.plot_data()
 
 ## **Three commonly used drift detectors are:**
 
-### **1. CUSUM Detector**
+### **1. CUSUM Detector (The PageHinkley Algorithm)**
 
 The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
 
