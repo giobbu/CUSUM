@@ -1,7 +1,4 @@
-import sys
-import os
 import numpy as np
-sys.path.append(os.path.dirname(sys.path[0]))
 from source.detector.cusum import ChartCUSUM_Detector
 import pytest
 

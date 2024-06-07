@@ -1,6 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.dirname(sys.path[0]))
 import numpy as np
 from source.detector.cusum import ProbCUSUM_Detector
 import pytest
