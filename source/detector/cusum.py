@@ -48,8 +48,8 @@ class CUSUM_Detector:
         """
         self._update_data(observation)
         if self.current_t < self.warmup_period:
-            self.S_pos = 0
-            self.S_neg = 0
+            self.S_pos = np.array([0])
+            self.S_neg = np.array([0])
         if self.current_t == self.warmup_period:
             self._init_params()
         if self.current_t > self.warmup_period:
@@ -78,16 +78,16 @@ class CUSUM_Detector:
         self.current_mean = np.nanmean(np.array(self.current_obs))
         self.current_std = np.nanstd(np.array(self.current_obs))
         self.z = 0
-        self.S_pos = 0
-        self.S_neg = 0
+        self.S_pos = np.array([0])
+        self.S_neg = np.array([0])
         # if math.isnan(self.current_mean) or math.isnan(self.current_std):
         #     raise ValueError("Mean or standard deviation cannot be NaN")
 
     def _compute_cumusum(self):
         """Computes the cumulative sums for positive and negative changes."""
         self.z = (self.current_obs[-1] - self.current_mean) / self.current_std  
-        self.S_pos = max(0, self.S_pos + self.z - self.delta) 
-        self.S_neg = max(0, self.S_neg - self.z - self.delta) 
+        self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
+        self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
 
     def _detect_changepoint(self):
         """
@@ -119,7 +119,7 @@ class CUSUM_Detector:
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
 
-        outs = [self.predict_next(point) if not math.isnan(point) else (0, 0, False) for point in data]
+        outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
         pos_changes = np.vstack([row[0] for row in outs])
         neg_changes = np.vstack([row[1] for row in outs])
         is_drift = [row[2] for row in outs]
