@@ -86,6 +86,7 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 
 ![Image Alt Text](img/chartcusum_sqr.png)
 
+ 
+## Monitoring model drift
 
-# TODO: 
-# Monitoring drift using prequential error estimates of state-space models
+![Model Predictions Animation](img/monitoring.gif?raw=true)
