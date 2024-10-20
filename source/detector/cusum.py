@@ -264,13 +264,15 @@ class ProbCUSUM_Detector:
     
     def _calculate_probability(self, standardized_sum) -> bool:
         """
-        Calculates the probability of a change point.
+        Calculates the probability (p-value) of a change point.
 
         Parameters:
         - standardized_sum (float): The standardized sum of observations.
 
         Returns:
         - probability (float): The probability of a change point.
+        * low probability indicates a change point (reject the null hypothesis).
+        * high probability indicates no change point (not able to reject the null hypothesis).
         """
         p_obs = norm.cdf(np.abs(standardized_sum))
         probability = 2 * (1 - p_obs)
