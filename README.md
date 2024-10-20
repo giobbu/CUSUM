@@ -5,10 +5,18 @@ Change point refers to the phenomenon where the statistical properties of a targ
 ### Example: Monitoring ml-model performance
 Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
 
-#### generate date
+#### Generate date
+Apply data generator to create time-series data with abrupt mean-shift
+
 ![Image Alt Text](img/monitoring.png)
 
-#### simulate streaming
+#### Simulate streaming
+1. **make prediction with recurrent-least-squares model**
+2. **observe true value**
+3. **update model's parameters**
+4. **compute residual**
+5. **apply CUSUM detector**
+
 ![Model Predictions Animation](img/monitoring.gif?raw=true)
 
 ## **Change Point Detectors**
