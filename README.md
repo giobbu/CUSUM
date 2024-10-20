@@ -87,6 +87,7 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 ![Image Alt Text](img/chartcusum_sqr.png)
 
  
-## Monitoring model drift
+### Monitoring model drift
+Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
 
 ![Model Predictions Animation](img/monitoring.gif?raw=true)
