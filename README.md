@@ -2,6 +2,11 @@
 
 Change point refers to the phenomenon where the statistical properties of a target variable or data distribution change over time. Detecting change point is crucial in various domains such as financial markets, healthcare, and online advertising to adapt models and decision-making processes to changing environments.
 
+### Example: Monitoring ml-model performance
+Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
+
+![Model Predictions Animation](img/monitoring.gif?raw=true)
+
 ## **Change Point Detectors**
 
 Change point detectors are algorithms designed to detect change points in streaming data or sequential observations. These detectors analyze the data stream and identify points where the underlying data distribution has changed significantly.
@@ -87,7 +92,3 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 ![Image Alt Text](img/chartcusum_sqr.png)
 
  
-### Monitoring model drift
-Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
-
-![Model Predictions Animation](img/monitoring.gif?raw=true)
