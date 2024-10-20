@@ -14,6 +14,7 @@ class RecurrentLeastSquares:
         - forgetting_factor: float, forgetting factor (lambda), usually close to 1
         - initial_delta: float, controls the initial state
         """
+
         if num_variables <= 0:
             raise ValueError("Number of variables must be positive.")
         if forgetting_factor <= 0:
@@ -33,7 +34,6 @@ class RecurrentLeastSquares:
     def update(self, observation, label):
         """
         Update the model with a new observation and label.
-
         Parameters:
         - observation: numpy array, observation vector
         - label: float, true label corresponding to the observation
@@ -49,7 +49,6 @@ class RecurrentLeastSquares:
     def fit(self, observations, labels):
         """
         Fit the model to a set of observations and labels.
-
         Parameters:
         - observations: list of numpy arrays, each array representing an observation vector
         - labels: list of floats, true labels corresponding to the observations
@@ -64,11 +63,9 @@ class RecurrentLeastSquares:
     def predict(self, observation):
         """
         Predict the value of a new observation.
-
         Parameters:
         - observation: numpy array, observation vector
-
         Returns:
         - float, predicted value based on the observation
         """
-        return float(observation @ self.w)
+        return float(self.w.T @ observation)
