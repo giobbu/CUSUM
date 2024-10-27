@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "cusum"
+version = "0.1.0"
+description = "cusum-based algorithms for change-point detection in data streams"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.15"
+numpy = "^2.1.2"
+matplotlib = "^3.9.2"
+scipy = "^1.14.1"
+pytest = "^8.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
