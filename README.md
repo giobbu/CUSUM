@@ -103,4 +103,30 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 
 ![Image Alt Text](img/chartcusum_sqr.png)
 
+
+### **Extensions: KS-CUM Detector (Kolmogorov-Smirnov Test)**
+
+```python 
+
+import numpy as np
+from source.generator.change_point_generator import ChangePointGenerator
+from source.detector.cusum import KS_CUM_Detector
+
+# Set seed
+np.random.seed(11)
+
+# Generate time series data with change points
+generator = ChangePointGenerator(num_segments=3, segment_length=1000, change_point_type='sudden_shift')
+generator.generate_data()
+# Plot the generated data
+generator.plot_data()
+
+# Kolmogorov-Smirnov Test
+ks_detector = KS_CUM_Detector(window_pre=600, window_post=300, alpha=0.001)
+ks_statistics , p_values, change_points = ks_detector.detect_change_points(np.array(generator.data))
+ks_detector.plot_change_points(generator.data, change_points, p_values)
+```
+
+![Image Alt Text](img/kscum.png)
+
  
