@@ -318,7 +318,7 @@ class ProbCUSUM_Detector:
             List of probabilities associated with each data point.
         """
         plt.figure(figsize=(20, 8))
-
+        # Plot the data
         plt.subplot(2, 1, 1)
         plt.plot(data, color='blue', label='Data', linestyle="--")
         X, Y = np.meshgrid(np.arange(len(data)), np.linspace(0, max(data)))
@@ -332,7 +332,7 @@ class ProbCUSUM_Detector:
         plt.title('Sequential Probabilistic CUSUM Change Point Detection')
         plt.legend()
         plt.grid(True)
-
+        # Plot the probabilities
         plt.subplot(2, 1, 2)
         plt.axhline((1-self.threshold_probability), color="red", alpha=0.5, linestyle="dashed", lw=2)
         plt.plot(probabilities, color='gray', alpha=0.5, label='Alert Probability')
@@ -524,6 +524,125 @@ class ChartCUSUM_Detector:
         plt.plot(lower_limits, color='red', linestyle="dashed", label='Lower Limit')
         plt.xlabel('Time')
         plt.ylabel(f'Cumulative Sum of {self.deviation_type}')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+
+class KS_CUM_Detector:
+    """ 
+    A class to detect change points in sequential data using the Kolmogorov-Smirnov Test, loosley named Kolmogorov-Smirnov 
+    Cumulative Sum (KS-CUM) algorithm.
+    Example:
+    ```
+    detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
+    data = np.concatenate([np.random.normal(0, 1, 30), np.random.normal(3, 1, 30)])
+    ks_statistics, p_values, change_points = detector.detect_change_points(data)
+    detector.plot_change_points(data, change_points, p_values)
+    ```
+    Args:
+    - window_pre (int): The size of the pre-change window.
+    - window_post (int): The size of the post-change window.
+    - alpha (float): The significance level for the KS test.
+    Returns:
+    - ks_statistics (np.ndarray): The KS statistics for each observation.
+    - p_values (np.ndarray): The p-values for each observation.
+    - change_points (np.ndarray): The indices of detected change points.
+    """
+
+    def __init__(self, window_pre=30, window_post=30, alpha=0.05):
+        assert window_pre >= 30, "window_pre must be greater than 30."
+        assert window_post >= 30, "window_post must be greater than 30."
+        assert window_pre >= window_post, "window_pre must be greater than or equal to window_post."
+        assert 0 < alpha < 0.1, "alpha must be between 0 and 0.1."
+        self.window_pre = window_pre
+        self.window_post = window_post
+        self.warmup_period = window_pre + window_post
+        self.alpha = alpha
+        self._reset()
+
+    def predict_next(self, observation):
+        " Predicts the next data point and detects change points."
+        self._update_data(observation)
+        is_changepoint = False
+        if self.current_t < self.warmup_period:
+            self.ks_statistic = np.array([0])
+            self.p_value = np.array([1])
+        if self.current_t >= self.warmup_period:
+            self._init_params()
+            self._compute_KS_statistic()
+            is_changepoint = self._detect_changepoint()
+            if is_changepoint:
+                self._reset()
+            return self.ks_statistic, self.p_value, is_changepoint
+        else:
+            return self.ks_statistic, self.p_value, is_changepoint
+        
+    def _init_params(self):
+        " Initializes the parameters required for KS-CUM computation."
+        self.window_pre_data = self.current_obs[-self.warmup_period: -self.warmup_period + self.window_pre]
+        self.window_post_data = self.current_obs[-self.window_post:]
+
+    def _reset(self):
+        " Resets the internal state of the detector."
+        self.current_t = 0
+        self.current_obs = []
+
+    def _update_data(self, observation):
+        " Updates the observed data with new data points."
+        # # skip if observation is NaN
+        # if math.isnan(observation):
+        #     return
+        self.current_t += 1
+        self.current_obs.append(observation)
+
+    def _compute_KS_statistic(self):
+        " Computes the Kolmogorov-Smirnov statistic for the current window."
+        from scipy import stats
+        self.ks_statistic, self.p_value = stats.ks_2samp(self.window_pre_data, self.window_post_data)
+
+    def _detect_changepoint(self):
+        " Detects change points based on the computed KS statistic."
+        if self.p_value < self.alpha:
+            return True
+        else:
+            return False
+
+    def detect_change_points(self, data):
+        " Detects change points in the given data using the KS-CUM detector."
+        if not isinstance(data, np.ndarray):
+            raise ValueError("data must be a numpy array.")
+        outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        ks_statistics = np.vstack([row[0] for row in outs])
+        p_values = np.vstack([row[1] for row in outs])
+        is_changepoint = [row[2] for row in outs]
+        change_points = np.array([i for i, drift in enumerate(is_changepoint) if drift])
+        return ks_statistics , p_values, change_points
+
+    def plot_change_points(self, data, change_points, p_values):
+        " Plots data with detected change points and KS statistics."
+        plt.figure(figsize=(20, 8))
+        plt.subplot(2, 1, 1)
+        plt.plot(data, color='blue', label='Data', linestyle="--")
+        X, Y = np.meshgrid(np.arange(len(data)), np.linspace(0, max(data)))  # create a grid
+        Z = 1 - p_values[X]  # get the p-values for the grid
+        plt.contourf(X, Y, Z[:,:,0], alpha=0.1, cmap="Greys")
+        if len(change_points) != 0:
+            for cp in change_points:
+                plt.axvline(cp, color="red", linestyle="dashed", label='Change Points', lw=2)
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.title('KS-Test Change Point Detection')
+        plt.legend()
+        plt.grid(True)
+        plt.subplot(2, 1, 2)
+        plt.plot(1-p_values, color='gray', label='(1-P-Values)')
+        # plot horizontal line at alpha
+        plt.axhline(1-self.alpha, color='red', linestyle='dashed', label='(1-Alpha)')
+        plt.xlabel('Time')
+        plt.ylabel('Probability of Change')
+        plt.title('Probability of Changepoint')
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
