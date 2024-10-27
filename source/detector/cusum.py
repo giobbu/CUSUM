@@ -630,7 +630,7 @@ class KS_CUM_Detector:
         plt.contourf(X, Y, Z[:,:,0], alpha=0.1, cmap="Greys")
         if len(change_points) != 0:
             for cp in change_points:
-                plt.axvline(cp, color="red", linestyle="dashed", label='Change Points', lw=2)
+                plt.axvline(cp, color="red", linestyle="dashed", label=f'Change Points-{cp}', lw=2)
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('KS-Test Change Point Detection')
