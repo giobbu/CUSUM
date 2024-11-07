@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as follows:"
+authors:
+  - name: "Giovanni Buroni"
+    orcid: "https://orcid.org/0000-0002-1825-0097"
+    affiliation: "INESC TEC - Institute for Systems and Computer Engineering, Technology and Science"
+title: "CUSUM"
+version: "v0.1.0-alpha"
+doi: "https://doi.org/your-repository-doi"  # If available
+url: "https://github.com/giobbu/CUSUM"
+date-released: "2024-11-07"  # Date of the release
+license: "MIT"  # Or any other license you're using
+repository: "https://github.com/giobbu/CUSUM"
