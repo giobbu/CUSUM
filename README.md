@@ -129,4 +129,20 @@ ks_detector.plot_change_points(generator.data, change_points, p_values)
 
 ![Image Alt Text](img/kscum.png)
 
+### How to Cite This Repository
+
+You can use the following citation format:
+
+```
+@software{Giovanni_Buroni_CUSUM_2024,
+author = {{Giovanni Buroni}},
+doi = {https://doi.org/your-repository-doi},
+license = {MIT},
+month = nov,
+title = {{CUSUM}},
+url = {https://github.com/giobbu/CUSUM},
+version = {v0.1.0-alpha},
+year = {2024}
+}
+```
  
