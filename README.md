@@ -1,6 +1,8 @@
-# **Change Point Detection**
 [![Python Tests on macOS](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml/badge.svg)](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14052654.svg)](https://doi.org/10.5281/zenodo.14052654)
 
+# **Change Point Detection**
 
 Change point refers to the phenomenon where the statistical properties of a target variable or data distribution change over time. Detecting change point is crucial in various domains such as financial markets, healthcare, and online advertising to adapt models and decision-making processes to changing environments.
 
@@ -138,7 +140,7 @@ You can use the following citation format:
 ```
 @software{Giovanni_Buroni_CUSUM_2024,
 author = {{Giovanni Buroni}},
-doi = {https://doi.org/your-repository-doi},
+doi = {https://doi.org/10.5281/zenodo.14052654},
 license = {MIT},
 month = nov,
 title = {{CUSUM}},
