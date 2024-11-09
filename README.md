@@ -1,5 +1,5 @@
 # **Change Point Detection**
-![Tests](https://github.com/giobbu/CUSUM/.github/workflows/python-tests.yml/badge.svg)
+[![Python Tests on macOS](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml/badge.svg)](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml)
 
 
 Change point refers to the phenomenon where the statistical properties of a target variable or data distribution change over time. Detecting change point is crucial in various domains such as financial markets, healthcare, and online advertising to adapt models and decision-making processes to changing environments.
