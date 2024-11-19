@@ -6,7 +6,7 @@ authors:
     affiliation: "INESC TEC - Institute for Systems and Computer Engineering, Technology and Science"
 title: "CUSUM"
 version: "v0.1.0-alpha"
-doi: "https://doi.org/your-repository-doi"  # If available
+doi: "https://doi.org/10.5281/zenodo.14052654"  # If available
 url: "https://github.com/giobbu/CUSUM"
 date-released: "2024-11-07"  # Date of the release
 license: "MIT"  # Or any other license you're using
