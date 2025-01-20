@@ -16,11 +16,11 @@ Apply data generator to create time-series data with abrupt mean-shift
 
 #### Simulating streaming data
 **Simulate a streaming data scenario by iterating over a sequence of observations. During each iteration:**
-1. **make prediction with recursive-least-squares model**
-2. **observe true value**
-3. **update model's parameters**
-4. **compute residual**
-5. **apply CUSUM detector to the residuals**
+1. Make prediction with recursive-least-squares model
+2. Retrieve the true value
+3. Update model's parameters
+4. Compute residual
+5. Use the CUSUM detector on the residuals
 
 ![Model Predictions Animation](img/monitoring.gif?raw=true)
 
