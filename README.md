@@ -15,7 +15,7 @@ Apply data generator to create time-series data with abrupt mean-shift
 ![Image Alt Text](img/monitoring.png)
 
 #### Simulate streaming
-1. **make prediction with recurrent-least-squares model**
+1. **make prediction with recursive-least-squares model**
 2. **observe true value**
 3. **update model's parameters**
 4. **compute residual**

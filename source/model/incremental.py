@@ -1,6 +1,6 @@
 import numpy as np
 
-class RecurrentLeastSquares:
+class RecursiveLeastSquares:
     """
     Recurrent Least Squares algorithm for online linear regression.
     """
