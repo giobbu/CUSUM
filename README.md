@@ -6,7 +6,7 @@
 
 Change point refers to the phenomenon where the statistical properties of a target variable or data distribution change over time. Detecting change point is crucial in various domains such as financial markets, healthcare, and online advertising to adapt models and decision-making processes to changing environments.
 
-### Example: Monitoring ml-model performance
+### Example: Monitoring learning model performance
 Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
 
 #### Generate date
@@ -14,12 +14,13 @@ Apply data generator to create time-series data with abrupt mean-shift
 
 ![Image Alt Text](img/monitoring.png)
 
-#### Simulate streaming
+#### Simulating streaming data
+**Simulate a streaming data scenario by iterating over a sequence of observations. During each iteration:**
 1. **make prediction with recursive-least-squares model**
 2. **observe true value**
 3. **update model's parameters**
 4. **compute residual**
-5. **apply CUSUM detector**
+5. **apply CUSUM detector to the residuals**
 
 ![Model Predictions Animation](img/monitoring.gif?raw=true)
 
@@ -133,20 +134,5 @@ ks_detector.plot_change_points(generator.data, change_points, p_values)
 
 ![Image Alt Text](img/kscum.png)
 
-### How to Cite This Repository
 
-You can use the following citation format:
-
-```
-@software{Giovanni_Buroni_CUSUM_2024,
-author = {{Giovanni Buroni}},
-doi = {https://doi.org/10.5281/zenodo.14052654},
-license = {MIT},
-month = nov,
-title = {{CUSUM}},
-url = {https://github.com/giobbu/CUSUM},
-version = {v0.1.0-alpha},
-year = {2024}
-}
-```
  
