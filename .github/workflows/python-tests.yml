@@ -21,14 +21,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'  # Specify the required Python version here
+          python-version: '3.11'
 
       # Install dependencies
-      - name: Install dependencies
+      - name: Install uv
         run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install uv pytest
 
+      - name: Verify uv installation
+        run: |
+          uv --version
+
+      - name: Install dependencies with uv
+        run: |
+          uv sync
+          
       # Run tests with pytest
       - name: Run tests
         run: |
