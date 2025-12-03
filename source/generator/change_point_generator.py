@@ -15,7 +15,7 @@ class ChangePointGenerator:
         ```
     """
 
-    def __init__(self, num_segments=3, segment_length=500, change_point_type='sudden_shift'):
+    def __init__(self, num_segments=3, segment_length=500, change_point_type='sudden_shift', seed=42):
         """
         Initializes the ChangePointGenerator with the specified parameters.
         """
@@ -25,10 +25,13 @@ class ChangePointGenerator:
             raise ValueError("segment_length must be a positive integer")
         if change_point_type not in ['sudden_shift', 'gradual_drift', 'periodic_change']:
             raise ValueError("change_point_type must be one of: 'sudden_shift', 'gradual_drift', 'periodic_change'")
+        if not isinstance(seed, int):
+            raise ValueError("seed must be an integer")
 
         self.num_segments = num_segments
         self.segment_length = segment_length
         self.change_point_type = change_point_type
+        self.seed = seed
         self.data = []
 
     def generate_data(self):
