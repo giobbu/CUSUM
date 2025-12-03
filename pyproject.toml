@@ -1,19 +1,16 @@
-[tool.poetry]
+[project]
 name = "cusum"
 version = "0.1.0"
-description = "cusum-based algorithms for change-point detection in data streams"
-authors = ["Your Name <you@example.com>"]
+description = "Add your description here"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "3.10.15"
-numpy = "^2.1.2"
-matplotlib = "^3.9.2"
-scipy = "^1.14.1"
-pytest = "^8.3.3"
-pre-commit = "^4.0.1"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "loguru>=0.7.3",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.5",
+    "pre-commit>=4.5.0",
+    "pydantic>=2.12.5",
+    "pytest>=9.0.1",
+    "python-dotenv>=1.2.1",
+    "scipy>=1.16.3",
+]
