@@ -38,6 +38,10 @@ class ChangePointGenerator:
         """
         Generate time series data with different types of change points.
         """
+
+        # Set random seed for reproducibility
+        np.random.seed(self.seed)
+
         for _ in range(self.num_segments):
             if self.change_point_type == 'sudden_shift':
                 mean = np.random.uniform(0, 100)
