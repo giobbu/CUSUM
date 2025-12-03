@@ -361,7 +361,7 @@ class ChartCUSUM_Detector:
     detector.plot_change_points(data, change_points, cusums, upper_limits, lower_limits)
     ```
     """
-    def __init__(self, warmup_period=10, level=3, deviation_type='sqr-dev'):
+    def __init__(self, warmup_period=10, level=3, deviation_type='sqr-dev', target_mean=None):
         """
         Initializes the Change Point Detector with the specified parameters.
         
@@ -382,6 +382,7 @@ class ChartCUSUM_Detector:
         self.warmup_period = warmup_period
         self.level = level
         self.deviation_type = deviation_type
+        self.target_mean = target_mean
         self._reset()
 
     def predict_next(self, observation):
@@ -433,7 +434,11 @@ class ChartCUSUM_Detector:
         """
         Initializes the parameters required for CUSUM computation.
         """
-        self.window_mean = np.nanmean(np.array(self.current_obs))
+        if not self.target_mean:
+            self.window_mean = np.nanmean(np.array(self.current_obs))
+        else:
+            self.window_mean = self.target_mean
+
         if self.deviation_type == 'sqr-dev':
             self.warmup_cusum = np.nancumsum((np.array(self.current_obs) - self.window_mean) ** 2)
         else:
@@ -448,7 +453,11 @@ class ChartCUSUM_Detector:
         """
         Updates the chart statistics after receiving a new data point.
         """
-        self.window_mean = np.nanmean(np.array(self.current_obs[1:]))
+        if not self.target_mean:
+            self.window_mean = np.nanmean(np.array(self.current_obs[1:]))
+        else:
+            self.window_mean = self.target_mean
+            
         if self.deviation_type == 'sqr-dev':
             self.cusum = self.cusum + ((self.current_obs[-1] - self.window_mean) ** 2)
         else:
