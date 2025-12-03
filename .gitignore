@@ -9,4 +9,3 @@
 
 # Ignore example_*.ipynb
 **/example_ks_test.ipynb
-**/example_ml_monitoring.ipynb
