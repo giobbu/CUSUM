@@ -34,18 +34,19 @@ import numpy as np
 from source.generator.change_point_generator import ChangePointGenerator
 from source.detector.cusum import CUSUM_Detector, ProbCUSUM_Detector, ChartCUSUM_Detector
 
-# set seed
-np.random.seed(12)
-
 # Generate time series data with change points
-generator = ChangePointGenerator(num_segments=3, segment_length=1000, change_point_type='sudden_shift')
+generator = ChangePointGenerator(num_segments=3, 
+                                segment_length=1000, 
+                                change_point_type='sudden_shift', 
+                                seed=12)  # set seed for reproducibility
 generator.generate_data()
-
 # Plot the generated data
 generator.plot_data()
 ```
 
-## **Three commonly used drift detectors are:**
+## **Drift Detectors**
+
+Change point detection algorithms can be applied to both data batches, **offline detection**, and individual data instances, **online detection**. The algorithms implemented here are suitable for use in both settings.
 
 ### **1. CUSUM Detector (The PageHinkley Algorithm)**
 
@@ -54,8 +55,15 @@ The CUSUM detector monitors the cumulative sum of deviations between observed da
 ```python 
 # Detect change points using CUSUM Detector
 cusum_detector = CUSUM_Detector(warmup_period=500, delta=3, threshold=10)
-cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.detect_change_points(np.array(generator.data))
+```
 
+#### Offline Detection
+```python 
+# Detect change points using CUSUM Detector
+cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.detect_change_points(np.array(generator.data))
+```
+
+```python 
 # Plot the detected change points using CUSUM Detector
 cusum_detector.plot_change_points(generator.data, cusum_change_points, cusum_pos_changes, cusum_neg_changes)
 ```
@@ -70,7 +78,6 @@ The Probabilistic CUSUM detector extends the CUSUM method by incorporating stati
 # Detect change points using Probabilistic CUSUM Detector
 prob_cusum_detector = ProbCUSUM_Detector(warmup_period=500, threshold_probability=0.01)
 prob_probabilities, prob_change_points = prob_cusum_detector.detect_change_points(np.array(generator.data))
-
 # Plot the detected change points using Probabilistic CUSUM Detector
 prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_probabilities)
 ```
@@ -88,7 +95,6 @@ The Control Chart CUSUM detector is a specialized form of CUSUM change point det
 # Detect change points using Control Chart CUSUM Detector
 chart_cusum_detector = ChartCUSUM_Detector(warmup_period=500, level=3, deviation_type='dev')
 upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.detect_change_points(np.array(generator.data))
-
 # Plot the detected change points using Control Chart CUSUM Detector
 chart_cusum_detector.plot_change_points(np.array(generator.data), change_points, cusums, upper_limits, lower_limits)
 ```
