@@ -8,5 +8,5 @@
 
 
 # Ignore example_*.ipynb
-**/example_1.ipynb
-**/example_2.ipynb
+**/example_ks_test.ipynb
+**/example_ml_monitoring.ipynb
