@@ -4,23 +4,23 @@
 
 # **Change Point Detection**
 
-Change point refers to the phenomenon where the statistical properties of a target variable or data distribution change over time. Detecting change point is crucial in various domains such as financial markets, healthcare, and online advertising to adapt models and decision-making processes to changing environments.
+A change point refers to a moment in time when the statistical properties of a target variable or data distribution shift. Detecting these changes is essential in domains such as finance, energy markets, healthcare, environmental monitoring, industrial processes, and online advertising, where models and decisions must continually adapt to evolving conditions. 
 
-### Example: Monitoring learning model performance
+### Example — Monitoring performance degradation of a learning model in a production setting
 Model drift refers to the degradation of machine learning model performance due to changes in data or in the relationships between input and output variables.
 
-#### Generate date
-Apply data generator to create time-series data with abrupt mean-shift
+#### Generate data
+Use a data generator to create time-series data that includes an abrupt mean shift.
 
 ![Image Alt Text](img/monitoring.png)
 
-#### Simulating streaming data
-**Simulate a streaming data scenario by iterating over a sequence of observations. During each iteration:**
-1. Make prediction with recursive-least-squares model
-2. Retrieve the true value
-3. Update model's parameters
-4. Compute residual
-5. Use the CUSUM detector on the residuals
+#### Simulating Streaming Data
+**Simulate a streaming scenario by iterating through a sequence of observations. At each step:**
+1. Generate a prediction with recursive least squares (RLS) model.
+2. Retrieve the true observed value.
+3. Update the model parameters with the new data instance.
+4. Compute residual.
+5. Apply the CUSUM detector on the residuals to identify potential change points.
 
 ![Model Predictions Animation](img/monitoring.gif?raw=true)
 
