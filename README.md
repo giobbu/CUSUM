@@ -103,7 +103,7 @@ prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_
 
 ### **Extensions: 3. CUSUM Control Chart Detector**
 
-The CUSUM Control Chart uses cumulative sums of deviations from a know target or reference mean. Designed for Statistical Process Control (SPC). Control Chart are primarily used in industrial quality control.
+The CUSUM Control Chart uses cumulative sums of deviations from a know target or reference mean. Designed for Statistical Process Control (SPC), Control Chart are primarily used in industrial quality control.
 
 ### **3.1 CUSUM Control Chart of Deviations**
 
