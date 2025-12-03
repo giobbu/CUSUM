@@ -77,7 +77,7 @@ cusum_detector.plot_change_points(generator.data, cusum_change_points, cusum_pos
 
 ### **2. Probabilistic CUSUM Detector**
 
-The Probabilistic CUSUM detector extends the CUSUM method by incorporating statistical probability measures. It evaluates the probability of observing deviations between data points, making it more robust to variations in data distribution.
+The Probabilistic CUSUM detector extends the CUSUM method by incorporating probability. It evaluates the probability of observing deviations between data points, making it more robust to variations in data distribution.
 
 ```python 
 # Detect change points using Probabilistic CUSUM Detector
@@ -103,9 +103,9 @@ prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_
 
 ### **Extensions: 3. CUSUM Control Chart Detector**
 
-Control Charts with CUSUM detector.
+The CUSUM Control Chart uses cumulative sums of deviations from a know target or reference mean. Designed for Statistical Process Control (SPC). Control Chart are primarily used in industrial quality control.
 
-### **3.1 CUSUM of Deviations**
+### **3.1 CUSUM Control Chart of Deviations**
 
 ```python 
 # Detect change points using Control Chart CUSUM Detector
@@ -128,7 +128,7 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 
 ![Image Alt Text](img/chartcusum_dev.png)
 
-### **3.2 CUSUM of Squares**
+### **3.2 CUSUM Control Chart of Squares**
 
 ```python 
 # Detect change points using Control Chart CUSUM Detector
