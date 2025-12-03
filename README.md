@@ -33,7 +33,7 @@ Change point detectors are algorithms designed to detect change points in stream
 ```python 
 import numpy as np
 from source.generator.change_point_generator import ChangePointGenerator
-from source.detector.cusum import CUSUM_Detector, ProbCUSUM_Detector, ChartCUSUM_Detector
+from source.detector.cusum import CUSUM_Detector, ProbCUSUM_Detector, ChartCUSUM_Detector,KS_CUM_Detector
 
 # Generate time series data with change points
 generator = ChangePointGenerator(num_segments=3, 
@@ -63,6 +63,10 @@ cusum_detector = CUSUM_Detector(warmup_period=500, delta=3, threshold=10)
 # Detect change points using CUSUM Detector
 cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.detect_change_points(np.array(generator.data))
 ```
+#### Online Detection (TODO)
+```python 
+TODO
+```
 
 ```python 
 # Plot the detected change points using CUSUM Detector
@@ -78,7 +82,18 @@ The Probabilistic CUSUM detector extends the CUSUM method by incorporating stati
 ```python 
 # Detect change points using Probabilistic CUSUM Detector
 prob_cusum_detector = ProbCUSUM_Detector(warmup_period=500, threshold_probability=0.01)
+```
+
+#### Offline Detection
+```python 
 prob_probabilities, prob_change_points = prob_cusum_detector.detect_change_points(np.array(generator.data))
+```
+#### Online Detection (TODO)
+```python 
+TODO
+```
+
+```python 
 # Plot the detected change points using Probabilistic CUSUM Detector
 prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_probabilities)
 ```
@@ -86,16 +101,27 @@ prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_
 ![Image Alt Text](img/probcusum.png)
 
 
-### **3. CUSUM Control Chart Detector**
+### **Extensions: 3. CUSUM Control Chart Detector**
 
-The Control Chart CUSUM detector is a specialized form of CUSUM change point detection algorithm commonly used in quality control and process monitoring applications.
+Control Charts with CUSUM detector.
 
 ### **3.1 CUSUM of Deviations**
 
 ```python 
 # Detect change points using Control Chart CUSUM Detector
 chart_cusum_detector = ChartCUSUM_Detector(warmup_period=500, level=3, deviation_type='dev')
+```
+
+#### Offline Detection
+```python
 upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.detect_change_points(np.array(generator.data))
+```
+#### Online Detection (TODO)
+```python 
+TODO
+```
+
+```python
 # Plot the detected change points using Control Chart CUSUM Detector
 chart_cusum_detector.plot_change_points(np.array(generator.data), change_points, cusums, upper_limits, lower_limits)
 ```
@@ -107,8 +133,18 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 ```python 
 # Detect change points using Control Chart CUSUM Detector
 chart_cusum_detector = ChartCUSUM_Detector(warmup_period=500, level=3, deviation_type='sqr-dev')
-upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.detect_change_points(np.array(generator.data))
+```
 
+#### Offline Detection
+```python 
+upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.detect_change_points(np.array(generator.data))
+```
+#### Online Detection (TODO)
+```python 
+TODO
+```
+
+```python 
 # Plot the detected change points using Control Chart CUSUM Detector
 chart_cusum_detector.plot_change_points(np.array(generator.data), change_points, cusums, upper_limits, lower_limits)
 ```
@@ -116,26 +152,23 @@ chart_cusum_detector.plot_change_points(np.array(generator.data), change_points,
 ![Image Alt Text](img/chartcusum_sqr.png)
 
 
-### **Extensions: KS-CUM Detector (Kolmogorov-Smirnov Test)**
+### **Extensions: KS-CUM Detector - Kolmogorov-Smirnov Test**
 
 ```python 
-
-import numpy as np
-from source.generator.change_point_generator import ChangePointGenerator
-from source.detector.cusum import KS_CUM_Detector
-
-# Set seed
-np.random.seed(11)
-
-# Generate time series data with change points
-generator = ChangePointGenerator(num_segments=3, segment_length=1000, change_point_type='sudden_shift')
-generator.generate_data()
-# Plot the generated data
-generator.plot_data()
-
 # Kolmogorov-Smirnov Test
 ks_detector = KS_CUM_Detector(window_pre=600, window_post=300, alpha=0.001)
+```
+
+#### Offline Detection
+```python 
 ks_statistics , p_values, change_points = ks_detector.detect_change_points(np.array(generator.data))
+```
+#### Online Detection (TODO)
+```python 
+TODO
+```
+
+```python
 ks_detector.plot_change_points(generator.data, change_points, p_values)
 ```
 
