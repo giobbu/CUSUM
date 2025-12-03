@@ -16,13 +16,14 @@ Use a data generator to create time-series data that includes an abrupt mean shi
 
 #### Simulating Streaming Data
 **Simulate a streaming scenario by iterating through a sequence of observations. At each step:**
+
 1. Generate a prediction with recursive least squares (RLS) model.
 2. Retrieve the true observed value.
 3. Update the model parameters with the new data instance.
 4. Compute residual.
 5. Apply the CUSUM detector on the residuals to identify potential change points.
 
-![Model Predictions Animation](img/monitoring.gif?raw=true)
+Check out the notebook [HERE](https://github.com/giobbu/CUSUM/blob/main/notebooks/example_ml_monitoring.ipynb)
 
 ## **Change Point Detectors**
 
