@@ -25,6 +25,8 @@ Use a data generator to create time-series data that includes an abrupt mean shi
 
 Check out the notebook [HERE](https://github.com/giobbu/CUSUM/blob/main/notebooks/example_ml_monitoring.ipynb)
 
+![Model Predictions Animation](img/monitoring.gif?raw=true)
+
 ## **Change Point Detectors**
 
 Change point detectors are algorithms designed to detect change points in streaming data or sequential observations. These detectors analyze the data stream and identify points where the underlying data distribution has changed significantly.
@@ -49,7 +51,7 @@ generator.plot_data()
 
 Change point detection algorithms can be applied to both data batches, **offline detection**, and individual data instances, **online detection**. The algorithms implemented here are suitable for use in both settings.
 
-### **1. CUSUM Detector (The PageHinkley Algorithm)**
+### **1. CUSUM Detector (Page-Hinkley test)**
 
 The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
 
