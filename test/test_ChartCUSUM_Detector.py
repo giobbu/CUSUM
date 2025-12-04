@@ -27,7 +27,7 @@ def test_detect_change_points_with_invalid_data_type(detector):
     """Test detect_change_points method with invalid data type."""
     data = [12.3, 14.5, 15.6, 16.8, 17.9]
     with pytest.raises(ValueError):
-        detector.detect_change_points(data)
+        detector.offline_detection(data)
 
 def test_predict_next_before_warmup_period(detector):
     """Test predict_next method before reaching the warmup period."""

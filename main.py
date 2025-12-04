@@ -30,7 +30,7 @@ def main():
     cusum_detector = CUSUM_Detector(warmup_period= cusum_params.warmup_period,
                                     delta=  cusum_params.delta, 
                                     threshold=cusum_params.threshold)
-    cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.detect_change_points(np.array(generator.data))
+    cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.offline_detection(np.array(generator.data))
     # Plot the detected change points using CUSUM Detector
     cusum_detector.plot_change_points(generator.data, cusum_change_points, cusum_pos_changes, cusum_neg_changes)
 
@@ -39,7 +39,7 @@ def main():
     prob_cusum_setting = ProbCUSUMSetting()
     prob_cusum_detector = ProbCUSUM_Detector(warmup_period=prob_cusum_setting.warmup_period, 
                                              threshold_probability=prob_cusum_setting.threshold_probability)
-    prob_probabilities, prob_change_points = prob_cusum_detector.detect_change_points(np.array(generator.data))
+    prob_probabilities, prob_change_points = prob_cusum_detector.offline_detection(np.array(generator.data))
     # Plot the detected change points using Probabilistic CUSUM Detector
     prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_probabilities)
 

@@ -101,9 +101,9 @@ class CUSUM_Detector:
         else:
             return False
 
-    def detect_change_points(self, data):
+    def offline_detection(self, data):
         """
-        Detects change points in the given data using the CUSUM detector.
+        Detects change points in the given data in an offline manner.
 
         Parameters:
         - data (numpy array): Data points to be analyzed.
@@ -278,9 +278,9 @@ class ProbCUSUM_Detector:
         probability = 2 * (1 - p_obs)
         return probability
     
-    def detect_change_points(self, data):
+    def offline_detection(self, data):
         """
-        Detects change points in the given data using the CUSUM detector.
+        Detects change points in the given data in an offline manner.
 
         Parameters:
         - data: numpy array
@@ -480,9 +480,9 @@ class ChartCUSUM_Detector:
         else:
             return False
 
-    def detect_change_points(self, data):
+    def offline_detection(self, data):
         """
-        Detects change points in the given data using the CUSUM detector.
+        Detects change points in the given data in an offline manner.
         
         Parameters:
         - data (np.ndarray): The data to detect change points in.
@@ -618,8 +618,8 @@ class KS_CUM_Detector:
         else:
             return False
 
-    def detect_change_points(self, data):
-        " Detects change points in the given data using the KS-CUM detector."
+    def offline_detection(self, data):
+        " Detects change points in the given data in an offline manner."
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
         outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
