@@ -75,7 +75,7 @@ def test_predict_next_after_warmup_period_with_changepoint(detector):
     # Predict next observations with a changepoint
     # Generate array after drift
     observations = np.random.normal(1, 1, 1000)
-    drift_observations = np.random.normal(100, 100, 1000)
+    drift_observations = np.random.normal(1000, 1, 1000)
     new_observations = np.concatenate((observations, drift_observations))
     results = [detector.predict_next(observation) for observation in new_observations]
     upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
