@@ -33,7 +33,7 @@ class CUSUM_Detector:
         self.threshold = threshold
         self._reset()
 
-    def predict_next(self, observation:float):
+    def detection(self, observation:float):
         """
         Predicts the next data point and detects change points.
 
@@ -119,7 +119,7 @@ class CUSUM_Detector:
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
         
-        outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        outs = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
         pos_changes = np.vstack([row[0] for row in outs])
         neg_changes = np.vstack([row[1] for row in outs])
         is_drift = [row[2] for row in outs]
@@ -196,7 +196,7 @@ class ProbCUSUM_Detector:
         self.running_sum = 0  # Initialize running sum of standardized observations
         self._reset()
         
-    def predict_next(self, observation: float):
+    def detection(self, observation: float):
         """
         Predicts the probability of a change point in the next observation.
 
@@ -299,7 +299,7 @@ class ProbCUSUM_Detector:
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
         
-        results = [self.predict_next(point) if not math.isnan(point) else (0, False) for point in data]
+        results = [self.detection(point) if not math.isnan(point) else (0, False) for point in data]
         probabilities = np.array([result[0] for result in results])
         is_drift = np.array([result[1] for result in results])
         change_points = np.where(is_drift)[0]
@@ -386,7 +386,7 @@ class ChartCUSUM_Detector:
         self.target_mean = target_mean
         self._reset()
 
-    def predict_next(self, observation: float):
+    def detection(self, observation: float):
         """
         Predicts the next data point and detects change points.
         
@@ -498,7 +498,7 @@ class ChartCUSUM_Detector:
             raise ValueError("data must be a numpy array.")
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
-        outs = [self.predict_next(point) if not math.isnan(point) else (0, 0, 0, False) for point in data]
+        outs = [self.detection(point) if not math.isnan(point) else (0, 0, 0, False) for point in data]
         upper_limits = np.vstack([row[0] for row in outs])
         lower_limits = np.vstack([row[1] for row in outs])
         cusums = np.vstack([row[2] for row in outs])
@@ -572,7 +572,7 @@ class KS_CUM_Detector:
         self.alpha = alpha
         self._reset()
 
-    def predict_next(self, observation: float):
+    def detection(self, observation: float):
         " Predicts the next data point and detects change points."
         self._update_data(observation)
         is_changepoint = False
@@ -623,7 +623,7 @@ class KS_CUM_Detector:
         " Detects change points in the given data in an offline manner."
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
-        outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        outs = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
         ks_statistics = np.vstack([row[0] for row in outs])
         p_values = np.vstack([row[1] for row in outs])
         is_changepoint = [row[2] for row in outs]
