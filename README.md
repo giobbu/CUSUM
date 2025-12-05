@@ -60,17 +60,18 @@ The CUSUM detector monitors the cumulative sum of deviations between observed da
 cusum_detector = CUSUM_Detector(warmup_period=500, delta=3, threshold=10)
 ```
 
+#### Online Detection
+```python 
+for data in generator.data:
+    pos, neg, is_change = cusum_detector.detection(data)
+    print(f"Change Detected: {is_change} \n -Positives: {pos[0]}, \n -Negatives: {neg[0]}")
+```
+
 #### Offline Detection
 ```python 
 # Detect change points using CUSUM Detector
 cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.offline_detection(generator.data)
-```
-#### Online Detection (TODO)
-```python 
-TODO
-```
 
-```python 
 # Plot the detected change points using CUSUM Detector
 cusum_detector.plot_change_points(generator.data, cusum_change_points, cusum_pos_changes, cusum_neg_changes)
 ```
@@ -86,16 +87,17 @@ The Probabilistic CUSUM detector extends the CUSUM method by incorporating proba
 prob_cusum_detector = ProbCUSUM_Detector(warmup_period=500, threshold_probability=0.01)
 ```
 
+#### Online Detection
+```python 
+for data in generator.data:
+    prob_change, is_change = prob_cusum_detector.detection(data)
+    print(f"Change Detected: {is_change}\n -with Probability: {prob_change}")
+```
+
 #### Offline Detection
 ```python 
 prob_probabilities, prob_change_points = prob_cusum_detector.offline_detection(generator.data)
-```
-#### Online Detection (TODO)
-```python 
-TODO
-```
 
-```python 
 # Plot the detected change points using Probabilistic CUSUM Detector
 prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_probabilities)
 ```
@@ -114,16 +116,17 @@ The CUSUM Control Chart uses cumulative sums of deviations from a know target or
 chart_cusum_detector = ChartCUSUM_Detector(warmup_period=500, level=3, deviation_type='dev')
 ```
 
+#### Online Detection
+```python 
+for data in generator.data:
+    ucl, lcl, value, is_change = chart_cusum_detector.detection(data)
+    print(f"Change Detected: {is_change}\n -UCL: {ucl}, \n -LCL: {lcl}, \n -CUSUM Value: {value}")
+```
+
 #### Offline Detection
 ```python
 upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.offline_detection(generator.data)
-```
-#### Online Detection (TODO)
-```python 
-TODO
-```
 
-```python
 # Plot the detected change points using Control Chart CUSUM Detector
 chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, upper_limits, lower_limits)
 ```
@@ -137,16 +140,18 @@ chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, u
 chart_cusum_detector = ChartCUSUM_Detector(warmup_period=500, level=3, deviation_type='sqr-dev')
 ```
 
+#### Online Detection
+```python 
+for data in generator.data:
+    ucl, lcl, value, is_change = chart_cusum_detector.detection(data)
+    print(f"Change Detected: {is_change}\n -UCL: {ucl}, \n -LCL: {lcl}, \n -CUSUM Value: {value}")
+```
+```
+
 #### Offline Detection
 ```python 
 upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.offline_detection(generator.data)
-```
-#### Online Detection (TODO)
-```python 
-TODO
-```
 
-```python 
 # Plot the detected change points using Control Chart CUSUM Detector
 chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, upper_limits, lower_limits)
 ```
@@ -161,16 +166,18 @@ chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, u
 ks_detector = KS_CUM_Detector(window_pre=600, window_post=300, alpha=0.001)
 ```
 
+#### Online Detection
+```python 
+for data in generator.data:
+    ks_statistic, p_value, is_change = ks_detector.detection(data)
+    print(f"Change Detected: {is_change}\n -KS Statistic: {ks_statistic}, \n -P-Value: {p_value}")
+```
+
 #### Offline Detection
 ```python 
 ks_statistics , p_values, change_points = ks_detector.offline_detection(generator.data)
-```
-#### Online Detection (TODO)
-```python 
-TODO
-```
 
-```python
+# Plot the detected change points using KS Detector
 ks_detector.plot_change_points(generator.data, change_points, p_values)
 ```
 
