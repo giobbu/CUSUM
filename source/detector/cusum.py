@@ -5,18 +5,17 @@ from scipy.stats import norm
 
 class CUSUM_Detector:
     """
-    CUSUM Change Point Detector Class
-
+    CUSUM Change Point Detector Class.
+    
     Example:
     ```
-    detector = CUSUM_Detector(warmup_period=20, delta=15, threshold=30)
-    data = [12.3, 14.5, 15.6, 16.8, 17.9, 20.2, 25.7, 30.2, 32.5, 32.9, 33.0, 32.2, 31.8, 30.5, 30.1]
-    pos_changes, neg_changes, change_points = detector.detect_change_points(data)
+    detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)
+    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
+    pos_changes, neg_changes, change_points = detector.offline_detection(data)
     detector.plot_change_points(data, change_points, pos_changes, neg_changes)
     ```
     """
-
-    def __init__(self, warmup_period=10, delta=10, threshold=20):
+    def __init__(self, warmup_period:int=10, delta:int=10, threshold:int=20):
         """
         Initializes the Change Point Detector with the specified parameters.
 
@@ -28,13 +27,13 @@ class CUSUM_Detector:
 
         if not isinstance(warmup_period, int) or warmup_period < 10:
             raise ValueError("warmup_period must be equal or greater than 10.")
-
+        
         self.warmup_period = warmup_period
         self.delta = delta
         self.threshold = threshold
         self._reset()
 
-    def predict_next(self, observation):
+    def predict_next(self, observation:float):
         """
         Predicts the next data point and detects change points.
 
@@ -68,7 +67,7 @@ class CUSUM_Detector:
         self.current_std = 0
         self.current_obs = []
 
-    def _update_data(self, observation):
+    def _update_data(self, observation: float):
         """Updates the observed data with new data points."""
         self.current_t += 1
         self.current_obs.append(observation)
@@ -101,7 +100,7 @@ class CUSUM_Detector:
         else:
             return False
 
-    def offline_detection(self, data):
+    def offline_detection(self, data: np.ndarray):
         """
         Detects change points in the given data in an offline manner.
 
@@ -116,9 +115,10 @@ class CUSUM_Detector:
 
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
+        
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
-
+        
         outs = [self.predict_next(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
         pos_changes = np.vstack([row[0] for row in outs])
         neg_changes = np.vstack([row[1] for row in outs])
@@ -127,7 +127,7 @@ class CUSUM_Detector:
 
         return pos_changes , neg_changes , change_points
 
-    def plot_change_points(self, data, change_points, pos_changes, neg_changes):
+    def plot_change_points(self, data: np.ndarray, change_points: list, pos_changes: list, neg_changes: list):
         """
         Plots data with detected change points and cumulative sums.
 
@@ -170,14 +170,14 @@ class ProbCUSUM_Detector:
 
     Example:
     ```
-    detector = ProbCUMSUM_Detector(warmup_period=10, threshold_probability=0.001)
-    data = [10.2, 11.5, 12.6, 12.8, 12.9, 13.2, 12.7, 12.5, 12.3, 12.9, 25.0, 12.2, 11.8, 10.5, 10.1]
-    probabilities, change_points = detector.detect_change_points(data)
+    detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)
+    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
+    probabilities, change_points = detector.offline_detection(data)
     detector.plot_change_points(data, change_points, probabilities)
     ```
     """
 
-    def __init__(self, warmup_period=10, threshold_probability=0.001):
+    def __init__(self, warmup_period:int=10, threshold_probability:float=0.001):
         """
         Initializes the Probabilistic CUSUM Detector with the specified parameters.
 
@@ -190,13 +190,13 @@ class ProbCUSUM_Detector:
             raise ValueError("warmup_period must be equal or greater than 10.")
         if not isinstance(threshold_probability, float) or threshold_probability <= 0 or threshold_probability >= 1:
             raise ValueError("threshold_probability must be a float between 0 and 1.")
-
+        
         self.warmup_period = warmup_period
         self.threshold_probability = threshold_probability
         self.running_sum = 0  # Initialize running sum of standardized observations
         self._reset()
         
-    def predict_next(self, observation):
+    def predict_next(self, observation: float):
         """
         Predicts the probability of a change point in the next observation.
 
@@ -228,7 +228,7 @@ class ProbCUSUM_Detector:
         self.std_dev_observation = None
         self.running_sum = 0  # Reset running sum
     
-    def _update_data(self, observation) -> None:
+    def _update_data(self, observation:float) -> None:
         """
         Updates the internal state with a new observation.
 
@@ -245,7 +245,7 @@ class ProbCUSUM_Detector:
 
         if len(self.observations) < 2:
             raise ValueError("At least two observations are needed to initialize parameters.")
-
+        
         self.mean_observation = np.nanmean(np.array(self.observations))
         self.std_dev_observation = np.nanstd(np.array(self.observations))
     
@@ -257,12 +257,13 @@ class ProbCUSUM_Detector:
         - probability (float): The probability of a change point.
         - is_changepoint (bool): True if a change point is detected, False otherwise.
         """
+
         self.running_sum += (self.observations[-1] - self.mean_observation)  # Update running sum
         standardized_sum = self.running_sum / (self.std_dev_observation * self.current_t**0.5)
         probability = float(self._calculate_probability(standardized_sum))
         return probability, probability < self.threshold_probability
     
-    def _calculate_probability(self, standardized_sum) -> bool:
+    def _calculate_probability(self, standardized_sum:float) -> bool:
         """
         Calculates the probability (p-value) of a change point.
 
@@ -278,7 +279,7 @@ class ProbCUSUM_Detector:
         probability = 2 * (1 - p_obs)
         return probability
     
-    def offline_detection(self, data):
+    def offline_detection(self, data: np.ndarray):
         """
         Detects change points in the given data in an offline manner.
 
@@ -297,7 +298,7 @@ class ProbCUSUM_Detector:
             raise ValueError("data must be a numpy array.")
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
-
+        
         results = [self.predict_next(point) if not math.isnan(point) else (0, False) for point in data]
         probabilities = np.array([result[0] for result in results])
         is_drift = np.array([result[1] for result in results])
@@ -305,7 +306,7 @@ class ProbCUSUM_Detector:
 
         return probabilities, change_points
 
-    def plot_change_points(self, data, change_points, probabilities):
+    def plot_change_points(self, data: np.ndarray, change_points: list, probabilities: list):
         """
         Plots data with detected change points and probabilities.
 
@@ -354,14 +355,13 @@ class ChartCUSUM_Detector:
 
     Example:
     ```
-    detector = ChartCUSUM_Detector(warmup_period=20, level=2, deviation_type='sqr-dev')
-    np.random.seed(0)
-    data = np.concatenate([np.random.normal(0, 1, 30), np.random.normal(3, 1, 30)])
-    upper_limits, lower_limits, cusums, change_points = detector.detect_change_points(data)
+    detector = ChartCUSUM_Detector(warmup_period=20, level=3, deviation_type='sqr-dev')
+    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
+    upper_limits, lower_limits, cusums, change_points = detector.offline_detection(data)
     detector.plot_change_points(data, change_points, cusums, upper_limits, lower_limits)
     ```
     """
-    def __init__(self, warmup_period=10, level=3, deviation_type='sqr-dev', target_mean=None):
+    def __init__(self, warmup_period:int=10, level:int=3, deviation_type:str='sqr-dev', target_mean:float=None):
         """
         Initializes the Change Point Detector with the specified parameters.
         
@@ -370,22 +370,23 @@ class ChartCUSUM_Detector:
         - level (int): The level parameter for the CUSUM algorithm.
         - type (str): The type of deviation used in CUSUM algorithm. 'sqr-dev' for square deviation, else deviation.
         """
+
         if not isinstance(warmup_period, int) or warmup_period < 10:
             raise ValueError("warmup_period must be equal or greater than 10.")
-
+        
         if level<1 or level>3:
             raise ValueError("level must be between 1 and 3.")
-
+        
         if deviation_type not in ['sqr-dev', 'dev']:
             raise ValueError("deviation_type must be 'sqr-dev' or 'dev'.")
-
+        
         self.warmup_period = warmup_period
         self.level = level
         self.deviation_type = deviation_type
         self.target_mean = target_mean
         self._reset()
 
-    def predict_next(self, observation):
+    def predict_next(self, observation: float):
         """
         Predicts the next data point and detects change points.
         
@@ -420,7 +421,7 @@ class ChartCUSUM_Detector:
         self.upper = 0
         self.lower = 0
 
-    def _update_data(self, observation):
+    def _update_data(self, observation: float):
         """
         Updates the observed data with new data points.
         
@@ -480,7 +481,7 @@ class ChartCUSUM_Detector:
         else:
             return False
 
-    def offline_detection(self, data):
+    def offline_detection(self, data: np.ndarray):
         """
         Detects change points in the given data in an offline manner.
         
@@ -505,16 +506,16 @@ class ChartCUSUM_Detector:
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
         return upper_limits , lower_limits , cusums, change_points
 
-    def plot_change_points(self, data, change_points, cusums, upper_limits, lower_limits):
+    def plot_change_points(self, data:np.ndarray, change_points:list, cusums:list, upper_limits:list, lower_limits:list):
         """
-        Plots data with detected change points and cumulative sums.
-        
+        Plots data with detected change points and CUSUM statistics.
+
         Parameters:
-        - data (np.ndarray): The original data.
-        - change_points (np.ndarray): Indices of detected change points.
-        - cusums (np.ndarray): Cumulative sums of deviations.
-        - upper_limits (np.ndarray): Upper limits of the CUSUM for each observation.
-        - lower_limits (np.ndarray): Lower limits of the CUSUM for each observation.
+        - data (np.ndarray): Original data points.
+        - change_points (list): List of detected change points.
+        - cusums (list): List of cumulative sums.
+        - upper_limits (list): List of upper limits.
+        - lower_limits (list): List of lower limits.
         """
         plt.figure(figsize=(20, 8))
         plt.subplot(2, 1, 1)
@@ -546,8 +547,8 @@ class KS_CUM_Detector:
     Example:
     ```
     detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
-    data = np.concatenate([np.random.normal(0, 1, 30), np.random.normal(3, 1, 30)])
-    ks_statistics, p_values, change_points = detector.detect_change_points(data)
+    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
+    ks_statistics, p_values, change_points = detector.offline_detection(data)
     detector.plot_change_points(data, change_points, p_values)
     ```
     Args:
@@ -560,7 +561,7 @@ class KS_CUM_Detector:
     - change_points (np.ndarray): The indices of detected change points.
     """
 
-    def __init__(self, window_pre=30, window_post=30, alpha=0.05):
+    def __init__(self, window_pre:int=30, window_post:int=30, alpha:float=0.05):
         assert window_pre >= 30, "window_pre must be greater than 30."
         assert window_post >= 30, "window_post must be greater than 30."
         assert window_pre >= window_post, "window_pre must be greater than or equal to window_post."
@@ -571,7 +572,7 @@ class KS_CUM_Detector:
         self.alpha = alpha
         self._reset()
 
-    def predict_next(self, observation):
+    def predict_next(self, observation: float):
         " Predicts the next data point and detects change points."
         self._update_data(observation)
         is_changepoint = False
@@ -598,7 +599,7 @@ class KS_CUM_Detector:
         self.current_t = 0
         self.current_obs = []
 
-    def _update_data(self, observation):
+    def _update_data(self, observation: float):
         " Updates the observed data with new data points."
         # # skip if observation is NaN
         # if math.isnan(observation):
@@ -618,7 +619,7 @@ class KS_CUM_Detector:
         else:
             return False
 
-    def offline_detection(self, data):
+    def offline_detection(self, data: np.ndarray):
         " Detects change points in the given data in an offline manner."
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
@@ -629,8 +630,15 @@ class KS_CUM_Detector:
         change_points = np.array([i for i, drift in enumerate(is_changepoint) if drift])
         return ks_statistics , p_values, change_points
 
-    def plot_change_points(self, data, change_points, p_values):
-        " Plots data with detected change points and KS statistics."
+    def plot_change_points(self, data: np.ndarray, change_points: list, p_values: list):
+        """ 
+        Plots data with detected change points and KS statistics.
+
+        Parameters:
+        - data (numpy array): Original data points.
+        - change_points (list): List of detected change points.
+        - p_values (list): List of p-values associated with each data point.
+        """
         plt.figure(figsize=(20, 8))
         plt.subplot(2, 1, 1)
         plt.plot(data, color='blue', label='Data', linestyle="--")
