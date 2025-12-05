@@ -146,7 +146,6 @@ for data in generator.data:
     ucl, lcl, value, is_change = chart_cusum_detector.detection(data)
     print(f"Change Detected: {is_change}\n -UCL: {ucl}, \n -LCL: {lcl}, \n -CUSUM Value: {value}")
 ```
-```
 
 #### Offline Detection
 ```python 
