@@ -70,10 +70,13 @@ for data in generator.data:
 #### Offline Detection
 ```python 
 # Detect change points using CUSUM Detector
-cusum_pos_changes, cusum_neg_changes, cusum_change_points = cusum_detector.offline_detection(generator.data)
+results = cusum_detector.offline_detection(generator.data)
 
 # Plot the detected change points using CUSUM Detector
-cusum_detector.plot_change_points(generator.data, cusum_change_points, cusum_pos_changes, cusum_neg_changes)
+cusum_detector.plot_change_points(generator.data, 
+                                results["change_points"], 
+                                results["pos_changes"], 
+                                results["neg_changes"])
 ```
 
 ![Image Alt Text](img/cusum.png)
@@ -96,10 +99,12 @@ for data in generator.data:
 
 #### Offline Detection
 ```python 
-prob_probabilities, prob_change_points = prob_cusum_detector.offline_detection(generator.data)
+results = prob_cusum_detector.offline_detection(generator.data)
 
 # Plot the detected change points using Probabilistic CUSUM Detector
-prob_cusum_detector.plot_change_points(generator.data, prob_change_points, prob_probabilities)
+prob_cusum_detector.plot_change_points(generator.data, 
+                                       results["change_points"], 
+                                       results["probabilities"])
 ```
 
 ![Image Alt Text](img/probcusum.png)
@@ -125,10 +130,14 @@ for data in generator.data:
 
 #### Offline Detection
 ```python
-upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.offline_detection(generator.data)
+results = chart_cusum_detector.offline_detection(generator.data)
 
 # Plot the detected change points using Control Chart CUSUM Detector
-chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, upper_limits, lower_limits)
+chart_cusum_detector.plot_change_points(generator.data, 
+                                        results["change_points"], 
+                                        results["cusums"], 
+                                        results["upper_limits"], 
+                                        results["lower_limits"])
 ```
 
 ![Image Alt Text](img/chartcusum_dev.png)
@@ -149,10 +158,14 @@ for data in generator.data:
 
 #### Offline Detection
 ```python 
-upper_limits, lower_limits, cusums, change_points = chart_cusum_detector.offline_detection(generator.data)
+results = chart_cusum_detector.offline_detection(generator.data)
 
 # Plot the detected change points using Control Chart CUSUM Detector
-chart_cusum_detector.plot_change_points(generator.data, change_points, cusums, upper_limits, lower_limits)
+chart_cusum_detector.plot_change_points(generator.data,
+                                        results["change_points"], 
+                                        results["cusums"], 
+                                        results["upper_limits"], 
+                                        results["lower_limits"])
 ```
 
 ![Image Alt Text](img/chartcusum_sqr.png)
@@ -174,10 +187,12 @@ for data in generator.data:
 
 #### Offline Detection
 ```python 
-ks_statistics , p_values, change_points = ks_detector.offline_detection(generator.data)
+results = ks_detector.offline_detection(generator.data)
 
 # Plot the detected change points using KS Detector
-ks_detector.plot_change_points(generator.data, change_points, p_values)
+ks_detector.plot_change_points(generator.data, 
+                                results['change_points'], 
+                                results['p_values'])
 ```
 
 ![Image Alt Text](img/kscum.png)

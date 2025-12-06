@@ -124,8 +124,11 @@ class CUSUM_Detector:
         neg_changes = np.vstack([row[1] for row in results])
         is_drift = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
-
-        return pos_changes, neg_changes, change_points
+        results = {"pos_changes": pos_changes,
+                   "neg_changes": neg_changes,
+                   "is_drift": is_drift,
+                   "change_points": change_points}
+        return results
 
     def plot_change_points(self, data: np.ndarray, change_points: list, pos_changes: list, neg_changes: list):
         """
@@ -304,7 +307,10 @@ class ProbCUSUM_Detector:
         is_drift = np.array([result[1] for result in results])
         change_points = np.where(is_drift)[0]
 
-        return probabilities, change_points
+        results = {"probabilities": probabilities,
+                     "is_drift": is_drift,
+                     "change_points": change_points}
+        return results
 
     def plot_change_points(self, data: np.ndarray, change_points: list, probabilities: list):
         """
@@ -504,7 +510,12 @@ class ChartCUSUM_Detector:
         cusums = np.vstack([row[2] for row in results])
         is_drift = [row[3] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
-        return upper_limits , lower_limits , cusums, change_points
+        results = {"upper_limits": upper_limits,
+                   "lower_limits": lower_limits,
+                   "cusums": cusums,
+                   "is_drift": is_drift,
+                   "change_points": change_points}
+        return results
 
     def plot_change_points(self, data:np.ndarray, change_points:list, cusums:list, upper_limits:list, lower_limits:list):
         """
@@ -628,7 +639,11 @@ class KS_CUM_Detector:
         p_values = np.vstack([row[1] for row in results])
         is_changepoint = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_changepoint) if drift])
-        return ks_statistics , p_values, change_points
+        results = {"ks_statistics": ks_statistics,
+                   "p_values": p_values,
+                   "is_drift": is_changepoint,
+                   "change_points": change_points}
+        return results
 
     def plot_change_points(self, data: np.ndarray, change_points: list, p_values: list):
         """ 
