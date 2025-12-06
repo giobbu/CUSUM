@@ -119,13 +119,13 @@ class CUSUM_Detector:
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
         
-        outs = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
-        pos_changes = np.vstack([row[0] for row in outs])
-        neg_changes = np.vstack([row[1] for row in outs])
-        is_drift = [row[2] for row in outs]
+        results = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        pos_changes = np.vstack([row[0] for row in results])
+        neg_changes = np.vstack([row[1] for row in results])
+        is_drift = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
 
-        return pos_changes , neg_changes , change_points
+        return pos_changes, neg_changes, change_points
 
     def plot_change_points(self, data: np.ndarray, change_points: list, pos_changes: list, neg_changes: list):
         """
@@ -498,11 +498,11 @@ class ChartCUSUM_Detector:
             raise ValueError("data must be a numpy array.")
         if len(data) < self.warmup_period:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
-        outs = [self.detection(point) if not math.isnan(point) else (0, 0, 0, False) for point in data]
-        upper_limits = np.vstack([row[0] for row in outs])
-        lower_limits = np.vstack([row[1] for row in outs])
-        cusums = np.vstack([row[2] for row in outs])
-        is_drift = [row[3] for row in outs]
+        results = [self.detection(point) if not math.isnan(point) else (0, 0, 0, False) for point in data]
+        upper_limits = np.vstack([row[0] for row in results])
+        lower_limits = np.vstack([row[1] for row in results])
+        cusums = np.vstack([row[2] for row in results])
+        is_drift = [row[3] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
         return upper_limits , lower_limits , cusums, change_points
 
@@ -623,10 +623,10 @@ class KS_CUM_Detector:
         " Detects change points in the given data in an offline manner."
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
-        outs = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
-        ks_statistics = np.vstack([row[0] for row in outs])
-        p_values = np.vstack([row[1] for row in outs])
-        is_changepoint = [row[2] for row in outs]
+        results = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        ks_statistics = np.vstack([row[0] for row in results])
+        p_values = np.vstack([row[1] for row in results])
+        is_changepoint = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_changepoint) if drift])
         return ks_statistics , p_values, change_points
 
