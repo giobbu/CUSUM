@@ -56,6 +56,13 @@ class ChangePointGenerator:
             self.data.extend(segment_data)
         self.data = np.array(self.data)
 
+    def get_data(self):
+        """
+        Returns the generated time series data.
+        """
+        return self.data
+
+
     def add_sudden_shift(self, mean_before, mean_after, std_dev_before, std_dev_after, change_point_index):
         """
         Add a sudden shift change point to the data.
