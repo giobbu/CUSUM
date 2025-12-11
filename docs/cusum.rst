@@ -1,7 +1,7 @@
-Cusum Classes
+Cusum Algorithms
 =============
 
-This file documents all classes in `source.detector.cusum`.
+This module contains the core CUSUM change point detection classes.
 
 CUSUM Detector Class
 -------------------
