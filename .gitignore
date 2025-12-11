@@ -1,5 +1,10 @@
 .env
 
+docs/_build/html
+docs/_build/doctrees
+
+.DS_Store
+
 # Ignore IPython Notebook checkpoints
 **/ipynb_checkpoints/
 
