@@ -33,6 +33,9 @@ class CUSUM_Detector:
         self.threshold = threshold
         self._reset()
 
+    def __str__(self):
+        return f"CUSUM_Detector(warmup_period={self.warmup_period}, delta={self.delta}, threshold={self.threshold})"
+
     def detection(self, observation:float):
         """
         Predicts the next data point and detects change points.
@@ -198,6 +201,9 @@ class ProbCUSUM_Detector:
         self.threshold_probability = threshold_probability
         self.running_sum = 0  # Initialize running sum of standardized observations
         self._reset()
+
+    def __str__(self):
+        return f"ProbCUSUM_Detector(warmup_period={self.warmup_period}, threshold_probability={self.threshold_probability})"
         
     def detection(self, observation: float):
         """
@@ -392,6 +398,9 @@ class ChartCUSUM_Detector:
         self.target_mean = target_mean
         self._reset()
 
+    def __str__(self):
+        return f"ChartCUSUM_Detector(warmup_period={self.warmup_period}, level={self.level}, deviation_type={self.deviation_type}, target_mean={self.target_mean})"
+
     def detection(self, observation: float):
         """
         Predicts the next data point and detects change points.
@@ -582,6 +591,9 @@ class KS_CUM_Detector:
         self.warmup_period = window_pre + window_post
         self.alpha = alpha
         self._reset()
+
+    def __str__(self):
+        return f"KS_CUM_Detector(window_pre={self.window_pre}, window_post={self.window_post}, alpha={self.alpha})"
 
     def detection(self, observation: float):
         " Predicts the next data point and detects change points."
