@@ -12,6 +12,8 @@ This site contains:
    :maxdepth: 2
    :caption: Contents:
 
+   generator
    detector
+
 
 
