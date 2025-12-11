@@ -4,16 +4,10 @@ version: 2
 sphinx:
   configuration: docs/conf.py  # Path to your Sphinx conf.py
 
-# Build settings
 build:
-  image: latest  # Use the latest RTD build image
-  tools:
-    python: "3.11"  # Specify Python version
-  jobs:
-    - pip install -r docs/requirements.txt  # Install dependencies if needed
+  image: latest  # Valid: specifies the RTD build image
 
 python:
   version: 3.11
   install:
-    - method: pip
-      path: .
+    - requirements: docs/requirements.txt
