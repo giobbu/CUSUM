@@ -17,9 +17,18 @@ This site contains:
 API Reference
 =============
 
-.. automodule:: cusum
+.. automodule:: source
    :members:
    :undoc-members:
    :show-inheritance:
+
+cusum.cusum
+-----------
+
+.. autoclass:: source.detector.cusum.CUSUM_Detector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :special-members: __init__
 
 
