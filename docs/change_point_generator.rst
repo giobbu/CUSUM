@@ -6,7 +6,7 @@ This module contains the class for generating synthetic data with different type
 ChangePointGenerator
 -------------------
 
-.. autoclass:: source.generator.change_point_generator.ChangePointGenerator
+.. autoclass:: generator.change_point_generator.ChangePointGenerator
    :members:
    :undoc-members:
    :show-inheritance:

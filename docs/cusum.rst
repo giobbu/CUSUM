@@ -6,9 +6,9 @@ This module contains the core CUSUM change point detection classes.
 CUSUM Detector Class
 -------------------
 
-.. autoclass:: source.detector.cusum.CUSUM_Detector
-   :members:
-   :undoc-members:
+.. autoclass:: detector.cusum.CUSUM_Detector
+   :members: 
+   :undoc-members:  
    :show-inheritance:
    :special-members: __init__
 
@@ -32,7 +32,7 @@ Example Usage
 Probabilistic CUSUM Detector Class
 ----------------------------------
 
-.. autoclass:: source.detector.cusum.ProbCUSUM_Detector
+.. autoclass:: detector.cusum.ProbCUSUM_Detector
    :members:
    :undoc-members:
    :show-inheritance:
@@ -58,7 +58,7 @@ Example Usage
 Chart CUSUM Detector
 -------------------
 
-.. autoclass:: source.detector.cusum.ChartCUSUM_Detector
+.. autoclass:: detector.cusum.ChartCUSUM_Detector
    :members:
    :undoc-members:
    :show-inheritance:
@@ -85,7 +85,7 @@ Example Usage
 KS-CUM Detector
 ---------------
 
-.. autoclass:: source.detector.cusum.KS_CUM_Detector
+.. autoclass:: detector.cusum.KS_CUM_Detector
    :members:
    :undoc-members:
    :show-inheritance:
