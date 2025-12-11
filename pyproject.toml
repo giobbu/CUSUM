@@ -14,4 +14,5 @@ dependencies = [
     "python-dotenv>=1.2.1",
     "scipy>=1.16.3",
     "seaborn>=0.13.2",
+    "sphinx>=9.0.4",
 ]
