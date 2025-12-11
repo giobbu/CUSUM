@@ -3,10 +3,10 @@ Change Point Generator
 
 This module contains the class for generating synthetic data with different types of change points.
 
-ChangePointGenerator
--------------------
+Change Point Generator Class
+----------------------------
 
-.. autoclass:: generator.change_point_generator.ChangePointGenerator
+.. autoclass:: source.generator.change_point_generator.ChangePointGenerator
    :members:
    :undoc-members:
    :show-inheritance:

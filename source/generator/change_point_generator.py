@@ -3,15 +3,15 @@ import matplotlib.pyplot as plt
 
 class ChangePointGenerator:
     """
-        A class to generate time series data with different types of change points.
+    A class to generate time series data with different types of change points.
 
-        Example:
-        ```
-        generator = ChangePointGenerator(num_segments=2, segment_length=1000, change_point_type='gradual_drift')
-        generator.generate_data()
-        generator.add_gradual_drift(10, 50, 5, 800)
-        generator.plot_data()
-        ```
+    Example:
+    ```
+    generator = ChangePointGenerator(num_segments=2, segment_length=1000, change_point_type='gradual_drift')
+    generator.generate_data()
+    generator.add_gradual_drift(10, 50, 5, 800)
+    generator.plot_data()
+    ```
     """
 
     def __init__(self, num_segments=3, segment_length=500, change_point_type='sudden_shift', seed=42):
@@ -136,22 +136,14 @@ class ChangePointGenerator:
         return data_with_nans
 
     def generate_no_random_nans(self, percentage, min_block_size, max_block_size):
-        
         """
-        Replaces a percentage of values in a NumPy array with NaNs
-        arranged in blocks of consecutive NaNs.
-
+        Generate data with NaN values in contiguous blocks.
         Parameters:
-        - array (numpy.ndarray): The input NumPy array.
-        - percentage (float): The percentage of values to replace with NaNs.
-                                Should be between 0 and 1.
-        - min_block_size (int): The minimum size of each block of consecutive NaNs.
-        - max_block_size (int): The maximum size of each block of consecutive NaNs.
-
+        - percentage: float, percentage of NaN values desired in the data
+        - min_block_size: int, minimum size of each NaN block
+        - max_block_size: int, maximum size of each NaN block
         Returns:
-        - data_with_nans (numpy.ndarray): The array with NaNs replacing
-                                            the specified percentage of values
-                                            in blocks of consecutive NaNs.
+        - data_with_nans: numpy array, data with NaN values
         """
         if percentage < 0 or percentage > 1:
             raise ValueError("Percentage should be between 0 and 1")
