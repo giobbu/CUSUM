@@ -7,7 +7,6 @@ class ChangePointGenerator:
 
         Example:
         ```
-        # Example usage
         generator = ChangePointGenerator(num_segments=2, segment_length=1000, change_point_type='gradual_drift')
         generator.generate_data()
         generator.add_gradual_drift(10, 50, 5, 800)

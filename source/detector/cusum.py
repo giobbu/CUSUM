@@ -5,24 +5,38 @@ from scipy.stats import norm
 
 class CUSUM_Detector:
     """
-    CUSUM Change Point Detector Class.
-    
-    Example:
-    ```
-    detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)
-    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
-    pos_changes, neg_changes, change_points = detector.offline_detection(data)
-    detector.plot_change_points(data, change_points, pos_changes, neg_changes)
-    ```
+    CUSUM Change Point Detector.
+
+    This class implements a sequential CUSUM algorithm for detecting 
+    positive and negative change points in a data series.
+
+    Parameters
+    ----------
+    warmup_period : int, default=10
+        Number of initial observations before starting to detect change points.
+        Must be >= 10.
+    delta : float, default=10
+        Sensitivity parameter for detecting changes.
+    threshold : float, default=20
+        Threshold for detecting a change point.
     """
     def __init__(self, warmup_period:int=10, delta:int=10, threshold:int=20):
         """
-        Initializes the Change Point Detector with the specified parameters.
+        Initialize the CUSUM detector with the given parameters.
 
-        Parameters:
-        - warmup_period (int): The number of initial observations before starting to detect change points. Default is 10.
-        - delta (float): Sensitivity parameter for detecting changes. Default is 10.
-        - threshold (float): Threshold for detecting a change point. Default is 20.
+        Parameters
+        ----------
+        warmup_period : int
+            Number of initial observations before detecting change points.
+        delta : float
+            Sensitivity parameter for detecting changes.
+        threshold : float
+            Threshold for detecting a change point.
+
+        Raises
+        ------
+        ValueError
+            If warmup_period < 10.
         """
 
         if not isinstance(warmup_period, int) or warmup_period < 10:
@@ -38,15 +52,21 @@ class CUSUM_Detector:
 
     def detection(self, observation:float):
         """
-        Predicts the next data point and detects change points.
+        Process a single observation and detect change points.
 
-        Parameters:
-        - observation (float): New data point.
+        Parameters
+        ----------
+        observation : float
+            New data point.
 
-        Returns:
-        - pos_change (numpy array): Cumulative sum for positive changes.
-        - neg_change (numpy array): Cumulative sum for negative changes.
-        - is_changepoint (bool): Indicates if a change point is detected.
+        Returns
+        -------
+        S_pos : numpy.ndarray
+            Positive cumulative sum values.
+        S_neg : numpy.ndarray
+            Negative cumulative sum values.
+        is_changepoint : bool
+            True if a change point is detected, False otherwise.
         """
         self._update_data(observation)
         if self.current_t < self.warmup_period:
