@@ -10,10 +10,26 @@ This site contains:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Documentation
+
+   about
+   getting_started
+   usage
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Technical Documentation
 
    generator
    detector
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Project Information
+
+   contribution
+   faq
+   release_notes
 
 
 

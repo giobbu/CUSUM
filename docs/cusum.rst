@@ -1,10 +1,10 @@
 Cusum Algorithms
-=============
+================
 
 This module contains the core CUSUM change point detection classes.
 
 CUSUM Detector Class
--------------------
+--------------------
 
 .. autoclass:: source.detector.cusum.CUSUM_Detector
    :members: 
@@ -56,7 +56,7 @@ Example Usage
 
 
 Chart CUSUM Detector
--------------------
+--------------------
 
 .. autoclass:: source.detector.cusum.ChartCUSUM_Detector
    :members:
