@@ -11,8 +11,7 @@ This site contains:
    :maxdepth: 2
    :caption: Contents:
 
-   usage
-   api
+   modules
 
 
 API Reference
