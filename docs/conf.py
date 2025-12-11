@@ -9,10 +9,13 @@ author = 'giovanni buroni'
 release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
+
 extensions = [
-    'sphinx.ext.autodoc',   # Generate documentation from docstrings
-    'sphinx.ext.napoleon',  # Supports Google/NumPy style docstrings
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
 ]
+autosummary_generate = True  # Automatically generate summary tables
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
