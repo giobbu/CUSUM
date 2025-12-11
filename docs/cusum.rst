@@ -1,34 +1,10 @@
-CUSUM Documentation
-===================
-
-Welcome to the documentation for the CUSUM project.
-
-This site contains:
-
-- A general overview
-- Python API documentation generated automatically from your modules
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   modules
-
-API Reference
+CUSUM Classes
 =============
 
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
+This file documents all classes in `source.detector.cusum`.
 
-   source
-   source.detector
-   source.detector.cusum
-   source.detector.mcusum
-   source.detector.plot
-
-source.detector.cusum
----------------------
+CUSUM Detector Class
+-------------------
 
 .. autoclass:: source.detector.cusum.CUSUM_Detector
    :members:
@@ -44,23 +20,19 @@ Example Usage
     import numpy as np
     from source.detector.cusum import CUSUM_Detector
 
-    # Initialize detector
     detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)
-
-    # Generate synthetic data
     data = np.concatenate([np.random.normal(0, 1, 100),
                            np.random.normal(5, 1, 100)])
-
-    # Run offline detection
     results = detector.offline_detection(data)
-
-    # Plot change points
     detector.plot_change_points(data,
                                 results["change_points"],
                                 results["pos_changes"],
                                 results["neg_changes"])
 
-.. autoclass:: source.detector.mcusum.ProbCUSUM_Detector
+Probabilistic CUSUM Detector Class
+----------------------------------
+
+.. autoclass:: source.detector.cusum.ProbCUSUM_Detector
    :members:
    :undoc-members:
    :show-inheritance:
@@ -72,7 +44,7 @@ Example Usage
 .. code-block:: python
 
     import numpy as np
-    from source.detector.mcusum import ProbCUSUM_Detector
+    from source.detector.cusum import ProbCUSUM_Detector
 
     detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)
     data = np.concatenate([np.random.normal(0, 1, 100),
@@ -81,4 +53,3 @@ Example Usage
     detector.plot_change_points(data,
                                 results["change_points"],
                                 results["probabilities"])
-
