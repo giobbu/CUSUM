@@ -7,11 +7,25 @@ Vanilla CUSUM Detector Class
    :show-inheritance:
    :special-members: __init__
 
-Example 
--------
+Examples
+--------
+
+**Online Detection**
+
+.. code-block:: python
+
+    import numpy as np
+    from source.detector.cusum import CUSUM_Detector
+
+    detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)
+    data_stream = np.concatenate([np.random.normal(0, 1, 100),
+                        np.random.normal(5, 1, 100)])
+    for data in data_stream:
+        pos, neg, is_change = cusum_detector.detection(data)
+        print(f"Change Detected: {is_change} \n -Positives: {pos[0]}, \n -Negatives: {neg[0]}")
+
 
 **Offline Detection**
-
 
 .. code-block:: python
 

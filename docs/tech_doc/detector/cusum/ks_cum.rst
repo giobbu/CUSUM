@@ -9,8 +9,22 @@ KS-CUM Detector
    :show-inheritance:
    :special-members: __init__
 
-Example 
--------
+Examples 
+--------
+
+**Online Detection**
+
+.. code-block:: python
+
+    import numpy as np
+    from source.detector.cusum import KS_CUM_Detector
+
+    detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
+    data_stream = np.concatenate([np.random.normal(0, 1, 100),
+                        np.random.normal(5, 1, 100)])
+    for data in data_stream:
+        p_value, is_change = detector.detection(data)
+        print(f"Change Detected: {is_change} \n -P-Value: {p_value[0]}")
 
 **Offline Detection**
 

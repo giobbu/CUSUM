@@ -7,8 +7,22 @@ Probabilistic CUSUM Detector Class
    :show-inheritance:
    :special-members: __init__
 
-Example 
--------
+Examples
+--------
+
+**Online Detection**
+
+.. code-block:: python
+
+    import numpy as np
+    from source.detector.cusum import ProbCUSUM_Detector
+
+    detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)
+    data_stream = np.concatenate([np.random.normal(0, 1, 100),
+                        np.random.normal(5, 1, 100)])
+    for data in data_stream:
+        prob, is_change = detector.detection(data)
+        print(f"Change Detected: {is_change} \n -Probability: {prob[0]}")
 
 **Offline Detection**
 
