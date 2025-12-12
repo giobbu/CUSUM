@@ -1,4 +1,4 @@
-Detector Module
+CUSUM Detectors
 ===============
 
 This module contains the core change point detection classes.

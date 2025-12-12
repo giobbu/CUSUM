@@ -1,4 +1,4 @@
-Data Generator Module
+Data Generators
 ===============
 
 This module contains the core change point detection classes.

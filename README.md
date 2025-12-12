@@ -198,4 +198,9 @@ ks_detector.plot_change_points(generator.data,
 ![Image Alt Text](img/kscum.png)
 
 
+## Documentation [![Documentation Status](https://readthedocs.org/projects/CUSUM/badge/?version=latest)](https://CUSUM.readthedocs.io/en/latest/)
+
+#### **Read the Docs:** https://CUSUM.readthedocs.io/en/latest/
+
+
  

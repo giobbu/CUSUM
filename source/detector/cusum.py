@@ -2,6 +2,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+from scipy import stats
 
 class CUSUM_Detector:
     """
@@ -12,12 +13,11 @@ class CUSUM_Detector:
 
     Parameters
     ----------
-    warmup_period : int, default=10
-        Number of initial observations before starting to detect change points.
-        Must be >= 10.
-    delta : float, default=10
+    warmup_period : int
+        Number of initial observations before detecting change points.
+    delta : float
         Sensitivity parameter for detecting changes.
-    threshold : float, default=20
+    threshold : float
         Threshold for detecting a change point.
     """
     def __init__(self, warmup_period:int=10, delta:int=10, threshold:int=20):
@@ -84,19 +84,30 @@ class CUSUM_Detector:
             return self.S_pos, self.S_neg, False
 
     def _reset(self):
-        """Resets the internal state of the detector."""
+        """
+        Resets the internal state of the detector.
+        """
         self.current_t = 0
         self.current_mean = 0
         self.current_std = 0
         self.current_obs = []
 
     def _update_data(self, observation: float):
-        """Updates the observed data with new data points."""
+        """
+        Updates the observed data with new data points.
+
+        Parameters
+        ----------
+        observation : float
+            The new data point to update.
+        """
         self.current_t += 1
         self.current_obs.append(observation)
 
     def _init_params(self):
-        """Initializes the parameters required for CUSUM computation."""
+        """
+        Initializes the parameters required for CUSUM computation.
+        """
         self.current_mean = np.nanmean(np.array(self.current_obs))
         self.current_std = np.nanstd(np.array(self.current_obs))
         self.z = 0
@@ -106,7 +117,9 @@ class CUSUM_Detector:
         #     raise ValueError("Mean or standard deviation cannot be NaN")
 
     def _compute_cumusum(self):
-        """Computes the cumulative sums for positive and negative changes."""
+        """
+        Computes the cumulative sums for positive and negative changes.
+        """
         self.z = (self.current_obs[-1] - self.current_mean) / self.current_std  
         self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
         self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
@@ -115,8 +128,10 @@ class CUSUM_Detector:
         """
         Detects change points based on the computed cumulative sums.
 
-        Returns:
-        - is_changepoint (bool): Indicates if a change point is detected.
+        Returns
+        -------
+        bool
+            True if a change point is detected, False otherwise.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
             return True
@@ -127,13 +142,19 @@ class CUSUM_Detector:
         """
         Detects change points in the given data in an offline manner.
 
-        Parameters:
-        - data (numpy array): Data points to be analyzed.
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Data points to be analyzed.
 
-        Returns:
-        - pos_changes (numpy array): Positive cumulative sum values.
-        - neg_changes (numpy array): Negative cumulative sum values.
-        - change_points (numpy array): Detected change points indices.
+        Returns
+        -------
+        results : dict
+            A dictionary containing:
+            - 'pos_changes': numpy.ndarray of positive cumulative sums.
+            - 'neg_changes': numpy.ndarray of negative cumulative sums.
+            - 'is_drift': list of booleans indicating detected change points.
+            - 'change_points': numpy.ndarray of detected change point indices.
         """
 
         if not isinstance(data, np.ndarray):
@@ -157,11 +178,16 @@ class CUSUM_Detector:
         """
         Plots data with detected change points and cumulative sums.
 
-        Parameters:
-        - data (numpy array): Original data points.
-        - change_points (list): List of detected change points.
-        - pos_changes (list): List of positive cumulative sum values.
-        - neg_changes (list): List of negative cumulative sum values.
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Original data points.
+        change_points : list
+            List of detected change points.
+        pos_changes : list
+            List of positive cumulative sums.
+        neg_changes : list
+            List of negative cumulative sums.
         """
         plt.figure(figsize=(20, 8))
 
@@ -192,15 +218,14 @@ class CUSUM_Detector:
 
 class ProbCUSUM_Detector:
     """
-    A class to detect change points in sequential data using the Probabilistic Cumulative Sum (CUSUM) algorithm.
+    Probabilistic CUSUM Change Point Detector. A class to detect change points in sequential data using a probabilistic approach based on the CUSUM algorithm.
 
-    Example:
-    ```
-    detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)
-    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
-    probabilities, change_points = detector.offline_detection(data)
-    detector.plot_change_points(data, change_points, probabilities)
-    ```
+    Parameters
+    ----------
+    warmup_period : int
+        The warmup period for the detector. Must be equal or greater than 10.
+    threshold_probability : float
+        The threshold probability for detecting a change point. Must be between 0 and 1.
     """
 
     def __init__(self, warmup_period:int=10, threshold_probability:float=0.001):
@@ -208,8 +233,16 @@ class ProbCUSUM_Detector:
         Initializes the Probabilistic CUSUM Detector with the specified parameters.
 
         Parameters:
-        - warmup_period (int): The number of initial observations before starting to detect change points. Default is 10.
-        - threshold_probability (float): The threshold probability below which a change point is detected. Default is 0.001.
+        ----------
+        warmup_period : int
+            The warmup period for the detector. Must be equal or greater than 10.
+        threshold_probability : float
+            The threshold probability for detecting a change point. Must be between 0 and 1.
+
+        Raises
+        ------
+        ValueError
+            If warmup_period < 10 or threshold_probability is not between 0 and 1.
         """
 
         if not isinstance(warmup_period, int) or warmup_period < 10:
@@ -229,12 +262,17 @@ class ProbCUSUM_Detector:
         """
         Predicts the probability of a change point in the next observation.
 
-        Parameters:
-        - observation (float): The next observation in the sequence.
+        Parameters
+        ----------
+        observation : float
+            The next data point to predict.
 
-        Returns:
-        - probability (float): The probability of a change point in the next observation.
-        - is_changepoint (bool): True if a change point is detected, False otherwise.
+        Returns
+        -------
+        probability : float
+            The probability of a change point.
+        is_changepoint : bool
+            Indicates if a change point is detected.
         """
         self._update_data(observation)
         if self.current_t == self.warmup_period:
@@ -261,8 +299,10 @@ class ProbCUSUM_Detector:
         """
         Updates the internal state with a new observation.
 
-        Parameters:
-        - observation (float): The new observation to be added.
+        Parameters
+        ----------
+        observation : float
+            The new data point to update.
         """
         self.current_t += 1
         self.observations.append(observation)
@@ -282,9 +322,12 @@ class ProbCUSUM_Detector:
         """
         Detects a change point using the CUSUM algorithm.
 
-        Returns:
-        - probability (float): The probability of a change point.
-        - is_changepoint (bool): True if a change point is detected, False otherwise.
+        Returns
+        -------
+        probability : float
+            The probability of a change point.
+        is_changepoint : bool
+            Indicates if a change point is detected.
         """
 
         self.running_sum += (self.observations[-1] - self.mean_observation)  # Update running sum
@@ -296,13 +339,15 @@ class ProbCUSUM_Detector:
         """
         Calculates the probability (p-value) of a change point.
 
-        Parameters:
-        - standardized_sum (float): The standardized sum of observations.
+        Parameters
+        ----------
+        standardized_sum : float
+            The standardized cumulative sum.
 
-        Returns:
-        - probability (float): The probability of a change point.
-        * low probability indicates a change point (reject the null hypothesis).
-        * high probability indicates no change point (not able to reject the null hypothesis).
+        Returns
+        -------
+        probability : float
+            The probability of a change point.
         """
         p_obs = norm.cdf(np.abs(standardized_sum))
         probability = 2 * (1 - p_obs)
@@ -312,15 +357,18 @@ class ProbCUSUM_Detector:
         """
         Detects change points in the given data in an offline manner.
 
-        Parameters:
-        - data: numpy array
+        Parameters
+        ----------
+        data : numpy.ndarray
             Data points to be analyzed.
 
-        Returns:
-        - probabilities: numpy array
-            Probability values for each data point.
-        - change_points: numpy array
-            Detected change points indices.
+        Returns
+        -------
+        results : dict
+            A dictionary containing:
+            - 'probabilities': numpy.ndarray of probabilities for each observation.
+            - 'is_drift': list of booleans indicating detected change points.
+            - 'change_points': numpy.ndarray of detected change point indices.
         """
 
         if not isinstance(data, np.ndarray):
@@ -342,12 +390,13 @@ class ProbCUSUM_Detector:
         """
         Plots data with detected change points and probabilities.
 
-        Parameters:
-        - data: numpy array
+        Parameters
+        ----------
+        data : numpy.ndarray
             Original data points.
-        - change_points: list
+        change_points : list
             List of detected change points.
-        - probabilities: list
+        probabilities : list
             List of probabilities associated with each data point.
         """
         plt.figure(figsize=(20, 8))
@@ -381,26 +430,34 @@ class ProbCUSUM_Detector:
 
 
 class ChartCUSUM_Detector:
-
     """
-    Change Point Detector using CUSUM Control Chart.
-
-    Example:
-    ```
-    detector = ChartCUSUM_Detector(warmup_period=20, level=3, deviation_type='sqr-dev')
-    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
-    upper_limits, lower_limits, cusums, change_points = detector.offline_detection(data)
-    detector.plot_change_points(data, change_points, cusums, upper_limits, lower_limits)
-    ```
+    Change Point Detector using CUSUM Control Chart. A class to detect change points in sequential data using the CUSUM Control Chart algorithm.
+    
+    Parameters
+    ----------
+    warmup_period : int
+        The warmup period for the detector. Must be equal or greater than 10.
+    level : int
+        The control limit level. Must be between 1 and 3.
+    deviation_type : str
+        The type of deviation to use. Must be 'sqr-dev' or 'dev'.
+    target_mean : float, optional
+        The target mean for the CUSUM chart. If None, the mean of the warmup period is used.
     """
     def __init__(self, warmup_period:int=10, level:int=3, deviation_type:str='sqr-dev', target_mean:float=None):
         """
         Initializes the Change Point Detector with the specified parameters.
         
-        Parameters:
-        - warmup_period (int): The warmup period for the detector. Must be equal or greater than 10.
-        - level (int): The level parameter for the CUSUM algorithm.
-        - type (str): The type of deviation used in CUSUM algorithm. 'sqr-dev' for square deviation, else deviation.
+        Parameters
+        ----------
+        warmup_period : int
+            The warmup period for the detector. Must be equal or greater than 10.
+        level : int
+            The control limit level. Must be between 1 and 3.
+        deviation_type : str
+            The type of deviation to use. Must be 'sqr-dev' or 'dev'.
+        target_mean : float, optional
+            The target mean for the CUSUM chart. If None, the mean of the warmup period is used.
         """
 
         if not isinstance(warmup_period, int) or warmup_period < 10:
@@ -425,14 +482,21 @@ class ChartCUSUM_Detector:
         """
         Predicts the next data point and detects change points.
         
-        Parameters:
-        - observation (float): The next data point to predict.
-
-        Returns:
-        - upper (float): The upper limit of the CUSUM.
-        - lower (float): The lower limit of the CUSUM.
-        - cusum (float): The current value of the CUSUM.
-        - is_changepoint (bool): Indicates if a change point is detected.
+        Parameters
+        ----------
+        observation : float
+            The next data point to predict.
+        
+        Returns
+        -------
+        upper : float
+            The upper control limit.
+        lower : float
+            The lower control limit.
+        cusum : float
+            The cumulative sum of deviations.
+        is_changepoint : bool
+            Indicates if a change point is detected.
         """
         self._update_data(observation)
         if self.current_t == self.warmup_period:
@@ -460,8 +524,10 @@ class ChartCUSUM_Detector:
         """
         Updates the observed data with new data points.
         
-        Parameters:
-        - observation (float): The new data point to update.
+        Parameters
+        ----------
+        observation : float
+            The new data point to update.
         """
         self.current_t += 1
         self.current_obs.append(observation)
@@ -508,8 +574,10 @@ class ChartCUSUM_Detector:
         """ 
         Detects change points based on the computed cumulative sums.
         
-        Returns:
-        - bool: Indicates if a change point is detected.
+        Returns
+        -------
+        bool
+            True if a change point is detected, False otherwise.
         """
         if self.cusum > self.upper or self.cusum < self.lower:
             return True
@@ -520,14 +588,20 @@ class ChartCUSUM_Detector:
         """
         Detects change points in the given data in an offline manner.
         
-        Parameters:
-        - data (np.ndarray): The data to detect change points in.
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Data points to be analyzed.
 
-        Returns:
-        - upper_limits (np.ndarray): Upper limits of the CUSUM for each observation.
-        - lower_limits (np.ndarray): Lower limits of the CUSUM for each observation.
-        - cusums (np.ndarray): Cumulative sums of deviations.
-        - change_points (np.ndarray): Indices of detected change points.
+        Returns
+        -------
+        results : dict
+            A dictionary containing:
+            - 'upper_limits': numpy.ndarray of upper limits for each observation.
+            - 'lower_limits': numpy.ndarray of lower limits for each observation.
+            - 'cusums': numpy.ndarray of cumulative sums for each observation.
+            - 'is_drift': list of booleans indicating detected change points.
+            - 'change_points': numpy.ndarray of detected change point indices.
         """
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
@@ -550,12 +624,18 @@ class ChartCUSUM_Detector:
         """
         Plots data with detected change points and CUSUM statistics.
 
-        Parameters:
-        - data (np.ndarray): Original data points.
-        - change_points (list): List of detected change points.
-        - cusums (list): List of cumulative sums.
-        - upper_limits (list): List of upper limits.
-        - lower_limits (list): List of lower limits.
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Original data points.
+        change_points : list
+            List of detected change points.
+        cusums : list
+            List of cumulative sums for each data point.
+        upper_limits : list
+            List of upper control limits for each data point.
+        lower_limits : list
+            List of lower control limits for each data point.
         """
         plt.figure(figsize=(20, 8))
         plt.subplot(2, 1, 1)
@@ -584,24 +664,35 @@ class KS_CUM_Detector:
     """ 
     A class to detect change points in sequential data using the Kolmogorov-Smirnov Test, loosley named Kolmogorov-Smirnov 
     Cumulative Sum (KS-CUM) algorithm.
-    Example:
-    ```
-    detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
-    data = np.concatenate([np.random.normal(0, 1, 100), np.random.normal(5, 1, 100)])
-    ks_statistics, p_values, change_points = detector.offline_detection(data)
-    detector.plot_change_points(data, change_points, p_values)
-    ```
-    Args:
-    - window_pre (int): The size of the pre-change window.
-    - window_post (int): The size of the post-change window.
-    - alpha (float): The significance level for the KS test.
-    Returns:
-    - ks_statistics (np.ndarray): The KS statistics for each observation.
-    - p_values (np.ndarray): The p-values for each observation.
-    - change_points (np.ndarray): The indices of detected change points.
+
+    Parameters
+    ----------
+    window_pre : int
+        The size of the pre-change window. Must be greater than 30 and greater than or equal to window_post.
+    window_post : int
+        The size of the post-change window. Must be greater than 30.
+    alpha : float
+        The significance level for the KS test. Must be between 0 and 0.1
     """
 
     def __init__(self, window_pre:int=30, window_post:int=30, alpha:float=0.05):
+        """
+        Initializes the KS-CUM Detector with the specified parameters.
+
+        Parameters
+        ----------
+        window_pre : int
+            The size of the pre-change window. Must be greater than 30 and greater than or equal to window_post.
+        window_post : int
+            The size of the post-change window. Must be greater than 30.
+        alpha : float
+            The significance level for the KS test. Must be between 0 and 0.1.
+        
+        Raises
+        ------
+        ValueError
+            If window_pre < 30, window_post < 30, window_pre < window_post, or alpha is not between 0 and 0.1.
+        """
         assert window_pre >= 30, "window_pre must be greater than 30."
         assert window_post >= 30, "window_post must be greater than 30."
         assert window_pre >= window_post, "window_pre must be greater than or equal to window_post."
@@ -616,7 +707,23 @@ class KS_CUM_Detector:
         return f"KS_CUM_Detector(window_pre={self.window_pre}, window_post={self.window_post}, alpha={self.alpha})"
 
     def detection(self, observation: float):
-        " Predicts the next data point and detects change points."
+        """
+        Predicts the next data point and detects change points.
+
+        Parameters
+        ----------
+        observation : float
+            The next data point to predict.
+        
+        Returns
+        -------
+        ks_statistic : numpy.ndarray
+            The KS statistic.
+        p_value : numpy.ndarray
+            The p-value of the KS test.
+        is_changepoint : bool
+            Indicates if a change point is detected.
+        """
         self._update_data(observation)
         is_changepoint = False
         if self.current_t < self.warmup_period:
@@ -633,17 +740,27 @@ class KS_CUM_Detector:
             return self.ks_statistic, self.p_value, is_changepoint
         
     def _init_params(self):
-        " Initializes the parameters required for KS-CUM computation."
+        """
+        Initializes the parameters required for KS-CUM computation.
+        """
         self.window_pre_data = self.current_obs[-self.warmup_period: -self.warmup_period + self.window_pre]
         self.window_post_data = self.current_obs[-self.window_post:]
 
     def _reset(self):
-        " Resets the internal state of the detector."
+        """
+        Resets the internal state of the detector.
+        """
         self.current_t = 0
         self.current_obs = []
 
     def _update_data(self, observation: float):
-        " Updates the observed data with new data points."
+        """
+        Updates the observed data with new data points.
+        Parameters
+        ----------
+        observation : float
+            The new data point to update.
+        """
         # # skip if observation is NaN
         # if math.isnan(observation):
         #     return
@@ -651,19 +768,43 @@ class KS_CUM_Detector:
         self.current_obs.append(observation)
 
     def _compute_KS_statistic(self):
-        " Computes the Kolmogorov-Smirnov statistic for the current window."
-        from scipy import stats
+        """
+        Computes the Kolmogorov-Smirnov statistic for the current window.
+        """
+        
         self.ks_statistic, self.p_value = stats.ks_2samp(self.window_pre_data, self.window_post_data)
 
     def _detect_changepoint(self):
-        " Detects change points based on the computed KS statistic."
+        """
+        Detects change points based on the computed KS statistic.
+        Returns
+        -------
+        bool
+            True if a change point is detected, False otherwise.
+        """
         if self.p_value < self.alpha:
             return True
         else:
             return False
 
     def offline_detection(self, data: np.ndarray):
-        " Detects change points in the given data in an offline manner."
+        """
+        Detects change points in the given data in an offline manner.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Data points to be analyzed.
+        
+        Returns
+        -------
+        results : dict
+            A dictionary containing:
+            - 'ks_statistics': numpy.ndarray of KS statistics for each observation.
+            - 'p_values': numpy.ndarray of p-values for each observation.
+            - 'is_drift': list of booleans indicating detected change points.
+            - 'change_points': numpy.ndarray of detected change point indices.
+        """
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
         results = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
@@ -681,10 +822,14 @@ class KS_CUM_Detector:
         """ 
         Plots data with detected change points and KS statistics.
 
-        Parameters:
-        - data (numpy array): Original data points.
-        - change_points (list): List of detected change points.
-        - p_values (list): List of p-values associated with each data point.
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Original data points.
+        change_points : list
+            List of detected change points.
+        p_values : list
+            List of p-values for each data point.
         """
         plt.figure(figsize=(20, 8))
         plt.subplot(2, 1, 1)

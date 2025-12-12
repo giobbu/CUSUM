@@ -5,18 +5,32 @@ class ChangePointGenerator:
     """
     A class to generate time series data with different types of change points.
 
-    Example:
-    ```
-    generator = ChangePointGenerator(num_segments=2, segment_length=1000, change_point_type='gradual_drift')
-    generator.generate_data()
-    generator.add_gradual_drift(10, 50, 5, 800)
-    generator.plot_data()
-    ```
+    Parameters
+    ----------
+    num_segments : int
+        Number of segments in the time series data.
+    segment_length : int
+        Length of each segment.
+    change_point_type : str
+        Type of change point to introduce ('sudden_shift', 'gradual_drift', 'periodic_change').
+    seed : int
+        Random seed for reproducibility.
     """
 
     def __init__(self, num_segments=3, segment_length=500, change_point_type='sudden_shift', seed=42):
         """
         Initializes the ChangePointGenerator with the specified parameters.
+
+        Parameters
+        ----------
+        num_segments : int
+            Number of segments in the time series data.
+        segment_length : int
+            Length of each segment.
+        change_point_type : str
+            Type of change point to introduce ('sudden_shift', 'gradual_drift', 'periodic_change').
+        seed : int
+            Random seed for reproducibility.
         """
         if not isinstance(num_segments, int) or num_segments <= 0:
             raise ValueError("num_segments must be a positive integer")
@@ -58,6 +72,11 @@ class ChangePointGenerator:
     def get_data(self):
         """
         Returns the generated time series data.
+
+        Returns
+        -------
+        data : numpy array
+            The generated time series data.
         """
         return self.data
 
@@ -65,6 +84,19 @@ class ChangePointGenerator:
     def add_sudden_shift(self, mean_before, mean_after, std_dev_before, std_dev_after, change_point_index):
         """
         Add a sudden shift change point to the data.
+
+        Parameters
+        ----------
+        mean_before : float
+            Mean value before the change point.
+        mean_after : float
+            Mean value after the change point.
+        std_dev_before : float
+            Standard deviation before the change point.
+        std_dev_after : float
+            Standard deviation after the change point.
+        change_point_index : int
+            Index at which the change point occurs.
         """
         if not all(isinstance(val, (int, float)) for val in [mean_before, mean_after, std_dev_before, std_dev_after]):
             raise ValueError("mean_before, mean_after, std_dev_before, std_dev_after must be numbers")
@@ -77,6 +109,17 @@ class ChangePointGenerator:
     def add_gradual_drift(self, mean_start, mean_end, std_dev, change_point_index):
         """
         Add a gradual drift change point to the data.
+
+        Parameters
+        ----------
+        mean_start : float
+            Mean value at the start of the drift.
+        mean_end : float
+            Mean value at the end of the drift.
+        std_dev : float
+            Standard deviation during the drift.
+        change_point_index : int
+            Index at which the drift starts.
         """
         if not all(isinstance(val, (int, float)) for val in [mean_start, mean_end, std_dev]):
             raise ValueError("mean_start, mean_end, std_dev must be numbers")
@@ -90,6 +133,17 @@ class ChangePointGenerator:
     def add_periodic_change(self, amplitude, period, std_dev, change_point_index):
         """
         Add a periodic change point to the data.
+
+        Parameters
+        ----------
+        amplitude : float
+            Amplitude of the periodic change.
+        period : float
+            Period of the periodic change.
+        std_dev : float
+            Standard deviation during the periodic change.
+        change_point_index : int
+            Index at which the periodic change starts.
         """
         if not all(isinstance(val, (int, float)) for val in [amplitude, period, std_dev]):
             raise ValueError("amplitude, period, std_dev must be numbers")
@@ -116,11 +170,15 @@ class ChangePointGenerator:
         """
         Generate data with a specified percentage of NaN values.
 
-        Parameters:
-        - nan_percentage: float, percentage of NaN values desired in the data
-
-        Returns:
-        - data_with_nans: numpy array, data with NaN values
+        Parameters
+        ----------
+        nan_percentage : float
+            Percentage of NaN values to introduce in the data (between 0 and 1).
+        
+        Returns
+        -------
+        data_with_nans : numpy array
+            Data with NaN values introduced.
         """
 
         if not 0 <= nan_percentage <= 1:
@@ -138,12 +196,15 @@ class ChangePointGenerator:
     def generate_no_random_nans(self, percentage, min_block_size, max_block_size):
         """
         Generate data with NaN values in contiguous blocks.
-        Parameters:
-        - percentage: float, percentage of NaN values desired in the data
-        - min_block_size: int, minimum size of each NaN block
-        - max_block_size: int, maximum size of each NaN block
-        Returns:
-        - data_with_nans: numpy array, data with NaN values
+        
+        Parameters
+        ----------
+        percentage : float
+            Percentage of the data to be replaced with NaNs (between 0 and 1).
+        min_block_size : int
+            Minimum size of each block of NaNs.
+        max_block_size : int
+            Maximum size of each block of NaNs.
         """
         if percentage < 0 or percentage > 1:
             raise ValueError("Percentage should be between 0 and 1")
@@ -177,8 +238,10 @@ class ChangePointGenerator:
         """
         Plot the generated time series data with NaN values.
 
-        Parameters:
-        - data_with_nans: numpy array, data with NaN values
+        Parameters
+        ----------
+        data_with_nans : numpy array
+            Data with NaN values to plot.
         """
         plt.figure(figsize=(25, 5))
         plt.plot(data_with_nans, color='red', label='Time Series Data with NaNs')

@@ -24,3 +24,4 @@ exclude_patterns = []
 html_theme = 'sphinx_rtd_theme'  # RTD theme
 html_static_path = ['_static']
 
+
