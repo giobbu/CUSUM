@@ -232,7 +232,7 @@ class ProbCUSUM_Detector:
         """
         Initializes the Probabilistic CUSUM Detector with the specified parameters.
 
-        Parameters:
+        Parameters
         ----------
         warmup_period : int
             The warmup period for the detector. Must be equal or greater than 10.
