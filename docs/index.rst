@@ -14,26 +14,26 @@ This site contains:
    :maxdepth: 2
    :caption: User Documentation
 
-   about
-   getting_started
-   usage
-   get_code
+   user_doc/about
+   user_doc/getting_started
+   user_doc/usage
+   user_doc/get_code
 
 .. toctree::
    :maxdepth: 2
    :caption: Technical Documentation
 
-   generator
-   detector
-   model
+   tech_doc/generator/generator
+   tech_doc/detector/detector
+   tech_doc/model/model
 
 .. toctree::
    :maxdepth: 2
    :caption: Project Information
 
-   contributions
-   faq
-   release_notes
+   info/contributions
+   info/faq
+   info/release_notes
 
 
 

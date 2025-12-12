@@ -1,0 +1,15 @@
+/* Sidebar background */
+.wy-side-nav-search,       /* top search area */
+.wy-nav-side {             /* full sidebar */
+    background: #c00 !important;   /* red (choose your shade) */
+}
+
+/* Optional: change active link background */
+.wy-menu-vertical li.current > a {
+    background: #a00 !important;
+}
+
+/* Optional: change hover color */
+.wy-menu-vertical a:hover {
+    background: #e00 !important;
+}

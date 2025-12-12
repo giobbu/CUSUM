@@ -6,4 +6,4 @@ This module contains the core change point detection classes.
 .. toctree::
    :maxdepth: 1
 
-   cusum
+   cusum/cusum
