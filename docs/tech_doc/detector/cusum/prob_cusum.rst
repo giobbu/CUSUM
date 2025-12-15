@@ -25,7 +25,6 @@ Examples
 
 **Offline Detection**
 
-
 .. code-block:: python
 
     from source.detector.cusum import ProbCUSUM_Detector
@@ -37,3 +36,10 @@ Examples
     detector.plot_change_points(data,
                                 results["change_points"],
                                 results["probabilities"])
+
+**Plotting**
+
+.. image:: ../../../_static/images/probcusum.png
+   :alt: CUSUM Vanilla Example
+   :align: center
+   :width: 600px

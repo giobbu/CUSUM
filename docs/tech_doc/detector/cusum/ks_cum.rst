@@ -38,3 +38,10 @@ Examples
     detector.plot_change_points(data,
                                 results["change_points"],
                                 results["p_values"])
+
+**Plotting**
+
+.. image:: ../../../_static/images/kscum.png
+   :alt: CUSUM Vanilla Example
+   :align: center
+   :width: 600px

@@ -7,3 +7,4 @@ This module contains the core online ML model classes.
    :maxdepth: 1
 
    incremental
+   monitoring

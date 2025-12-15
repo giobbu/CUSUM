@@ -38,3 +38,10 @@ Examples
                                 results["change_points"],
                                 results["pos_changes"],
                                 results["neg_changes"])
+
+**Plotting**
+
+.. image:: ../../../_static/images/cusum.png
+   :alt: CUSUM Vanilla Example
+   :align: center
+   :width: 600px

@@ -39,3 +39,10 @@ Examples
                                 results["cusums"],
                                 results["upper_limits"],
                                 results["lower_limits"])
+
+**Plotting**
+
+.. image:: ../../../_static/images/chartcusum_dev.png
+   :alt: CUSUM Vanilla Example
+   :align: center
+   :width: 600px
