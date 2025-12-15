@@ -14,7 +14,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import ChartCUSUM_Detector
 
     detector = ChartCUSUM_Detector(warmup_period=20, level=3, deviation_type='sqr-dev')
@@ -29,7 +28,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import ChartCUSUM_Detector
 
     detector = ChartCUSUM_Detector(warmup_period=20, level=3, deviation_type='sqr-dev')
