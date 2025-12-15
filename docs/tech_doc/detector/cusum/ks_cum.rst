@@ -16,7 +16,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import KS_CUM_Detector
 
     detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
@@ -30,7 +29,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import KS_CUM_Detector
 
     detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
