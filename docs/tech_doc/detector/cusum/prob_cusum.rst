@@ -14,7 +14,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import ProbCUSUM_Detector
 
     detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)
@@ -29,7 +28,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import ProbCUSUM_Detector
 
     detector = ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)

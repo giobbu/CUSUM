@@ -35,7 +35,7 @@ Change point detectors are algorithms designed to detect change points in stream
 
 ### **Generate Data with Mean Shift**
 ```python 
-import numpy as np
+
 from source.generator.change_point_generator import ChangePointGenerator
 from source.detector.cusum import CUSUM_Detector, ProbCUSUM_Detector, ChartCUSUM_Detector,KS_CUM_Detector
 

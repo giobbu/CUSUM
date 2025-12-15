@@ -14,7 +14,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import CUSUM_Detector
 
     detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)
@@ -29,7 +28,6 @@ Examples
 
 .. code-block:: python
 
-    import numpy as np
     from source.detector.cusum import CUSUM_Detector
 
     detector = CUSUM_Detector(warmup_period=10, delta=10, threshold=20)

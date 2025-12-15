@@ -17,7 +17,6 @@ Example Usage
 
 .. code-block:: python
 
-   import numpy as np
    from source.generator.change_point_generator import ChangePointGenerator
 
    # Initialize generator
