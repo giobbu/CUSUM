@@ -8,7 +8,11 @@ This site contains:
 - A general overview of the CUSUM project
 - Getting started guides
 - Detailed usage instructions
-- Technical documentation for developers
+- Technical Documentation
+- Project information
+- Contribution guidelines
+- FAQ
+- Release notes
 
 .. toctree::
    :maxdepth: 2
