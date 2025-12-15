@@ -1,7 +1,7 @@
 ML Model Performance Monitoring
 ===============================
 
-This section covers how to apply change point detection algorithms for monitoring the performance drifts of online ML models in real-time.
+This section covers how to apply CUSUM detection algorithms for monitoring the performance drifts of online ML models in real-time.
 
 .. note::
     See the `Notebook <https://github.com/giobbu/CUSUM/blob/main/notebooks/example_ml_monitoring.ipynb>`_ for code implementation details.

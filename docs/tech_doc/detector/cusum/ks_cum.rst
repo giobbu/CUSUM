@@ -12,7 +12,7 @@ KS-CUM Detector
 Examples 
 --------
 
-**Online Detection**
+**Instance-based Detection**
 
 .. code-block:: python
 
@@ -25,7 +25,7 @@ Examples
         p_value, is_change = detector.detection(data)
         print(f"Change Detected: {is_change} \n -P-Value: {p_value[0]}")
 
-**Offline Detection**
+**Batch-based Detection**
 
 .. code-block:: python
 
