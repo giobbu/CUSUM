@@ -51,6 +51,18 @@ cusum_detector.plot_change_points(generator.data,
 
 ![Image Alt Text](img/cusum.png)
 
+## Getting Started
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/giobbu/CUSUM.git
+cd CUSUM
+uv sync
+```
+
 
 ## Documentation
 [![Documentation Status](https://readthedocs.org/projects/CUSUM/badge/?version=latest)](https://CUSUM.readthedocs.io/en/latest/)
@@ -63,4 +75,4 @@ This project is licensed under the GPL-3.0 license - see the [LICENSE](https://g
 
 
 
- 
+
