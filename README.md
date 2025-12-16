@@ -55,13 +55,17 @@ cusum_detector.plot_change_points(generator.data,
 
 ### Installation
 
-Clone the repository and install dependencies:
+Clone the repository:
 
 ```bash
 git clone https://github.com/giobbu/CUSUM.git
 cd CUSUM
+```
+ and install dependencies:
+```bash
 uv sync
 ```
+
 
 
 ## Documentation

@@ -42,6 +42,6 @@ Examples
 **Plotting**
 
 .. image:: ../../../_static/images/cusum.png
-   :alt: CUSUM Vanilla Example
+   :alt: Vanilla CUSUM Example
    :align: center
    :width: 600px
