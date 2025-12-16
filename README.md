@@ -73,7 +73,7 @@ data_stream = generator.get_data()
 
 ![Image Alt Text](img/readme_data.png)
 
-#### CUSUM Detector Instance
+#### Vanilla CUSUM Detector
 ```python 
 from source.detector.cusum import CUSUM_Detector
 
