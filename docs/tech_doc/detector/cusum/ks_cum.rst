@@ -42,6 +42,6 @@ Examples
 **Plotting**
 
 .. image:: ../../../_static/images/kscum.png
-   :alt: CUSUM Vanilla Example
+   :alt: KS-CUM Example
    :align: center
    :width: 600px
