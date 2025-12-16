@@ -29,7 +29,7 @@ This site contains:
 
    tech_doc/generator/generator
    tech_doc/detector/detector
-   tech_doc/model/model
+   tech_doc/model/ml
 
 .. toctree::
    :maxdepth: 2

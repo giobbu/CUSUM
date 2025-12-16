@@ -1,5 +1,5 @@
-Online Linear Learning Model
-============================
+Instance-based Linear Learning Model
+====================================
 
 This module contains the implementation of the Recursive Least Squares algorithm for online linear regression.
 
