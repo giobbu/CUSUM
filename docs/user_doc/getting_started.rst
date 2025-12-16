@@ -6,14 +6,14 @@ Installation
 
 Clone the repository and install dependencies.
 
-Git Clone and Install
+Git clone repository and navigate to the project directory:
 
 .. code-block:: bash
 
     git clone https://github.com/giobbu/CUSUM.git
     cd CUSUM
 
-Install Dependencies with uv package manager
+Install dependencies with uv package manager
 
 .. code-block:: bash
     
