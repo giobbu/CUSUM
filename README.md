@@ -81,14 +81,14 @@ from source.detector.cusum import CUSUM_Detector
 cusum_detector = CUSUM_Detector(warmup_period=500, delta=3, threshold=10)
 ```
 
-#### Instance-based Detection
+#### a. Instance-based Detection
 ```python
 for data in data_stream:
     pos, neg, is_change = cusum_detector.detection(data)
     print(f"Change Detected: {is_change} \n -Positives: {pos[0]}, \n -Negatives: {neg[0]}")
 ```
 
-#### Batch-based Detection
+#### b. Batch-based Detection
 ```python 
 # Detect change points using CUSUM Detector
 results = cusum_detector.offline_detection(data_stream)
