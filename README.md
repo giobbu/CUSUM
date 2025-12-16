@@ -58,14 +58,32 @@ Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io
 
 The CUSUM detector (or Page-Hinkley test) monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
 
+#### Generate Data
+```python
+from source.generator.change_point_generator import ChangePointGenerator
+
+# Generate time series data with change points
+generator = ChangePointGenerator(num_segments=3, 
+                                 segment_length=1000, 
+                                 change_point_type='sudden_shift', 
+                                 seed=2)
+generator.generate_data()
+data_stream = generator.get_data()
+```
+
+![Image Alt Text](img/readme_data.png)
+
+#### CUSUM Detector Instance
 ```python 
+from source.detector.cusum import CUSUM_Detector
+
 # Detect change points using CUSUM Detector
 cusum_detector = CUSUM_Detector(warmup_period=500, delta=3, threshold=10)
 ```
 
 #### Instance-based Detection
-```python 
-for data in generator.data:
+```python
+for data in data_stream:
     pos, neg, is_change = cusum_detector.detection(data)
     print(f"Change Detected: {is_change} \n -Positives: {pos[0]}, \n -Negatives: {neg[0]}")
 ```
@@ -73,16 +91,16 @@ for data in generator.data:
 #### Batch-based Detection
 ```python 
 # Detect change points using CUSUM Detector
-results = cusum_detector.offline_detection(generator.data)
+results = cusum_detector.offline_detection(data_stream)
 
 # Plot the detected change points using CUSUM Detector
-cusum_detector.plot_change_points(generator.data, 
+cusum_detector.plot_change_points(data_stream, 
                                 results["change_points"], 
                                 results["pos_changes"], 
                                 results["neg_changes"])
 ```
 
-![Image Alt Text](img/cusum.png)
+![Image Alt Text](img/readme_cusum.png)
 
 
 ## 5. License
