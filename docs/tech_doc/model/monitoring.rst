@@ -17,6 +17,6 @@ Steps to monitor an online autoregressive linear model using the CUSUM algorithm
 5. Apply the CUSUM detector on the residuals to identify potential change points.
 
 .. image:: ../../_static/images/monitoring.gif
-   :alt: Model Monitoring Workflow
+   :alt: Model Monitoring with CUSUM
    :align: center
    :width: 600px

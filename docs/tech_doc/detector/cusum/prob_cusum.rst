@@ -40,6 +40,6 @@ Examples
 **Plotting**
 
 .. image:: ../../../_static/images/probcusum.png
-   :alt: CUSUM Vanilla Example
+   :alt: Probabilistic CUSUM Example
    :align: center
    :width: 600px

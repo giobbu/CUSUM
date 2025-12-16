@@ -43,6 +43,6 @@ Examples
 **Plotting**
 
 .. image:: ../../../_static/images/chartcusum_dev.png
-   :alt: CUSUM Vanilla Example
+   :alt: Chart CUSUM Example
    :align: center
    :width: 600px
