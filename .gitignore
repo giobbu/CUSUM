@@ -2,7 +2,7 @@
 
 docs/_build/html
 docs/_build/doctrees
-docs/_static/images*
+
 
 .DS_Store
 
