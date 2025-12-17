@@ -102,7 +102,21 @@ cusum_detector.plot_change_points(data_stream,
 
 ![Image Alt Text](img/readme_cusum.png)
 
+#### c. Multivariate Detetction with PCA and CUSUM
+```python 
+from source.detector.cusum import PC1_CUSUM_Detector
 
+# Initialize PC1-CUSUM Detector
+pc1_detector = PC1_CUSUM_Detector(warmup_period=50, delta=0.5, threshold=8)
+# Offline Detection
+results = pc1_detector.offline_detection(data_streams_arr)
+# Plot Change Points
+pc1_detector.plot_change_points(data_streams=data_streams_arr,
+                                    pos_changes=results['pos_changes'], 
+                                    neg_changes=results['neg_changes'], 
+                                    change_points=results['change_points'])
+```
+![Image Alt Text](img/readme_pc1_cusum.png)
 ## 5. License
 This project is licensed under the GPL-3.0 license - see the [LICENSE](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file) file for details.
 
