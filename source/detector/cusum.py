@@ -380,7 +380,6 @@ class ProbCUSUM_Detector:
         probabilities = np.array([result[0] for result in results])
         is_drift = np.array([result[1] for result in results])
         change_points = np.where(is_drift)[0]
-
         results = {"probabilities": probabilities,
                      "is_drift": is_drift,
                      "change_points": change_points}
@@ -938,6 +937,7 @@ class PC1_CUSUM_Detector:
         self.current_t = 0
         self.current_pc1_mean = 0
         self.current_pc1_std = 0
+        self.current_obs = np.array([])
 
     def _update_data(self, row_obs: float):
         """
