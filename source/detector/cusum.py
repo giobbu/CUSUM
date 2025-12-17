@@ -856,3 +856,199 @@ class KS_CUM_Detector:
         plt.grid(True)
         plt.tight_layout()
         plt.show()
+
+
+class PC1_CUSUM_Detector:
+    """
+    PC1-CUSUM Change Point Detector.
+    A class to detect change points in sequential multivariate data using Principal Component Analysis (PCA) and the CUSUM algorithm.
+    
+    Parameters
+    ----------
+    warmup_period : int
+        The warmup period for the detector. Must be equal or greater than 10.
+    delta : float
+        The reference value for the CUSUM algorithm.
+    threshold : float
+        The threshold for detecting change points.
+    """
+    def __init__(self, warmup_period:int=10, delta:float=0.5, threshold:float=5.0):
+        """
+        Initialize the PC1-CUSUM detector with the given parameters.
+
+        Parameters
+        ----------
+        warmup_period : int
+            The warmup period for the detector. Must be equal or greater than 10.
+        delta : float
+            The reference value for the CUSUM algorithm.
+        threshold : float
+            The threshold for detecting change points.
+        """
+        from sklearn.decomposition import PCA
+        self.pca = PCA(n_components=1)
+        self.warmup_period = warmup_period
+        self.delta = delta
+        self.threshold = threshold
+        self.list_pc1 = []
+        self._reset()
+
+    def __str__(self):
+        return f"PC1_CUSUM_Detector(warmup_period={self.warmup_period}, delta={self.delta}, threshold={self.threshold})"
+
+    def detection(self, observations:float):
+        """
+        Process a row of observations, transform into PC1 and detect change points.
+        
+        Parameters
+        ----------
+        observations : float
+            A row of multivariate observations.
+        """
+        # Update data
+        self._update_data(observations)
+        # During warmup period
+        if self.current_t < self.warmup_period:
+            self.S_pos = np.array([0])
+            self.S_neg = np.array([0])
+        # End of warmup period
+        if self.current_t == self.warmup_period:  
+            self._init_params()  # fit and transform pc1
+        # After warmup period
+        if self.current_t > self.warmup_period:  
+            self._compute_cumusum()  # transform latest observation to pc1 and compute cusum
+            is_changepoint = self._detect_changepoint()
+            if is_changepoint:
+                self._reset()
+            return self.S_pos, self.S_neg, is_changepoint
+        else:
+            return self.S_pos, self.S_neg, False
+
+    def _reset(self):
+        """
+        Resets the internal state of the detector.
+        """
+        self.current_t = 0
+        self.current_pc1_mean = 0
+        self.current_pc1_std = 0
+
+    def _update_data(self, row_obs: float):
+        """
+        Updates the observetions data with new data row.
+
+        Parameters
+        ----------
+        row_obs : float
+            A row of multivariate observations.
+        """
+        self.current_t += 1
+        self.current_obs = np.vstack([self.current_obs, row_obs]) if self.current_t > 1 else row_obs.reshape(1, -1)
+
+    def _init_params(self):
+        """
+        Initializes the parameters required for CUSUM computation.
+        """
+        # fit and transform pc1
+        self.pc1_fit = self.pca.fit_transform(self.current_obs)
+        self.current_pc1_mean = np.nanmean(self.pc1_fit)
+        self.current_pc1_std = np.nanstd(self.pc1_fit)
+        self.z = 0
+        self.S_pos = np.array([0])
+        self.S_neg = np.array([0])
+        # append pc1 transformed data for plotting
+        self.list_pc1 = self.list_pc1 + self.pc1_fit.flatten().tolist()
+
+    def _compute_cumusum(self):
+        """
+        Computes the cumulative sums for positive and negative changes.
+        """
+        # transform latest observation to pc1
+        self.pc1_tr = self.pca.transform(self.current_obs[-1].reshape(1, -1))
+        self.z = (self.pc1_tr - self.current_pc1_mean) / self.current_pc1_std  
+        self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
+        self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
+        # append pc1 transformed data for plotting
+        self.list_pc1.append(self.pc1_tr.flatten()[0])
+
+    def _detect_changepoint(self):
+        """
+        Detects change points based on the computed cumulative sums.
+        """
+        if self.S_pos > self.threshold or self.S_neg > self.threshold:
+            return True
+        else:
+            return False
+
+    def offline_detection(self, data: np.ndarray):
+        """
+        Detects change points in the given data in an offline manner.
+
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Data points to be analyzed.
+        """
+
+        if not isinstance(data, np.ndarray):
+            raise ValueError("data must be a numpy array.")
+        
+        if len(data) < self.warmup_period:
+            raise ValueError("Data length must be greater than or equal to warmup_period.")
+        
+        results = [self.detection(row) if not np.isnan(np.sum(row)) else (np.array([0]), np.array([0]), False) for row in data]
+        
+        pos_changes = np.vstack([row[0] for row in results])
+        neg_changes = np.vstack([row[1] for row in results])
+        is_drift = [row[2] for row in results]
+        change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
+        results = {"pos_changes": pos_changes,
+                   "neg_changes": neg_changes,
+                   "is_drift": is_drift,
+                   "change_points": change_points}
+        return results
+
+    def plot_change_points(self, data_streams:np.array, change_points: list, pos_changes: list, neg_changes: list):
+        """
+        Plots data with detected change points and cumulative sums.
+
+        Parameters
+        ----------
+        data_streams : numpy.ndarray
+            Original multivariate data points.
+        change_points : list
+            List of detected change points.
+        pos_changes : list
+            List of positive cumulative sums.
+        neg_changes : list
+            List of negative cumulative sums.
+        """
+        plt.figure(figsize=(20, 8))
+        plt.subplot(4, 1, 1)
+        plt.plot(self.list_pc1, color='green', label='PC1 Transformed Data', linestyle="--")
+        if len(change_points) != 0:
+            plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
+            [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.title('Sequential CUSUM Change Point Detection')
+        plt.legend()
+        plt.grid(True)
+        for i in range(data_streams.shape[1]):
+            plt.subplot(4, 1, i+2)
+            plt.plot(data_streams[:, i], alpha=0.3, label=f'Data Stream {i+1}', color='blue', linestyle="--") 
+            plt.xlabel('Time')
+            plt.ylabel('Value')
+            plt.legend()
+            plt.grid(True)
+        plt.subplot(4, 1, 4)
+        plt.axhline(self.threshold , color="red", linestyle="dashed", lw=2)
+        plt.plot(pos_changes, color='green', label='Positive Cusum PC1')
+        plt.plot(neg_changes, color='orange', label='Negative Cusum PC1')
+        plt.xlabel('Time')
+        plt.ylabel('Cumulative Sum')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+        
+    
