@@ -12,6 +12,7 @@ dependencies = [
     "pydantic>=2.12.5",
     "pytest>=9.0.1",
     "python-dotenv>=1.2.1",
+    "scikit-learn>=1.8.0",
     "scipy>=1.16.3",
     "seaborn>=0.13.2",
     "sphinx>=9.0.4",
