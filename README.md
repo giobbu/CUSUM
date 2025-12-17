@@ -102,9 +102,26 @@ cusum_detector.plot_change_points(data_stream,
 
 ![Image Alt Text](img/readme_cusum.png)
 
-#### c. Multivariate Detetction with PCA and CUSUM
+#### c. Multivariate Detection with PCA and CUSUM
 ```python 
+from source.generator.ds_generator import MultiDataStreams
 from source.detector.cusum import PC1_CUSUM_Detector
+
+# Generate Two Data Streams
+dict_streams = [{"num_segments": 3,
+                 "segment_length": 1000,
+                 "change_point_type": "sudden_shift",
+                    "seed": 2},
+                {"num_segments": 6,
+                    "segment_length": 500,
+                    "change_point_type": "sudden_shift",
+                    "seed": 11}]
+                    
+# Initialize Data Streams Generator
+many_data_streams = MultiDataStreams(dict_streams=dict_streams)
+many_data_streams.generate_data_streams()
+# Get Data Streams as Array
+data_streams_arr = many_data_streams.get_data_streams_as_array()
 
 # Initialize PC1-CUSUM Detector
 pc1_detector = PC1_CUSUM_Detector(warmup_period=50, delta=0.5, threshold=8)
