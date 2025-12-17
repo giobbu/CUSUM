@@ -935,6 +935,7 @@ class PC1_CUSUM_Detector:
         Resets the internal state of the detector.
         """
         self.current_t = 0
+        self.current_std_mean = 0
         self.current_pc1_mean = 0
         self.current_pc1_std = 0
         self.current_obs = np.array([])
@@ -965,6 +966,8 @@ class PC1_CUSUM_Detector:
         self.pc1_fit = self.pca.fit_transform(self.std_obs_fit)
         self.current_pc1_mean = np.nanmean(self.pc1_fit)
         self.current_pc1_std = np.nanstd(self.pc1_fit)
+        self.current_std_mean = self.std_obs_fit.mean(axis=0).reshape(1, -1)
+        # initialize cusum values
         self.z = 0
         self.S_pos = np.array([0])
         self.S_neg = np.array([0])
@@ -993,11 +996,9 @@ class PC1_CUSUM_Detector:
         Detects change points based on the computed cumulative sums.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
-            reconstructed_obs = self.pca.inverse_transform(self.pc1_tr)
-            reconstructed_mean_obs = self.pca.inverse_transform(np.array([[self.current_pc1_mean]]))
-            delta = abs(reconstructed_obs - reconstructed_mean_obs).flatten()
+            delta = abs(self.std_obs_tr - self.current_std_mean).flatten()
             loadings = abs(self.pca.components_.flatten())
-            contributions = np.round(delta*loadings/np.sum(delta*loadings), 3)
+            contributions = np.round(delta*loadings/np.sum(delta*loadings)*100, 2)
             self.list_loadings.append(loadings)
             self.list_deltas.append(delta)
             return True, contributions
