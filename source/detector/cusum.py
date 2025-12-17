@@ -872,7 +872,7 @@ class PC1_CUSUM_Detector:
     threshold : float
         The threshold for detecting change points.
     """
-    def __init__(self, warmup_period:int=10, delta:float=0.5, threshold:float=5.0):
+    def __init__(self, warmup_period:int=10, delta:float=0.5, threshold:float=5.0, to_scale:bool=False):
         """
         Initialize the PC1-CUSUM detector with the given parameters.
 
@@ -884,6 +884,8 @@ class PC1_CUSUM_Detector:
             The reference value for the CUSUM algorithm.
         threshold : float
             The threshold for detecting change points.
+        to_scale : bool
+            Whether to standardize the data before applying PCA.
         """
         from sklearn.preprocessing import StandardScaler
         from sklearn.decomposition import PCA
@@ -892,11 +894,12 @@ class PC1_CUSUM_Detector:
         self.warmup_period = warmup_period
         self.delta = delta
         self.threshold = threshold
+        self.to_scale = to_scale
         self.list_pc1 = []
         self._reset()
 
     def __str__(self):
-        return f"PC1_CUSUM_Detector(warmup_period={self.warmup_period}, delta={self.delta}, threshold={self.threshold})"
+        return f"PC1_CUSUM_Detector(warmup_period={self.warmup_period}, delta={self.delta}, threshold={self.threshold}, to_scale={self.to_scale})"
 
     def detection(self, observations:float):
         """
@@ -919,12 +922,12 @@ class PC1_CUSUM_Detector:
         # After warmup period
         if self.current_t > self.warmup_period:  
             self._compute_cumusum()  # transform latest observation to pc1 and compute cusum
-            is_changepoint = self._detect_changepoint()
+            is_changepoint, contributions = self._detect_changepoint()
             if is_changepoint:
                 self._reset()
-            return self.S_pos, self.S_neg, is_changepoint
+            return self.S_pos, self.S_neg, is_changepoint, contributions
         else:
-            return self.S_pos, self.S_neg, False
+            return self.S_pos, self.S_neg, False, None
 
     def _reset(self):
         """
@@ -951,7 +954,10 @@ class PC1_CUSUM_Detector:
         Initializes the parameters required for CUSUM computation.
         """
         # standardize current observations
-        self.std_obs_fit = self.scaler.fit_transform(self.current_obs)
+        if self.to_scale:
+            self.std_obs_fit = self.scaler.fit_transform(self.current_obs)
+        else:
+            self.std_obs_fit = self.current_obs
         # fit and transform pc1
         self.pc1_fit = self.pca.fit_transform(self.std_obs_fit)
         self.current_pc1_mean = np.nanmean(self.pc1_fit)
@@ -967,9 +973,12 @@ class PC1_CUSUM_Detector:
         Computes the cumulative sums for positive and negative changes.
         """
         # standardize current observations
-        self.std_obs_tr = self.scaler.transform(self.current_obs)
+        if self.to_scale:
+            self.std_obs_tr = self.scaler.transform(self.current_obs[-1].reshape(1, -1))
+        else:
+            self.std_obs_tr = self.current_obs[-1].reshape(1, -1)
         # transform latest observation to pc1
-        self.pc1_tr = self.pca.transform(self.std_obs_tr[-1].reshape(1, -1))
+        self.pc1_tr = self.pca.transform(self.std_obs_tr)
         self.z = (self.pc1_tr - self.current_pc1_mean) / self.current_pc1_std  
         self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
         self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
@@ -981,9 +990,9 @@ class PC1_CUSUM_Detector:
         Detects change points based on the computed cumulative sums.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
-            return True
+            return True, abs(self.pca.components_.flatten()*(self.pc1_tr.flatten()[0]-self.current_pc1_mean)/self.current_pc1_std)
         else:
-            return False
+            return False, None
 
     def offline_detection(self, data: np.ndarray):
         """
@@ -1007,10 +1016,12 @@ class PC1_CUSUM_Detector:
         neg_changes = np.vstack([row[1] for row in results])
         is_drift = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
+        contributions = [row[3] for row in results]
         results = {"pos_changes": pos_changes,
                    "neg_changes": neg_changes,
                    "is_drift": is_drift,
-                   "change_points": change_points}
+                   "change_points": change_points,
+                   "contributions": contributions}
         return results
 
     def plot_change_points(self, data_streams:np.array, change_points: list, pos_changes: list, neg_changes: list):

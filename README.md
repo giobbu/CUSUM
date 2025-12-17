@@ -56,7 +56,7 @@ Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io
 
 ## 4. Example
 
-The CUSUM detector (or Page-Hinkley test) monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
+The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
 
 #### Generate Data
 ```python
