@@ -896,6 +896,7 @@ class PC1_CUSUM_Detector:
         self.threshold = threshold
         self.to_scale = to_scale
         self.list_pc1 = []
+        self.list_loadings = []
         self._reset()
 
     def __str__(self):
@@ -947,7 +948,8 @@ class PC1_CUSUM_Detector:
             A row of multivariate observations.
         """
         self.current_t += 1
-        self.current_obs = np.vstack([self.current_obs, row_obs]) if self.current_t > 1 else row_obs.reshape(1, -1)
+        self.row_obs = row_obs
+        self.current_obs = np.vstack([self.current_obs, self.row_obs]) if self.current_t > 1 else self.row_obs.reshape(1, -1)
 
     def _init_params(self):
         """
@@ -990,7 +992,14 @@ class PC1_CUSUM_Detector:
         Detects change points based on the computed cumulative sums.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
-            return True, abs(self.pca.components_.flatten()*(self.pc1_tr.flatten()[0]-self.current_pc1_mean)/self.current_pc1_std)
+            self.list_loadings.append(self.pca.components_.flatten())
+            unstd_obs = self.pca.inverse_transform(self.pc1_tr).flatten()
+            if self.to_scale:
+                std_obs_inv = self.scaler.inverse_transform(unstd_obs.reshape(1, -1)).flatten()
+            else:
+                std_obs_inv = unstd_obs
+            contributions = abs(self.pca.components_.flatten())*abs(self.row_obs - std_obs_inv)
+            return True, contributions
         else:
             return False, None
 
