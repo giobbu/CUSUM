@@ -951,7 +951,7 @@ class PC1_CUSUM_Detector:
         """
         self.current_t += 1
         self.row_obs = row_obs
-        self.current_obs = np.vstack([self.current_obs, self.row_obs]) if self.current_t > 1 else self.row_obs.reshape(1, -1)
+        self.current_obs = np.vstack([self.current_obs, self.row_obs]) if len(self.current_obs) else self.row_obs.reshape(1, -1)
 
     def _init_params(self):
         """
