@@ -897,6 +897,7 @@ class PC1_CUSUM_Detector:
         self.to_scale = to_scale
         self.list_pc1 = []
         self.list_loadings = []
+        self.list_deltas = []
         self._reset()
 
     def __str__(self):
@@ -992,13 +993,13 @@ class PC1_CUSUM_Detector:
         Detects change points based on the computed cumulative sums.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
-            self.list_loadings.append(self.pca.components_.flatten())
-            unstd_obs = self.pca.inverse_transform(self.pc1_tr).flatten()
-            if self.to_scale:
-                std_obs_inv = self.scaler.inverse_transform(unstd_obs.reshape(1, -1)).flatten()
-            else:
-                std_obs_inv = unstd_obs
-            contributions = abs(self.pca.components_.flatten())*abs(self.row_obs - std_obs_inv)
+            reconstructed_obs = self.pca.inverse_transform(self.pc1_tr)
+            reconstructed_mean_obs = self.pca.inverse_transform(np.array([[self.current_pc1_mean]]))
+            delta = abs(reconstructed_obs - reconstructed_mean_obs).flatten()
+            loadings = abs(self.pca.components_.flatten())
+            contributions = np.round(delta*loadings/np.sum(delta*loadings), 3)
+            self.list_loadings.append(loadings)
+            self.list_deltas.append(delta)
             return True, contributions
         else:
             return False, None
@@ -1020,7 +1021,6 @@ class PC1_CUSUM_Detector:
             raise ValueError("Data length must be greater than or equal to warmup_period.")
         
         results = [self.detection(row) if not np.isnan(np.sum(row)) else (np.array([0]), np.array([0]), False) for row in data]
-        
         pos_changes = np.vstack([row[0] for row in results])
         neg_changes = np.vstack([row[1] for row in results])
         is_drift = [row[2] for row in results]
@@ -1048,7 +1048,7 @@ class PC1_CUSUM_Detector:
         neg_changes : list
             List of negative cumulative sums.
         """
-        plt.figure(figsize=(20, 8))
+        plt.figure(figsize=(20, 15))
         plt.subplot(data_streams.shape[1]+2, 1, 1)
         plt.plot(self.list_pc1, color='green', label='PC1 Transformed Data', linestyle="--")
         if len(change_points) != 0:
