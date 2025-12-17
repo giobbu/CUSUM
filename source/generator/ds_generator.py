@@ -1,3 +1,4 @@
+import numpy as np
 from source.generator.change_point_generator import ChangePointGenerator
 
 class MultiDataStreams:
@@ -47,6 +48,18 @@ class MultiDataStreams:
             A list of all generated data streams.
         """
         return self.list_data_streams
+    
+    def get_data_streams_as_array(self):
+        """
+        Get all generated data streams as a transposed NumPy array.
+        Returns
+        -------
+        np.ndarray
+            A transposed NumPy array of all generated data streams.
+            Shape: (num_data_points, num_streams)
+        """
+        
+        return np.array(self.list_data_streams).T
     
     def plot_all_streams(self):
         """
