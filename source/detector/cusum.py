@@ -1040,7 +1040,7 @@ class PC1_CUSUM_Detector:
             List of negative cumulative sums.
         """
         plt.figure(figsize=(20, 8))
-        plt.subplot(4, 1, 1)
+        plt.subplot(data_streams.shape[1]+2, 1, 1)
         plt.plot(self.list_pc1, color='green', label='PC1 Transformed Data', linestyle="--")
         if len(change_points) != 0:
             plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
@@ -1051,13 +1051,13 @@ class PC1_CUSUM_Detector:
         plt.legend()
         plt.grid(True)
         for i in range(data_streams.shape[1]):
-            plt.subplot(4, 1, i+2)
+            plt.subplot(data_streams.shape[1]+2, 1, i+2)
             plt.plot(data_streams[:, i], alpha=0.3, label=f'Data Stream {i+1}', color='blue', linestyle="--") 
             plt.xlabel('Time')
             plt.ylabel('Value')
             plt.legend()
             plt.grid(True)
-        plt.subplot(4, 1, 4)
+        plt.subplot(data_streams.shape[1]+2, 1, data_streams.shape[1]+2)
         plt.axhline(self.threshold , color="red", linestyle="dashed", lw=2)
         plt.plot(pos_changes, color='green', label='Positive Cusum PC1')
         plt.plot(neg_changes, color='orange', label='Negative Cusum PC1')
