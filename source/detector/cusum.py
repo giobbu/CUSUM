@@ -885,7 +885,9 @@ class PC1_CUSUM_Detector:
         threshold : float
             The threshold for detecting change points.
         """
+        from sklearn.preprocessing import StandardScaler
         from sklearn.decomposition import PCA
+        self.scaler = StandardScaler()
         self.pca = PCA(n_components=1)
         self.warmup_period = warmup_period
         self.delta = delta
@@ -948,8 +950,10 @@ class PC1_CUSUM_Detector:
         """
         Initializes the parameters required for CUSUM computation.
         """
+        # standardize current observations
+        self.std_obs_fit = self.scaler.fit_transform(self.current_obs)
         # fit and transform pc1
-        self.pc1_fit = self.pca.fit_transform(self.current_obs)
+        self.pc1_fit = self.pca.fit_transform(self.std_obs_fit)
         self.current_pc1_mean = np.nanmean(self.pc1_fit)
         self.current_pc1_std = np.nanstd(self.pc1_fit)
         self.z = 0
@@ -962,8 +966,10 @@ class PC1_CUSUM_Detector:
         """
         Computes the cumulative sums for positive and negative changes.
         """
+        # standardize current observations
+        self.std_obs_tr = self.scaler.transform(self.current_obs)
         # transform latest observation to pc1
-        self.pc1_tr = self.pca.transform(self.current_obs[-1].reshape(1, -1))
+        self.pc1_tr = self.pca.transform(self.std_obs_tr[-1].reshape(1, -1))
         self.z = (self.pc1_tr - self.current_pc1_mean) / self.current_pc1_std  
         self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
         self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
