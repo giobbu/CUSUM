@@ -1027,8 +1027,8 @@ class PC1_CUSUM_Detector:
         neg_changes = np.vstack([row[1] for row in results])
         is_drift = [row[2] for row in results]
         change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
-        contributions = [row[3] for row in results]
-        results = {"pos_changes": pos_changes,
+        contribs = [row[3] for row in results]
+        self.dict_results = {"pos_changes": pos_changes,
                    "neg_changes": neg_changes,
                    "is_drift": is_drift,
                    "change_points": change_points,
