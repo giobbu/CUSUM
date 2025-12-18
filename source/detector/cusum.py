@@ -3,6 +3,8 @@ import math
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from scipy import stats
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 class CUSUM_Detector:
     """
@@ -886,8 +888,7 @@ class PC1_CUSUM_Detector:
         to_scale : bool
             Whether to standardize the data before applying PCA.
         """
-        from sklearn.preprocessing import StandardScaler
-        from sklearn.decomposition import PCA
+        
         self.scaler = StandardScaler()
         self.pca = PCA(n_components=1)
         self.warmup_period = warmup_period
@@ -935,10 +936,10 @@ class PC1_CUSUM_Detector:
         Resets the internal state of the detector.
         """
         self.current_t = 0
-        self.current_std_mean = 0
+        self.current_batch_mean = 0
         self.current_pc1_mean = 0
         self.current_pc1_std = 0
-        self.current_obs = np.array([])
+        self.current_batch = np.array([])
 
     def _update_data(self, row_obs: float):
         """
@@ -951,7 +952,7 @@ class PC1_CUSUM_Detector:
         """
         self.current_t += 1
         self.row_obs = row_obs
-        self.current_obs = np.vstack([self.current_obs, self.row_obs]) if len(self.current_obs) else self.row_obs.reshape(1, -1)
+        self.current_batch = np.vstack([self.current_batch, self.row_obs]) if len(self.current_batch) else self.row_obs.reshape(1, -1)
 
     def _init_params(self):
         """
@@ -959,14 +960,14 @@ class PC1_CUSUM_Detector:
         """
         # standardize current observations
         if self.to_scale:
-            self.std_obs_fit = self.scaler.fit_transform(self.current_obs)
+            self.std_obs_fit = self.scaler.fit_transform(self.current_batch)
         else:
-            self.std_obs_fit = self.current_obs
+            self.std_obs_fit = self.current_batch
         # fit and transform pc1
         self.pc1_fit = self.pca.fit_transform(self.std_obs_fit)
         self.current_pc1_mean = np.nanmean(self.pc1_fit)
         self.current_pc1_std = np.nanstd(self.pc1_fit)
-        self.current_std_mean = self.std_obs_fit.mean(axis=0).reshape(1, -1)
+        self.current_batch_mean = self.std_obs_fit.mean(axis=0).reshape(1, -1)
         # initialize cusum values
         self.z = 0
         self.S_pos = np.array([0])
@@ -980,11 +981,11 @@ class PC1_CUSUM_Detector:
         """
         # standardize current observations
         if self.to_scale:
-            self.std_obs_tr = self.scaler.transform(self.current_obs[-1].reshape(1, -1))
+            self.scaled_obs = self.scaler.transform(self.current_batch[-1].reshape(1, -1))
         else:
-            self.std_obs_tr = self.current_obs[-1].reshape(1, -1)
+            self.scaled_obs = self.current_batch[-1].reshape(1, -1)
         # transform latest observation to pc1
-        self.pc1_tr = self.pca.transform(self.std_obs_tr)
+        self.pc1_tr = self.pca.transform(self.scaled_obs)
         self.z = (self.pc1_tr - self.current_pc1_mean) / self.current_pc1_std  
         self.S_pos = max(np.array([0]), self.S_pos + self.z - self.delta) 
         self.S_neg = max(np.array([0]), self.S_neg - self.z - self.delta) 
@@ -996,12 +997,12 @@ class PC1_CUSUM_Detector:
         Detects change points based on the computed cumulative sums.
         """
         if self.S_pos > self.threshold or self.S_neg > self.threshold:
-            delta = abs(self.std_obs_tr - self.current_std_mean).flatten()
+            delta = abs(self.scaled_obs - self.current_batch_mean).flatten()
             loadings = abs(self.pca.components_.flatten())
-            contributions = np.round(delta*loadings/np.sum(delta*loadings)*100, 2)
+            contribs = np.round(delta*loadings/np.sum(delta*loadings)*100, 2)
             self.list_loadings.append(loadings)
             self.list_deltas.append(delta)
-            return True, contributions
+            return True, contribs
         else:
             return False, None
 
