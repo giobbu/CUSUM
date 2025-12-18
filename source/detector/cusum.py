@@ -1032,8 +1032,20 @@ class PC1_CUSUM_Detector:
                    "neg_changes": neg_changes,
                    "is_drift": is_drift,
                    "change_points": change_points,
-                   "contributions": contributions}
-        return results
+                   "contributions": contribs}
+        return self.dict_results
+    
+    def get_contributions(self):
+        """
+        Retrieves the contributions of each feature to the detected change points.
+
+        Returns
+        -------
+        list_contributions : list
+            A list of dictionaries containing feature contributions for each detected change point.
+        """
+        list_contributions = [{f"cp-{i}":contrib} for i, contrib in enumerate(self.dict_results['contributions']) if contrib is not None]
+        return list_contributions
 
     def plot_change_points(self, data_streams:np.array, change_points: list, pos_changes: list, neg_changes: list):
         """
@@ -1076,6 +1088,30 @@ class PC1_CUSUM_Detector:
         plt.ylabel('Cumulative Sum')
         plt.legend()
         plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_contributions(self, list_contributions: list):
+        """
+        Plots the contributions of each feature to the detected change points.
+
+        Parameters
+        ----------
+        list_contributions : list
+            A list of dictionaries containing feature contributions for each detected change point.
+        """
+        plt.figure(figsize=(15, 3))
+        plt.suptitle('Variable Contributions at Detected Change Points',
+                    fontsize=10,
+                        y=1.02)
+        for i, contributions in enumerate(list_contributions):
+            arr_contributions = list(contributions.values())[0]
+            plt.subplot(1, len(list_contributions), i+1)
+            plt.pie(arr_contributions, labels=[f'var_{j+1}' for j in range(len(arr_contributions))], 
+                    autopct='%1.1f%%', colors=plt.cm.tab20.colors)
+            plt.legend(title=f'{list(contributions.keys())[0]}',
+                    bbox_to_anchor=(1.05, 1), 
+                    loc='upper left')
         plt.tight_layout()
         plt.show()
         
