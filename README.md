@@ -103,9 +103,11 @@ cusum_detector.plot_change_points(data_stream,
 ![Image Alt Text](img/readme_cusum.png)
 
 #### c. Multivariate Detection with PCA and CUSUM
+
+##### Generate multiple data streams
 ```python 
 from source.generator.ds_generator import MultiDataStreams
-from source.detector.cusum import PC1_CUSUM_Detector
+
 
 # Generate Two Data Streams
 dict_streams = [{"num_segments": 3,
@@ -122,6 +124,13 @@ many_data_streams = MultiDataStreams(dict_streams=dict_streams)
 many_data_streams.generate_data_streams()
 # Get Data Streams as Array
 data_streams_arr = many_data_streams.get_data_streams_as_array()
+```
+![Image Alt Text](img/readme_stream_1.png)
+![Image Alt Text](img/readme_stream_2.png)
+
+##### Apply PC1-based CUSUM detector
+```python 
+from source.detector.cusum import PC1_CUSUM_Detector
 
 # Initialize PC1-CUSUM Detector
 pc1_detector = PC1_CUSUM_Detector(warmup_period=50, delta=0.5, threshold=8)
@@ -134,6 +143,15 @@ pc1_detector.plot_change_points(data_streams=data_streams_arr,
                                     change_points=results['change_points'])
 ```
 ![Image Alt Text](img/readme_pc1_cusum.png)
+
+##### Plot variable contribution to detected change points
+```python 
+# get contributions
+list_contributions = pc1_detector.get_contributions()
+# plot pie charts
+pc1_detector.plot_contributions(list_contributions=list_contributions)
+```
+![Image Alt Text](img/readme_contrib_pc1.png)
 ## 5. License
 This project is licensed under the GPL-3.0 license - see the [LICENSE](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file) file for details.
 
