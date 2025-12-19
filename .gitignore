@@ -1,5 +1,7 @@
 .env
 .coverage
+htmlcov/
+
 
 docs/_build/html
 docs/_build/doctrees

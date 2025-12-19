@@ -43,10 +43,10 @@ jobs:
           uv run pytest \
             --cov=source \
             --cov-report=term-missing \
-            --cov-report=xml
+            --cov-report=html
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-xml
-          path: coverage.xml
+          name: html-coverage
+          path: htmlcov/
