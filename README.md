@@ -1,4 +1,6 @@
 [![Python Tests on macOS](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml/badge.svg)](https://github.com/giobbu/CUSUM/actions/workflows/python-tests.yml)
+[![codecov](https://codecov.io/gh/giobbu/CUSUM/branch/main/graph/badge.svg)](https://codecov.io/gh/giobbu/CUSUM)
+
 ![Status](https://img.shields.io/badge/status-development-orange)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14052654.svg)](https://doi.org/10.5281/zenodo.14052654)
 
