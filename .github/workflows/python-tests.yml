@@ -41,6 +41,6 @@ jobs:
       - name: Run tests with pytest-cov
         run: |
           uv run pytest \
-            --cov=your_package_name \
+            --cov=source \
             --cov-report=term-missing \
             --cov-report=xml
