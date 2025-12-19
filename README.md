@@ -108,7 +108,6 @@ cusum_detector.plot_change_points(data_stream,
 ```python 
 from source.generator.ds_generator import MultiDataStreams
 
-
 # Generate Two Data Streams
 dict_streams = [{"num_segments": 3,
                  "segment_length": 1000,

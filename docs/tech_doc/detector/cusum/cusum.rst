@@ -13,3 +13,4 @@ Cusum Detector Classes
    prob_cusum
    chart_cusum
    ks_cum
+   pc1_cusum
