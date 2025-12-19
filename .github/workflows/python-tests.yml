@@ -37,7 +37,10 @@ jobs:
         run: |
           uv sync
           
-      # Run tests with pytest
-      - name: Run tests
+      # Run tests with coverage
+      - name: Run tests with pytest-cov
         run: |
-          uv run pytest
+          uv run pytest \
+            --cov=your_package_name \
+            --cov-report=term-missing \
+            --cov-report=xml

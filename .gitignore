@@ -1,4 +1,5 @@
 .env
+.coverage
 
 docs/_build/html
 docs/_build/doctrees
