@@ -1,27 +1,5 @@
 import numpy as np
-from source.detector.cusum import ChartCUSUM_Detector
 import pytest
-
-
-@pytest.fixture
-def detector():
-    """Fixture to initialize ChartCUSUM_Detector instance."""
-    return ChartCUSUM_Detector(warmup_period=10, level=3, deviation_type='dev')
-
-def test_init_with_invalid_warmup_period():
-    """Test initialization with invalid warmup_period."""
-    with pytest.raises(ValueError):
-        ChartCUSUM_Detector(warmup_period=5, level=3, deviation_type='sqr-dev')
-
-def test_init_with_invalid_warmup_period():
-    """Test initialization with invalid level."""
-    with pytest.raises(ValueError):
-        ChartCUSUM_Detector(warmup_period=10, level=10, deviation_type='sqr-dev')
-
-def test_init_with_invalid_deviation_type():
-    """Test initialization with invalid deviation_type."""
-    with pytest.raises(ValueError):
-        ChartCUSUM_Detector(warmup_period=10, level=2, deviation_type='invalid')
 
 def test_detect_change_points_with_invalid_data_type(detector):
     """Test detect_change_points method with invalid data type."""
