@@ -52,6 +52,7 @@ class MultiDataStreams:
     def get_data_streams_as_array(self):
         """
         Get all generated data streams as a transposed NumPy array.
+        
         Returns
         -------
         np.ndarray
