@@ -192,12 +192,12 @@ class CUSUM_Detector:
             List of negative cumulative sums.
         """
         plt.figure(figsize=(20, 8))
-
         plt.subplot(2, 1, 1)
         plt.plot(data, color='blue', label='Data', linestyle="--")
         if len(change_points) != 0:
             plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
-            [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
+            for cp in change_points[1:]:
+                plt.axvline(cp, color="red", linestyle="dashed", lw=2)
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('Sequential CUSUM Change Point Detection')
@@ -643,7 +643,8 @@ class ChartCUSUM_Detector:
         plt.plot(data, color='blue', label='Data', linestyle="--")
         if len(change_points) != 0:
             plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
-            [plt.axvline(cp, color="red", linestyle="dashed", lw=2) for cp in change_points[1:]]
+            for cp in change_points[1:]:
+                plt.axvline(cp, color="red", linestyle="dashed", lw=2)
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('Control Chart CUSUM Change Point Detection')
