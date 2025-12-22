@@ -1,7 +1,6 @@
 import pytest
 from source.generator.change_point_generator import ChangePointGenerator
 
-
 def test_init_with_invalid_num_segments_zero():
     """Test initialization with invalid num_segments."""
     with pytest.raises(ValueError):
