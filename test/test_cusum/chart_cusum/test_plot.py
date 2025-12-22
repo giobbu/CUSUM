@@ -11,17 +11,17 @@ def test_cusum_plot_change_points(mocker, detector):
     cusums = np.array([0.5, 0.4, 0.3, 0.2, 0.1])
     change_points = [2]
 
-    mocker.patch("source.detector.cusum.plt.figure")
-    mocker.patch("source.detector.cusum.plt.subplot")
+    mock_fig = mocker.patch("source.detector.cusum.plt.figure")
+    mock_subplt = mocker.patch("source.detector.cusum.plt.subplot")
     mock_plot = mocker.patch("source.detector.cusum.plt.plot")
     mock_axvline = mocker.patch("source.detector.cusum.plt.axvline")
-    mocker.patch("source.detector.cusum.plt.xlabel")
-    mocker.patch("source.detector.cusum.plt.ylabel")
-    mocker.patch("source.detector.cusum.plt.title")
-    mocker.patch("source.detector.cusum.plt.legend")
-    mocker.patch("source.detector.cusum.plt.grid")
-    mocker.patch("source.detector.cusum.plt.tight_layout")
-    mocker.patch("source.detector.cusum.plt.show")
+    mock_xlabel = mocker.patch("source.detector.cusum.plt.xlabel")
+    mock_ylabel = mocker.patch("source.detector.cusum.plt.ylabel")
+    mock_title = mocker.patch("source.detector.cusum.plt.title")
+    mock_legend = mocker.patch("source.detector.cusum.plt.legend")
+    mock_grid = mocker.patch("source.detector.cusum.plt.grid")
+    mock_layout = mocker.patch("source.detector.cusum.plt.tight_layout")
+    mock_show = mocker.patch("source.detector.cusum.plt.show")
 
 
     detector.plot_change_points(
@@ -37,3 +37,10 @@ def test_cusum_plot_change_points(mocker, detector):
     )
 
     mock_axvline.assert_called()
+    mock_xlabel.assert_called()
+    mock_ylabel.assert_called()
+    mock_title.assert_called()
+    mock_legend.assert_called()
+    mock_grid.assert_called()
+    mock_layout.assert_called()
+    mock_show.assert_called_once()
