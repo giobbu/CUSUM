@@ -695,10 +695,21 @@ class KS_CUM_Detector:
         ValueError
             If window_pre < 30, window_post < 30, window_pre < window_post, or alpha is not between 0 and 0.1.
         """
-        assert window_pre >= 30, "window_pre must be greater than 30."
-        assert window_post >= 30, "window_post must be greater than 30."
-        assert window_pre >= window_post, "window_pre must be greater than or equal to window_post."
-        assert 0 < alpha < 0.1, "alpha must be between 0 and 0.1."
+        if not isinstance(window_pre, int) or not isinstance(window_post, int):
+            raise ValueError("window_pre and window_post must be integers.")
+        
+        if window_pre < 30:
+            raise ValueError("window_pre must be greater than 30.")
+        
+        if window_post < 30:
+            raise ValueError("window_post must be greater than 30.")
+        
+        if window_pre < window_post:
+            raise ValueError("window_pre must be greater than or equal to window_post.")
+        
+        if not isinstance(alpha, float) or not (0 < alpha < 0.1):
+            raise ValueError("alpha must be a float between 0 and 0.1.")
+        
         self.window_pre = window_pre
         self.window_post = window_post
         self.warmup_period = window_pre + window_post
