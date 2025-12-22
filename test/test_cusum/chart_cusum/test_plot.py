@@ -36,6 +36,8 @@ def test_cusum_plot_change_points(mocker, detector):
         data, color="blue", label="Data", linestyle="--"
     )
 
+    assert mock_legend.call_count == 2
+    assert mock_axvline.call_count == len(change_points)
     mock_axvline.assert_called()
     mock_xlabel.assert_called()
     mock_ylabel.assert_called()

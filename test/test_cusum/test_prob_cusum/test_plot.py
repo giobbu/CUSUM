@@ -7,7 +7,7 @@ def test_cusum_plot_change_points(mocker, detector):
 
     data = np.array([1, 2, 3, 4, 5])
     probabilities = np.array([0.9, 0.8, 0.02, 0.9, 0.9])
-    change_points = [2]
+    change_points = [2, 3]
 
     mock_figure = mocker.patch("source.detector.cusum.plt.figure")
     mock_subplt = mocker.patch("source.detector.cusum.plt.subplot")
@@ -33,6 +33,9 @@ def test_cusum_plot_change_points(mocker, detector):
     mock_plot.assert_any_call(
         data, color="blue", label="Data", linestyle="--"
     )
+
+    assert mock_legend.call_count == 2
+    assert mock_axvline.call_count == len(change_points)*2
 
     mock_contourf.assert_called_once()
     mock_axvline.assert_called()
