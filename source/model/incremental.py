@@ -96,3 +96,45 @@ class RecursiveLeastSquares:
             Predicted value for the observation.
         """
         return float(self.w.T @ observation)
+
+
+class RecursiveAverage:
+    """
+    Recursive Average Filter for online mean calculation.
+
+    Parameters
+    ----------
+    recursive_mean : np.ndarray, optional
+        Initial recursive mean.
+    num_iterations : int, optional
+        Initial number of iterations.
+    """
+    def __init__(self, recursive_mean: np.ndarray = None, num_iterations: int = 0) -> None:
+        """
+        Initialize the RecursiveAverage object.
+        
+        Parameters
+        ----------
+        recursive_mean : np.ndarray, optional
+            Initial recursive mean.
+        num_iterations : int, optional
+            Initial number of iterations.
+        """
+        self.recursive_mean = recursive_mean
+        self.num_iterations = num_iterations
+
+    def update(self, observation: np.ndarray) -> None:
+        """
+        Update the recursive mean with a new observation.
+        
+        Parameters
+        ----------
+        observation : np.ndarray
+            New observation to update the mean.
+        """
+        self.num_iterations += 1
+        if self.recursive_mean is None:
+            self.recursive_mean = observation
+        else:
+            alpha = (self.num_iterations-1)/self.num_iterations  # alpha depends on the number of points, it is not free
+            self.recursive_mean = alpha*self.recursive_mean + (1-alpha)*observation
