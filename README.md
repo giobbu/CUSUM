@@ -149,7 +149,7 @@ pc1_detector.plot_change_points(data_streams=data_streams_arr,
 ```
 ![Image Alt Text](img/readme_pc1_cusum.png)
 
-##### **Diagnbostic**: Plot variable contributions
+##### **Diagnostic**: Plot variable contributions
 ```python 
 # get contributions
 list_contributions = pc1_detector.get_contributions()

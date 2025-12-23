@@ -8,7 +8,6 @@ def test_cusum_plot_change_points(mocker, detector):
     pos_changes = [0, 1, 2, 1, 0]
     neg_changes = [0, -1, -2, -1, 0]
 
-    # PATCH matplotlib NEL MODULO
     mock_figure = mocker.patch("source.detector.cusum.plt.figure")
     mock_subplot = mocker.patch("source.detector.cusum.plt.subplot")
     mock_plot = mocker.patch("source.detector.cusum.plt.plot")
@@ -25,6 +24,7 @@ def test_cusum_plot_change_points(mocker, detector):
         neg_changes=neg_changes,
     )
 
+    
     assert mock_subplot.call_count == 2
     mock_plot.assert_any_call(
         data, color="blue", label="Data", linestyle="--"
