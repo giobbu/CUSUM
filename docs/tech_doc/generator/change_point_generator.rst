@@ -25,12 +25,12 @@ Example Usage
    # Generate synthetic data
    generator.generate_data()
 
-   # Add a gradual drift change point
-   generator.add_gradual_drift(mean_start=10, mean_end=50, std_dev=5, change_point_index=800)
-
    # Plot generated data
    generator.plot_data()
 
-   # Generate data with random NaNs
-   data_with_nans = generator.generate_random_nans(nan_percentage=0.05)
-   generator.plot_data_with_nans(data_with_nans)
+**Plotting**
+
+.. image:: ../../_static/images/generator.png
+   :alt: Data Generator
+   :align: center
+   :width: 600px
