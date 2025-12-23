@@ -15,8 +15,9 @@ The CUSUM repository contains multiple change point detectors for sequential ana
 2. [Getting Started](#2-getting-started)
 3. [Documentation](#3-documentation)
 4. [Examples](#4-examples)
-    * [Univariate Case](#41-univariate-case)
-    * [Multivariate Case](#42-multivriate-case)
+    * 4.1. [Univariate Case](#41-univariate-case)
+    * 4.2. [Multivariate Case](#42-multivariate-case)
+    * 4.3. [ML Performance Monitoring](#43-ml-performance-monitoring)
 5. [License](#5-license)
 
 ## 0. Overview
@@ -158,6 +159,18 @@ pc1_detector.plot_contributions(list_contributions=list_contributions)
 ```
 ![Image Alt Text](img/readme_contrib_pc1.png)
 
+### 4.3 ML Performance Monitoring
+
+Performance Monitoring of an instance-based ML model applying the CUSUM algorithm.
+For each time step:
+
+* Generate a prediction with recursive least squares (RLS) model;
+* Retrieve the true observed value;
+* Compute residual;
+* Apply the CUSUM detector on the residuals to identify potential change points;
+* Update the model parameters with the new data instance.
+
+![Image Alt Text](img/monitoring.gif)
 
 ## 5. License
 This project is licensed under the GPL-3.0 license - see the [LICENSE](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file) file for details.
