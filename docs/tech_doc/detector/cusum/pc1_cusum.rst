@@ -8,7 +8,7 @@ PC1 CUSUM Detector
    :special-members: __init__
 
 Example Usage
---------
+-------------
 
 **Generate multiple data streams**
 
