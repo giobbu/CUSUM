@@ -1,6 +1,7 @@
 .env
 .coverage
 htmlcov/
+notebooks/*
 
 
 docs/_build/html
