@@ -10,7 +10,7 @@ Chart CUSUM Detector
 Examples 
 --------
 
-**Online Detection**
+**Instance-based Detection**
 
 .. code-block:: python
 
@@ -24,7 +24,7 @@ Examples
         print(f"Change Detected: {is_change} \n -CUSUM: {cusum[0]}, \n -Upper Limit: {upper_limit[0]}, \n -Lower Limit: {lower_limit[0]}")
 
 
-**Offline Detection**
+**Batch-based Detection**
 
 .. code-block:: python
 
