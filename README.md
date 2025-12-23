@@ -14,8 +14,10 @@ The CUSUM repository contains multiple change point detectors for sequential ana
 1. [CUSUM Detectors](#1-cusum-detectors)
 2. [Getting Started](#2-getting-started)
 3. [Documentation](#3-documentation)
-4. [Example](#5-example)
-5. [License](#4-license)
+4. [Examples](#4-examples)
+    * [Univariate Case](#41-univariate-case)
+    * [Multivariate Case](#42-multivriate-case)
+5. [License](#5-license)
 
 ## 0. Overview
 
@@ -56,9 +58,11 @@ uv sync
 Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io/en/latest/)
 
 
-## 4. Example
+## 4. Examples
 
 The CUSUM detector monitors the cumulative sum of deviations between observed data points and a reference value. When the cumulative sum exceeds a predefined threshold, it signals the presence of a change point.
+
+### 4.1 Univariate Case
 
 #### Generate Data
 ```python
@@ -104,7 +108,7 @@ cusum_detector.plot_change_points(data_stream,
 
 ![Image Alt Text](img/readme_cusum.png)
 
-#### c. Multivariate Detection with PCA and CUSUM
+### 4.2 Multivariate Case
 
 ##### Generate multiple data streams
 ```python 
@@ -145,7 +149,7 @@ pc1_detector.plot_change_points(data_streams=data_streams_arr,
 ```
 ![Image Alt Text](img/readme_pc1_cusum.png)
 
-##### Plot variable contribution to detected change points
+##### **Diagnbostic**: Plot variable contributions
 ```python 
 # get contributions
 list_contributions = pc1_detector.get_contributions()
@@ -153,6 +157,8 @@ list_contributions = pc1_detector.get_contributions()
 pc1_detector.plot_contributions(list_contributions=list_contributions)
 ```
 ![Image Alt Text](img/readme_contrib_pc1.png)
+
+
 ## 5. License
 This project is licensed under the GPL-3.0 license - see the [LICENSE](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file) file for details.
 
