@@ -7,3 +7,4 @@ This module contains filter methods for smoothing time series data.
    :maxdepth: 1
 
    avg_filter
+   low_filter
