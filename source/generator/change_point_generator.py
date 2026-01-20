@@ -166,13 +166,13 @@ class ChangePointGenerator:
         plt.grid(True)
         plt.show()
 
-    def generate_random_nans(self, nan_percentage):
+    def generate_point_nans(self, percentage):
         """
         Generate data with a specified percentage of NaN values.
 
         Parameters
         ----------
-        nan_percentage : float
+        percentage : float
             Percentage of NaN values to introduce in the data (between 0 and 1).
         
         Returns
@@ -181,11 +181,11 @@ class ChangePointGenerator:
             Data with NaN values introduced.
         """
 
-        if not 0 <= nan_percentage <= 1:
+        if not 0 <= percentage <= 1:
             raise ValueError("nan_percentage must be between 0 and 1.")
 
         array_size = len(self.data)
-        num_nan = int(array_size * nan_percentage)
+        num_nan = int(array_size * percentage)
 
         nan_indices = np.random.choice(array_size, size=num_nan, replace=False)
         data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
@@ -193,7 +193,7 @@ class ChangePointGenerator:
 
         return data_with_nans
 
-    def generate_no_random_nans(self, percentage, min_block_size, max_block_size):
+    def generate_block_nans(self, percentage, min_block_size, max_block_size):
         """
         Generate data with NaN values in contiguous blocks.
         
