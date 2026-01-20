@@ -1,12 +1,12 @@
 Recursive Average Filter
 ========================
 
-The Recursive Average Filter is a simple yet effective technique used in signal processing and time series analysis to smooth out short-term fluctuations and highlight longer-term trends or cycles. It works by averaging the current data point with the previous average, thereby creating a smoothed version of the original signal.
+The Recursive Average Filter is a simple yet effective signal-processing technique that incrementally computes the average when the data volume is too large to process in a single pass or when data arrive as a stream.
 
 Recursive Average Filter classes
 ---------------------------------
 
-.. autoclass:: source.model.incremental.RecursiveAverage
+.. autoclass:: source.smoother.incremental.RecursiveAverage
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ Example Usage
       import numpy as np
       import matplotlib.pyplot as plt
       from source.generator.change_point_generator import ChangePointGenerator
-      from source.model.incremental import RecursiveAverage
+      from source.smoother.incremental import RecursiveAverage
 
       # Generate time series data with change points
       generator = ChangePointGenerator(num_segments=3, 

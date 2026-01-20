@@ -8,3 +8,4 @@ This module contains filter methods for smoothing time series data.
 
    avg_filter
    low_filter
+   roll_filter

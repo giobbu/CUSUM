@@ -6,7 +6,7 @@ The Low Pass Filter is a fundamental tool in signal processing used to remove hi
 Low Pass Filter classes
 -----------------------
 
-.. autoclass:: source.model.incremental.LowPassFilter
+.. autoclass:: source.smoother.incremental.LowPassFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ Example Usage
     import numpy as np
     import matplotlib.pyplot as plt
     from source.generator.change_point_generator import ChangePointGenerator
-    from source.model.incremental import LowPassFilter
+    from source.smoother.incremental import LowPassFilter
 
     # Generate time series data with change points
     generator = ChangePointGenerator(num_segments=3, 
