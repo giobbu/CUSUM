@@ -2,28 +2,14 @@ import numpy as np
 
 class RecursiveAverage:
     """
-    Recursive Average Filter for online mean calculation.
-
-    Parameters
-    ----------
-    recursive_mean : np.ndarray, optional
-        Initial recursive mean.
-    num_iterations : int, optional
-        Initial number of iterations.
+    Recursive Average Filter for incremental average computation.
     """
-    def __init__(self, recursive_mean: np.ndarray = None, num_iterations: int = 0) -> None:
+    def __init__(self) -> None:
         """
         Initialize the RecursiveAverage object.
-        
-        Parameters
-        ----------
-        recursive_mean : np.ndarray, optional
-            Initial recursive mean.
-        num_iterations : int, optional
-            Initial number of iterations.
         """
-        self.recursive_mean = recursive_mean
-        self.num_iterations = num_iterations
+        self.recursive_mean = None
+        self.num_iterations = 0
 
     def update(self, observation: np.ndarray) -> None:
         """
@@ -67,28 +53,20 @@ class LowPassFilter:
 
     Parameters
     ----------
-    lowpass_mean : np.ndarray, optional
-        Initial low-pass mean.
-    num_iterations : int, optional
-        Initial number of iterations.
     alpha : float, optional
         Smoothing factor between 0 and 1.
     """
-    def __init__(self, lowpass_mean: np.ndarray = None, num_iterations: int = 0, alpha: float = 0.999) -> None:
+    def __init__(self, alpha: float = 0.999) -> None:
         """
         Initialize the LowPassFilter object.
         
         Parameters
         ----------
-        lowpass_mean : np.ndarray, optional
-            Initial low-pass mean.
-        num_iterations : int, optional
-            Initial number of iterations.
         alpha : float, optional
             Smoothing factor between 0 and 1.
         """
-        self.lowpass_mean = lowpass_mean
-        self.num_iterations = num_iterations
+        self.lowpass_mean = None
+        self.num_iterations = 0
         self.alpha = alpha
 
     def update(self, observation: np.ndarray) -> None:
