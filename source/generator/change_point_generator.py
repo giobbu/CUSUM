@@ -244,7 +244,7 @@ class ChangePointGenerator:
             Data with NaN values to plot.
         """
         plt.figure(figsize=(25, 5))
-        plt.plot(data_with_nans, color='red', label='Time Series Data with NaNs')
+        plt.plot(data_with_nans, label='Time Series Data with NaNs')
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.title('Generated Time Series Data with NaNs')
