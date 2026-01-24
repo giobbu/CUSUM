@@ -10,12 +10,16 @@ release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
 
+autosummary_generate = True  # Automatically generate summary tables
+autoclass_content = "both"  # Include both class docstring and __init__ docstring
+
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.napoleon",
+    "sphinx.ext.napoleon"
 ]
 autosummary_generate = True  # Automatically generate summary tables
+
 
 templates_path = ['_templates']
 exclude_patterns = []

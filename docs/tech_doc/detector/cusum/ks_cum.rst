@@ -1,7 +1,5 @@
-
-
-KS-CUM Detector
----------------
+KS-CUM Detector Class
+---------------------
 
 .. autoclass:: source.detector.cusum.KS_CUM_Detector
    :members:
