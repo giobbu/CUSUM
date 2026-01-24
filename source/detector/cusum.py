@@ -6,7 +6,9 @@ from scipy import stats
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-class CUSUM_Detector:
+from source.detector.abstract import Cusum
+
+class CUSUM_Detector(Cusum):
     """
     CUSUM Change Point Detector.
 
@@ -218,7 +220,7 @@ class CUSUM_Detector:
 
 
 
-class ProbCUSUM_Detector:
+class ProbCUSUM_Detector(Cusum):
     """
     Probabilistic CUSUM Change Point Detector. A class to detect change points in sequential data using a probabilistic approach based on the CUSUM algorithm.
 
@@ -430,7 +432,7 @@ class ProbCUSUM_Detector:
         plt.show()
 
 
-class ChartCUSUM_Detector:
+class ChartCUSUM_Detector(Cusum):
     """
     Change Point Detector using CUSUM Control Chart. A class to detect change points in sequential data using the CUSUM Control Chart algorithm.
     
@@ -501,9 +503,9 @@ class ChartCUSUM_Detector:
         """
         self._update_data(observation)
         if self.current_t == self.warmup_period:
-            self._init_chart_stats()
+            self._init_params()
         if self.current_t > self.warmup_period:
-            self._update_chart_stats()
+            self._update_params()
             is_changepoint = self._detect_changepoint()
             if is_changepoint:
                 self._reset()
@@ -533,9 +535,9 @@ class ChartCUSUM_Detector:
         self.current_t += 1
         self.current_obs.append(observation)
 
-    def _init_chart_stats(self):
+    def _init_params(self):
         """
-        Initializes the parameters required for CUSUM computation.
+        Initializes the parameters required for CUSUM Control Chart computation.
         """
         if not self.target_mean:
             self.window_mean = np.nanmean(np.array(self.current_obs))
@@ -552,7 +554,7 @@ class ChartCUSUM_Detector:
         self.upper = 0
         self.lower = 0
 
-    def _update_chart_stats(self):
+    def _update_params(self):
         """
         Updates the chart statistics after receiving a new data point.
         """
@@ -662,7 +664,7 @@ class ChartCUSUM_Detector:
         plt.show()
 
 
-class KS_CUM_Detector:
+class KS_CUM_Detector(Cusum):
     """ 
     A class to detect change points in sequential data using the Kolmogorov-Smirnov Test, loosley named Kolmogorov-Smirnov 
     Cumulative Sum (KS-CUM) algorithm.
