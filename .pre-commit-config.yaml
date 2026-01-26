@@ -18,3 +18,10 @@ repos:
         entry: pytest  # Adjust this line if you're using a different command to run tests
         language: system
         pass_filenames: false
+
+      - id: docs-build
+        name: Build Sphinx docs (make html)
+        entry: make -C docs html
+        language: system
+        pass_filenames: false
+        files: ^docs/
