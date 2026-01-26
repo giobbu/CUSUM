@@ -17,12 +17,15 @@ Example Usage
 .. code-block:: python
 
       from source.model.incremental import RecursiveLeastSquares
+      import numpy as np
    
       # Initialize model
       model = RecursiveLeastSquares(num_features=3, lambda_factor=0.99, delta=1.0)
    
       # Simulate streaming data
       for _ in range(100):
+      
+         # Generate random data
          X_new = np.random.rand(1, 3)  # New feature vector
          y_new = np.random.rand().reshape(-1, 1)  # New target value
    
