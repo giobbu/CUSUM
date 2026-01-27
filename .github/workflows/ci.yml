@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - dev
-
+  workflow_dispatch:
 
 jobs:
   tests-main:
