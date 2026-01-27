@@ -4,7 +4,7 @@ repos:
     rev: v4.4.0
     hooks:
       - id: check-added-large-files
-        args: ['--maxkb=5000']  # Set max file size to 5000 KB
+        args: ['--maxkb=30000']  # Set max file size to 30MB
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
