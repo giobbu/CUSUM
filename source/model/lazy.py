@@ -111,7 +111,7 @@ class WeightedKNN:
         x_query : numpy array
             Query observation vector.
         take : str
-            Method to aggregate neighbor labels ("mean" supported).
+            Method to aggregate neighbor labels ("mean" or "weighted_mean").
 
         Returns
         -------
@@ -127,5 +127,11 @@ class WeightedKNN:
         if take == "mean":
             prediction = np.mean(knn_labels)
             return prediction
+        elif take == "weighted_mean":
+            knn_weights = weights[knn_indices]
+            prediction = np.sum(knn_labels * knn_weights) / np.sum(knn_weights)
+            return prediction
         else:
             raise ValueError("Unsupported aggregation method.")
+
+
