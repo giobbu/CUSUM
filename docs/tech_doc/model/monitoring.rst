@@ -4,7 +4,7 @@ Performance Monitoring with CUSUM
 This section covers how to apply CUSUM detection algorithms for monitoring the performance drifts of instance-based learning models in real-time.
 
 .. note::
-    See the `Notebook <https://github.com/giobbu/CUSUM/blob/main/notebooks/example_ml_monitoring.ipynb>`_ for code implementation details.
+    See the `Notebook <https://github.com/giobbu/CUSUM/blob/main/notebooks/notebook_rls_monitoring.ipynb>`_ for code implementation details.
 
 Performance Monitoring
 ----------------------------

@@ -3,6 +3,8 @@
 htmlcov/
 notebooks/*
 
+!notebooks/notebook_rls_monitoring.ipynb
+
 
 docs/_build/html
 docs/_build/doctrees
