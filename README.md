@@ -1,4 +1,5 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Documentation Status](https://readthedocs.org/projects/CUSUM/badge/?version=latest)](https://CUSUM.readthedocs.io/en/latest/)
 [![pytest](https://github.com/giobbu/CUSUM/actions/workflows/ci.yml/badge.svg)](https://github.com/giobbu/CUSUM/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/giobbu/CUSUM/branch/main/graph/badge.svg)](https://codecov.io/gh/giobbu/CUSUM)
 ![Status](https://img.shields.io/badge/status-development-orange)
@@ -52,8 +53,6 @@ uv sync
 
 ## 3. Documentation
 
-[![Documentation Status](https://readthedocs.org/projects/CUSUM/badge/?version=latest)](https://CUSUM.readthedocs.io/en/latest/)
-
 Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io/en/latest/)
 
 
@@ -74,7 +73,7 @@ Check notebook here - [Notebook](notebooks/notebook_rls_monitoring.ipynb)
 ![Image Alt Text](img/monitoring.gif)
 
 ## 5. License
-This project is licensed under the GPL-3.0 license - see the [LICENSE](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file) file for details.
+This project is under the [GPL-3.0 license](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file).
 
 
 
