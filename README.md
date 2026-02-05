@@ -15,7 +15,7 @@ The CUSUM repository contains multiple change point detectors for sequential ana
 1. [CUSUM Detectors](#1-cusum-detectors)
 2. [Getting Started](#2-getting-started)
 3. [Documentation](#3-documentation)
-4. [Example: ML Model Performance Monitoring](#4-example-ml-model-performance-monitoring)
+4. [Examples](#4-examples)
 5. [License](#5-license)
 
 ## 0. Overview
@@ -53,17 +53,19 @@ uv sync
 
 ## 3. Documentation
 
-Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io/en/latest/)
+Documentation is available at [CUSUM Docs](https://CUSUM.readthedocs.io/en/latest/)
 
 
-## 4. Example: ML Model Performance Monitoring
+## 4. Examples: 
+
+### a) ML Model Performance Monitoring with Observed Labels
 
 Performance Monitoring of an instance-based linear learning model applying the CUSUM algorithm.
 
 At each time step: 
 
 * Generate a prediction with recursive least squares (RLS) model;
-* Acquire the true observed value (if you are lucky);
+* Acquire the true observed value;
 * Compute residual;
 * Apply the CUSUM detector on the residuals to identify potential change points;
 * Update the model parameters with the new data instance.
