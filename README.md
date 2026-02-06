@@ -62,6 +62,12 @@ Documentation is available at [CUSUM Docs](https://CUSUM.readthedocs.io/en/lates
 
 Performance Monitoring of an instance-based linear learning model applying the CUSUM algorithm.
 
+<img src="img/schema_monitoring.png"
+     alt="Image Alt Text"
+     style="display:block; margin:0 auto; width:600px; height:auto;">
+
+
+
 At each time step: 
 
 * Generate a prediction with recursive least squares (RLS) model;
