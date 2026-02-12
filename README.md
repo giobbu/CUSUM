@@ -56,16 +56,21 @@ uv sync
 Documentation is available at [CUSUM Docs](https://CUSUM.readthedocs.io/en/latest/)
 
 
-## 4. Examples: 
+## 4. Examples
 
-### a) ML Model Performance Monitoring with Observed Labels
+### A. Probabilistic CUSUM detector
+
+View details on docs - [Here](https://cusum.readthedocs.io/en/latest/tech_doc/detector/cusum/prob_cusum.html)
+
+![Image Alt Text](img/prob_cusum_monitoring.gif)
+
+### B. RLS-CUSUM detector: ML Model Performance Monitoring with Observed Labels
 
 Performance Monitoring of an instance-based linear learning model applying the CUSUM algorithm.
 
 <img src="img/schema_monitoring.png"
      alt="Image Alt Text"
      style="display:block; margin:0 auto; width:600px; height:auto;">
-
 
 
 At each time step: 
@@ -76,7 +81,7 @@ At each time step:
 * Apply the CUSUM detector on the residuals to identify potential change points;
 * Update the model parameters with the new data instance.
 
-Check notebook here - [Notebook](notebooks/notebook_rls_monitoring.ipynb)
+View details on notebook - [Here](notebooks/notebook_rls_monitoring.ipynb)
 
 ![Image Alt Text](img/monitoring.gif)
 
