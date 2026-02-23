@@ -13,6 +13,11 @@ Add `kafka-python` module from within `/app`:
 uv add kafka-python
 ```
 
+Add `prometheus-client` module
+```bash
+uv add prometheus-client
+```
+
 From within `/mlops` build image and run the container in detached mode:
 
 ```bash
