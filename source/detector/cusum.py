@@ -219,6 +219,217 @@ class CUSUM_Detector(Cusum):
         plt.show()
 
 
+class PHTest_Detector(Cusum):
+    """
+    Page-Hinkley Test Change Point Detector. A class to detect change points in sequential data using the Page-Hinkley CUSUM algorithm.
+    
+    Parameters
+    ----------
+    warmup_period : int
+        The warmup period for the detector. Must be equal or greater than 10.
+    delta : float
+        Sensitivity parameter for detecting changes.
+    threshold : float
+        Threshold for detecting a change point."""
+
+    def __init__(self, warmup_period:int=10, delta:int=10, threshold:int=20):
+        """
+        Initializes the Page-Hinkley Test Detector with the specified parameters.
+        
+        Parameters
+        ----------
+        warmup_period : int
+            The warmup period for the detector. Must be equal or greater than 10.
+        delta : float
+            Sensitivity parameter for detecting changes.
+        threshold : float
+            Threshold for detecting a change point.
+        
+        Raises
+        ------
+        ValueError            If warmup_period < 10.
+        """
+        if not isinstance(warmup_period, int) or warmup_period < 10:
+            raise ValueError("warmup_period must be equal or greater than 10.")
+        self.warmup_period = warmup_period
+        self.delta = delta
+        self.threshold = threshold
+        self._reset()
+
+    def __str__(self):
+        return f"PH_CUSUM_Detector(warmup_period={self.warmup_period}, delta={self.delta}, threshold={self.threshold})"
+
+    def detection(self, observation:float):
+        """
+        Predicts the next data point and detects change points.
+        
+        Parameters
+        ----------
+        observation : float
+            The next data point to predict.
+        
+        Returns
+        -------
+        PH_stat_pos : numpy.ndarray
+            The positive Page-Hinkley statistic.
+        PH_stat_neg : numpy.ndarray
+            The negative Page-Hinkley statistic.
+        is_changepoint : bool
+            Indicates if a change point is detected.
+        """
+        self._update_data(observation)
+        if self.current_t < self.warmup_period:
+            self._set_testvar2zero()
+        if self.current_t == self.warmup_period:
+            self._init_params()
+            self._set_testvar2zero()
+        if self.current_t > self.warmup_period:
+            self._compute_ph_test()
+            is_changepoint = self._detect_changepoint()
+            if is_changepoint:
+                self._reset()
+            return self.PH_stat_pos, self.PH_stat_neg, is_changepoint
+        else:
+            return self.PH_stat_pos, self.PH_stat_neg, False
+        
+    def _set_testvar2zero(self):
+        """
+        Resets the Page-Hinkley test variables to zero.
+        """
+        self.S_pos = np.array([0])
+        self.S_neg = np.array([0])
+        self.Min_pos = np.array([0])
+        self.Min_neg = np.array([0])
+        self.PH_stat_pos = np.array([0])
+        self.PH_stat_neg = np.array([0])
+
+    def _reset(self):
+        """
+        Resets the internal state of the detector.
+        """
+        self.current_t = 0
+        self.current_mean = 0
+        self.current_std = 0
+        self.current_obs = []
+        self._set_testvar2zero()
+
+    def _update_data(self, observation: float):
+        """
+        Updates the observed data with new data points.
+        
+        Parameters
+        ----------
+        observation : float
+            The new data point to update.
+        """
+        self.current_t += 1
+        self.current_obs.append(observation)
+
+    def _init_params(self):
+        """
+        Initializes the parameters required for Page-Hinkley Test computation.
+        """
+        self.current_mean = np.nanmean(np.array(self.current_obs))
+        self.current_std = np.nanstd(np.array(self.current_obs))
+        # if math.isnan(self.current_mean) or math.isnan(self.current_std):
+        #     raise ValueError("Mean or standard deviation cannot be NaN")
+
+    def _compute_ph_test(self):
+        """
+        Computes the Page-Hinkley test statistics for positive and negative changes.
+        """
+        self.dev = (self.current_obs[-1] - self.current_mean) / self.current_std
+        self.S_pos = max(np.array([0]), self.S_pos + self.dev - self.delta)
+        self.S_neg = max(np.array([0]), self.S_neg - self.dev - self.delta)
+        self.Min_pos = min(self.Min_pos, self.S_pos)
+        self.Min_neg = min(self.Min_neg, self.S_neg)
+        self.PH_stat_pos = self.S_pos - self.Min_pos
+        self.PH_stat_neg = self.S_neg - self.Min_neg
+
+    def _detect_changepoint(self):
+        """
+        Detects change points based on the computed Page-Hinkley statistics.
+        """
+        if self.PH_stat_pos > self.threshold or self.PH_stat_neg > self.threshold:
+            return True
+        else:
+            return False
+
+    def offline_detection(self, data: np.ndarray):
+        """
+        Detects change points in the given data in an offline manner.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Data points to be analyzed.
+        
+        Returns
+        -------
+        results : dict
+            A dictionary containing:
+            - 'pos_changes': numpy.ndarray of positive Page-Hinkley statistics.
+            - 'neg_changes': numpy.ndarray of negative Page-Hinkley statistics.
+            - 'is_drift': list of booleans indicating detected change points.
+            - 'change_points': numpy.ndarray of detected change point indices.
+        """
+        if not isinstance(data, np.ndarray):
+            raise ValueError("data must be a numpy array.")
+        
+        if len(data) < self.warmup_period:
+            raise ValueError("Data length must be greater than or equal to warmup_period.")
+        
+        results = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
+        pos_changes = np.vstack([row[0] for row in results])
+        neg_changes = np.vstack([row[1] for row in results])
+        is_drift = [row[2] for row in results]
+        change_points = np.array([i for i, drift in enumerate(is_drift) if drift])
+        results = {"pos_changes": pos_changes,
+                   "neg_changes": neg_changes,
+                   "is_drift": is_drift,
+                   "change_points": change_points}
+        return results
+
+    def plot_change_points(self, data: np.ndarray, change_points: list, pos_changes: list, neg_changes: list):
+        """
+        Plots data with detected change points and Page-Hinkley statistics.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Original data points.
+        change_points : list
+            List of detected change points.
+        pos_changes : list
+            List of positive Page-Hinkley statistics.
+        neg_changes : list
+            List of negative Page-Hinkley statistics.
+        """
+        plt.figure(figsize=(20, 8))
+        plt.subplot(2, 1, 1)
+        plt.plot(data, color='blue', label='Data', linestyle="--")
+        if len(change_points) != 0:
+            plt.axvline(change_points[0], color="red", linestyle="dashed", label='Change Points', lw=2)
+            for cp in change_points[1:]:
+                plt.axvline(cp, color="red", linestyle="dashed", lw=2)
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.title('Sequential CUSUM Change Point Detection')
+        plt.legend()
+        plt.grid(True)
+
+        plt.subplot(2, 1, 2)
+        plt.axhline(self.threshold , color="red", linestyle="dashed", lw=2)
+        plt.plot(pos_changes, color='green', label='Page-Hinkley Positive Cumulative Sum')
+        plt.plot(neg_changes, color='orange', label='Page-Hinkley Negative Cumulative Sum')
+        plt.xlabel('Time')
+        plt.ylabel('Page-Hinkley Cumulative Sum')
+        plt.legend()
+        plt.grid(True)
+
+        plt.tight_layout()
+        plt.show()
+
 
 class ProbCUSUM_Detector(Cusum):
     """
@@ -406,26 +617,28 @@ class ProbCUSUM_Detector(Cusum):
         # Plot the data
         plt.subplot(2, 1, 1)
         plt.plot(data, color='blue', label='Data', linestyle="--")
-        X, Y = np.meshgrid(np.arange(len(data)), np.linspace(0, max(data)))
+        X, Y = np.meshgrid(np.arange(len(data)), np.linspace(min(data), max(data)))
         Z = probabilities[X]
-        plt.contourf(X, Y, Z, alpha=0.1, cmap="Greys")
+        plt.contourf(X, Y, Z, alpha=0.3, cmap="Greys", levels=50)
         if len(change_points) != 0:
             for cp in change_points:
                 plt.axvline(cp, color="red", linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
         plt.xlabel('Time')
         plt.ylabel('Value')
-        plt.title('Sequential Probabilistic CUSUM Change Point Detection')
+        plt.title('Probabilistic CUSUM Detection')
         plt.legend()
         plt.grid(True)
+
         # Plot the probabilities
         plt.subplot(2, 1, 2)
         plt.axhline((1-self.threshold_probability), color="red", alpha=0.5, linestyle="dashed", lw=2)
-        plt.plot(probabilities, color='gray', alpha=0.5, label='Alert Probability')
+        plt.plot(probabilities, color='red', alpha=0.2, label='Alert Probability')
+        plt.fill_between(np.arange(len(probabilities)), probabilities, color='red', alpha=0.2)
         if len(change_points) != 0:
             for cp in change_points:
-                plt.axvline(cp, color="red", alpha=0.5, linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
+                plt.axvline(cp, color="red", alpha=0.2, linestyle="dashed", lw=2, label='Change Points' if cp == change_points[0] else None)
         plt.xlabel('Time')
-        plt.ylabel('Alert Probability')
+        plt.ylabel('Probability of Change Point')
         plt.legend()
         plt.grid(True)
         plt.tight_layout()

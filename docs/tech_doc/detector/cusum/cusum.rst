@@ -10,6 +10,7 @@ Cusum Detector Classes
    :maxdepth: 1
 
    vanilla_cusum
+   ph_test
    prob_cusum
    chart_cusum
    ks_cum
