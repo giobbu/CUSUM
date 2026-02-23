@@ -81,3 +81,8 @@ root@ab4b47be275a:/app# uv run consumer.py
 2026-02-19 16:10:11.020 | INFO     | __main__:<module>:15 - Received: {'number': 9} at 2026-02-19 16:10:11.020136
 ```
 
+**Debugging**
+processes listening to port `:8000`
+```bash
+lsof -nP -i:8000 | grep LISTEN
+```
