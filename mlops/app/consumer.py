@@ -16,7 +16,7 @@ consumer = KafkaConsumer(
 
 delay_histogram = Gauge('message_delay_seconds', 'Delay in seconds between message sent and received' )
 
-observation_histogram = Gauge('message_number_observation', 'Observed message number')
+observation_histogram = Gauge('message_observations', 'Observed message number')
 
 # Start Prometheus metrics server on port 8000
 start_http_server(8000)

@@ -34,9 +34,11 @@ List running containers:
 ```bash
 docker container list
 
-CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                    NAMES
-2c6b0d0fcddd   mlops-app             "python3"                16 seconds ago   Up 15 seconds                            app
-a5f3b442c34a   apache/kafka:latest   "/__cacert_entrypoin…"   16 seconds ago   Up 15 seconds   0.0.0.0:9092->9092/tcp   broker
+CONTAINER ID   IMAGE                 COMMAND                  CREATED        STATUS        PORTS                    NAMES
+4c0745216a04   grafana/grafana       "/run.sh"                27 hours ago   Up 27 hours   0.0.0.0:3000->3000/tcp   grafana
+311bb81142c2   prom/prometheus       "/bin/prometheus --c…"   27 hours ago   Up 27 hours   0.0.0.0:9090->9090/tcp   prometheus
+ab1ac2bdef46   mlops-app             "python3"                27 hours ago   Up 27 hours   0.0.0.0:8000->8000/tcp   app
+6f1717e4ba88   apache/kafka:latest   "/__cacert_entrypoin…"   27 hours ago   Up 27 hours   0.0.0.0:9092->9092/tcp   broker
 ```
 
 Open a command terminal on the `mlops-app` container:
@@ -48,7 +50,7 @@ root@2c6b0d0fcddd:/app# ls
 consumer.py  producer.py
 ```
 
-Run `producer.py`:
+Execute `producer.py`:
 
 ```bash
 root@ab4b47be275a:/app# uv run producer.py 
@@ -65,7 +67,7 @@ root@ab4b47be275a:/app# uv run producer.py
 2026-02-19 16:10:02.150 | INFO     | __main__:<module>:15 - Sent: {'number': 9} at 2026-02-19 16:10:02.150500
 ```
 
-Once finished, run `consumer.py`:
+Open another terminal and execute `consumer.py`:
 
 ```bash
 root@ab4b47be275a:/app# uv run consumer.py 
@@ -80,6 +82,9 @@ root@ab4b47be275a:/app# uv run consumer.py
 2026-02-19 16:10:11.020 | INFO     | __main__:<module>:15 - Received: {'number': 8} at 2026-02-19 16:10:11.020122
 2026-02-19 16:10:11.020 | INFO     | __main__:<module>:15 - Received: {'number': 9} at 2026-02-19 16:10:11.020136
 ```
+
+Open Prometheus UI at `http://0.0.0.0:9090/query` and Grafana at `http://0.0.0.0:3000/login`
+
 
 **Debugging**
 processes listening to port `:8000`
