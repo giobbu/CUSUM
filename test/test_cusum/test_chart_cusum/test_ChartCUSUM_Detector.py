@@ -1,11 +1,6 @@
 import numpy as np
 import pytest
 
-def test_detect_change_points_with_invalid_data_type(detector):
-    """Test detect_change_points method with invalid data type."""
-    data = [12.3, 14.5, 15.6, 16.8, 17.9]
-    with pytest.raises(ValueError):
-        detector.offline_detection(data)
 
 def test_detection_before_warmup_period(detector):
     """Test detection method before reaching the warmup period."""
@@ -59,3 +54,33 @@ def test_detection_after_warmup_period_with_changepoint(detector):
     upper_limits, lower_limits, cusums, is_changepoints = zip(*results)
     # Assertion for a changepoint
     assert any(is_cp for is_cp in is_changepoints)
+
+
+def test_offline_detection_with_invalid_data_type(detector):
+    """Test offline_detection method with invalid data type."""
+    data = [12.3, 14.5, 15.6, 16.8, 17.9]
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_with_invalid_warmup_length(detector):
+    """Test offline_detection method with invalid warmup length."""
+    data = np.random.normal(0, 1, 100)
+    detector.warmup_period = 150
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_results_keys(detector):
+    """Test offline_detection method returns results with expected keys."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    expected_keys = {"upper_limits", "lower_limits", "cusums", "is_drift", "change_points"}
+    assert set(results.keys()) == expected_keys
+
+def test_offline_detection_results_length(detector):
+    """Test offline_detection method returns results of correct length."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    assert len(results["upper_limits"]) == len(data)
+    assert len(results["lower_limits"]) == len(data)
+    assert len(results["cusums"]) == len(data)
+    assert len(results["is_drift"]) == len(data)

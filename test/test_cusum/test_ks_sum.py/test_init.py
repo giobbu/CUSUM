@@ -30,3 +30,17 @@ def test_init_with_invalid_alpha():
     """Test initialization with invalid alpha."""
     with pytest.raises(ValueError):
         KS_CUM_Detector(window_pre=30, window_post=30, alpha=1.5)
+
+def test_attr_initialization():
+    """Test initialization of attributes."""
+    detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
+    # assert existance of attributes and their initial values
+    assert hasattr(detector, 'warmup_period')
+    assert hasattr(detector, 'window_post')
+    assert hasattr(detector, 'alpha')
+
+def test_methods_exist():
+    """Test existence of methods."""
+    detector = KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)
+    assert hasattr(detector, 'detection')
+    assert hasattr(detector, 'offline_detection')

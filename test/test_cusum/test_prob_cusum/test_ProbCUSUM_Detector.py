@@ -59,3 +59,31 @@ def test_detection_after_warmup_period_with_changepoint(detector):
     probabilities, is_changepoints = zip(*results)
     assert any((1 - probability) < detector.threshold_probability  for probability in probabilities)
     assert any(not is_changepoint for is_changepoint in is_changepoints)
+
+
+def test_offline_detection_with_invalid_data_type(detector):
+    """Test offline_detection method with invalid data type."""
+    data = [12.3, 14.5, 15.6, 16.8, 17.9]
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_with_invalid_warmup_length(detector):
+    """Test offline_detection method with invalid warmup length."""
+    data = np.random.normal(0, 1, 100)
+    detector.warmup_period = 150
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_results_keys(detector):
+    """Test offline_detection method returns results with expected keys."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    expected_keys = {"probabilities", "is_drift", "change_points"}
+    assert set(results.keys()) == expected_keys
+
+def test_offline_detection_results_length(detector):
+    """Test offline_detection method returns results of correct length."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    assert len(results["probabilities"]) == len(data)
+    assert len(results["is_drift"]) == len(data)

@@ -20,6 +20,11 @@ class RecursiveAverage:
         observation : np.ndarray
             New observation to update the mean.
         """
+        if not isinstance(observation, np.ndarray):
+            raise ValueError("Observation must be a numpy array.")
+        if observation.ndim != 1:
+            raise ValueError("Observation must be a 1D numpy array.")
+        
         self.num_iterations += 1
         if self.recursive_mean is None:
             self.recursive_mean = observation
@@ -41,6 +46,13 @@ class RecursiveAverage:
         list_smooth : list of np.ndarray
             List of recursive means after each observation.
         """
+        if not isinstance(observations, list):
+            raise ValueError("Observations must be a list of numpy arrays.")
+        if not all(isinstance(obs, np.ndarray) for obs in observations):
+            raise ValueError("All observations must be numpy arrays.")
+        if not all(obs.ndim == 1 for obs in observations):
+            raise ValueError("All observations must be 1D numpy arrays.")
+        
         list_smooth = []
         for observation in observations:
             self.update(observation)

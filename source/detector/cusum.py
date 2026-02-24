@@ -1035,6 +1035,10 @@ class KS_CUM_Detector(Cusum):
         """
         if not isinstance(data, np.ndarray):
             raise ValueError("data must be a numpy array.")
+        
+        if len(data) < self.warmup_period:
+            raise ValueError("Data length must be greater than or equal to warmup_period.")
+        
         results = [self.detection(point) if not math.isnan(point) else (np.array([0]), np.array([0]), False) for point in data]
         ks_statistics = np.vstack([row[0] for row in results])
         p_values = np.vstack([row[1] for row in results])

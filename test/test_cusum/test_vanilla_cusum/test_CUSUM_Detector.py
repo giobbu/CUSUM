@@ -1,11 +1,6 @@
 import pytest
 import numpy as np
 
-def test_detect_change_points_with_invalid_data_type(detector):
-    """Test detect_change_points method with invalid data type."""
-    data = [12.3, 14.5, 15.6, 16.8, 17.9]
-    with pytest.raises(ValueError):
-        detector.offline_detection(data)
 
 def test_detection_before_warmup_period(detector):
     """Test detection method before reaching the warmup period."""
@@ -54,3 +49,31 @@ def test_detection_after_warmup_period_with_changepoint(detector):
     assert any(pos_change > detector.threshold for pos_change in pos_changes)
     assert any((neg_change > detector.threshold or pos_change > detector.threshold) for neg_change, pos_change in zip(neg_changes, pos_changes))
     assert any(is_changepoint for is_changepoint in is_changepoints)
+
+def test_offline_detection_with_invalid_data_type(detector):
+    """Test offline_detection method with invalid data type."""
+    data = [12.3, 14.5, 15.6, 16.8, 17.9]
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_with_invalid_warmup_length(detector):
+    """Test offline_detection method with invalid warmup length."""
+    data = np.random.normal(0, 1, 100)
+    detector.warmup_period = 150
+    with pytest.raises(ValueError):
+        detector.offline_detection(data)
+
+def test_offline_detection_results_keys(detector):
+    """Test offline_detection method returns results with expected keys."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    expected_keys = {"pos_changes", "neg_changes", "is_drift", "change_points"}
+    assert set(results.keys()) == expected_keys
+
+def test_offline_detection_results_length(detector):
+    """Test offline_detection method returns results of correct length."""
+    data = np.random.normal(0, 1, 100)
+    results = detector.offline_detection(data)
+    assert len(results["pos_changes"]) == len(data)
+    assert len(results["neg_changes"]) == len(data)
+    assert len(results["is_drift"]) == len(data)
