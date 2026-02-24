@@ -23,13 +23,16 @@ start_http_server(8000)
 
 
 for message in consumer:
-    logger.info(f"Received: {message.value} at {time.time()}")
 
     message_number = message.value.get("number")
     sent_timestamp = message.value.get("sent_timestamp")
 
     get_delay = time.time() - sent_timestamp
-    logger.info(f"Message number: {message_number}, Sent at: {sent_timestamp}, Received at: {time.time()}, Delay: {get_delay:.2f} seconds")
+    logger.info(f"\n \
+                Value: {message_number}, \n \
+                Sent at: {sent_timestamp}, \n \
+                Received at: {time.time()}, \n \
+                Delay: {get_delay:.2f} seconds")
 
     # Update Prometheus metric delay histogram
     delay_histogram.set(get_delay)
