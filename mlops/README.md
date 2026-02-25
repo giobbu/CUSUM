@@ -1,7 +1,15 @@
 
 ## Getting Started
 
-From within `/mlops` dir copy `uv` files:
+From within `/mlops` dir copy `source/detector/*` and `uv` files:
+
+```bash
+mkdir app/detector
+```
+
+```bash
+cp -i -r ../source/detector/* ./app/detector
+```
 
 ```bash
 cp -i ../{pyproject.toml,uv.lock} ./app
