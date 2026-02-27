@@ -48,10 +48,6 @@ class RecursiveAverage:
         """
         if not isinstance(observations, list):
             raise ValueError("Observations must be a list of numpy arrays.")
-        if not all(isinstance(obs, np.ndarray) for obs in observations):
-            raise ValueError("All observations must be numpy arrays.")
-        if not all(obs.ndim == 1 for obs in observations):
-            raise ValueError("All observations must be 1D numpy arrays.")
         
         list_smooth = []
         for observation in observations:
@@ -77,6 +73,9 @@ class LowPassFilter:
         alpha : float, optional
             Smoothing factor between 0 and 1.
         """
+        if alpha <= 0 or alpha >= 1:
+            raise ValueError("Alpha must be between 0 and 1.")
+        
         self.lowpass_mean = None
         self.num_iterations = 0
         self.alpha = alpha
@@ -90,6 +89,11 @@ class LowPassFilter:
         observation : np.ndarray
             New observation to update the mean.
         """
+        if not isinstance(observation, np.ndarray):
+            raise ValueError("Observation must be a numpy array.")
+        if observation.ndim != 1:
+            raise ValueError("Observation must be a 1D numpy array.")
+        
         self.num_iterations += 1
         if self.lowpass_mean is None:
             self.lowpass_mean = observation
@@ -110,6 +114,9 @@ class LowPassFilter:
         list_smooth : list of np.ndarray
             List of low-pass means after each observation.
         """
+        if not isinstance(observations, list):
+            raise ValueError("Observations must be a list of numpy arrays.")
+        
         list_smooth = []
         for observation in observations:
             self.update(observation)
@@ -135,6 +142,8 @@ class RollingAverageFilter:
         window : int, optional
             Size of the moving window. 
         """
+        if window <= 0:
+            raise ValueError("Window size must be a positive integer.")
         self.moving_mean = None
         self.num_iterations = 0
         self.window = window
@@ -149,6 +158,11 @@ class RollingAverageFilter:
         observation : np.ndarray
             New observation to update the mean.
         """
+        if not isinstance(observation, np.ndarray):
+            raise ValueError("Observation must be a numpy array.")
+        if observation.ndim != 1:
+            raise ValueError("Observation must be a 1D numpy array.")
+        
         self.num_iterations += 1
         if (self.moving_mean==None):  # First observation
             self.moving_mean=observation
