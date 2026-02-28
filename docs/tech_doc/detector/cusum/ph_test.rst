@@ -1,5 +1,5 @@
 Page-Hinkley Test Detector Class
-----------------------------
+--------------------------------
 
 .. autoclass:: source.detector.cusum.PHTest_Detector
    :members: 

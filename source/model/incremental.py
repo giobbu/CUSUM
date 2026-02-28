@@ -59,8 +59,6 @@ class RecursiveLeastSquares:
             raise ValueError(f"Observation must have {self.num_variables} variables.")
         if observation.ndim == 1:
             raise ValueError("Observation must be a column vector.")
-        if len(label) != 1:
-            raise ValueError("Label must be a single value.")
         if not isinstance(label, float):
             raise ValueError("Label must be a float.")
         z = self.forgetting_factor_inverse * self.A @ observation

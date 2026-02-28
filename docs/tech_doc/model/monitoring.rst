@@ -16,7 +16,7 @@ Steps to monitor an instance-based model using the CUSUM algorithm:
 4. Apply the CUSUM detector on the residuals to identify potential change points.
 5. Update the model parameters with the new data instance.
 
-.. image:: ../../_static/images/monitoring.gif
+.. image:: ../../_static/images/rls_monitoring.gif
    :alt: Model Monitoring with CUSUM
    :align: center
    :width: 600px

@@ -102,7 +102,7 @@ At each time step:
 
 View details on notebook - [Here](notebooks/notebook_rls_monitoring.ipynb)
 
-![Image Alt Text](img/monitoring.gif)
+![Image Alt Text](img/rls_monitoring.gif)
 
 ## 5. License
 This project is under the [GPL-3.0 license](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file).
