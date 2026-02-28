@@ -83,9 +83,9 @@ for data in data_stream:
 
 ![Image Alt Text](img/prob_cusum_monitoring.gif)
 
-### B. RLS-CUSUM detector: ML Model Performance Monitoring with Observed Labels
+### B. RLS-CUSUM for streaming monitoring
 
-Performance Monitoring of an instance-based linear learning model applying the CUSUM algorithm.
+RLS-CUSUM based Monitoring with an instance-based linear learning model and the CUSUM detector.
 
 <img src="img/schema_monitoring.png"
      alt="Image Alt Text"
