@@ -106,6 +106,115 @@ class RecursiveLeastSquares:
         return (self.w.T @ observation)[0][0]
     
 
+class StochasticGradientDescent:
+    """
+    Stochastic Gradient Descent (SGD) algorithm for online linear regression.
+
+    Parameters
+    ----------
+    num_variables : int
+        Number of variables including the constant.
+    learning_rate : float
+        Step size (eta) for gradient updates.
+    """
+
+    def __init__(self, num_variables, learning_rate):
+        """
+        Initialize the StochasticGradientDescent object.
+
+        Parameters
+        ----------
+        num_variables : int
+            Number of variables including the constant.
+        learning_rate : float
+            Step size (eta) for gradient updates.
+        """
+
+        if num_variables <= 0:
+            raise ValueError("Number of variables must be positive.")
+        if learning_rate <= 0:
+            raise ValueError("Learning rate must be positive.")
+
+        self.num_variables = num_variables
+        self.learning_rate = learning_rate
+        self.w = np.zeros((self.num_variables, 1))
+        self.num_observations = 1
+        self.residual = np.array([0.0]).reshape(1, -1)
+        self.residual_sqr = np.array([0.0]).reshape(1, -1)
+        self.rmse = np.array([0.0]).reshape(1, -1)
+
+    def update(self, observation, label):
+        """
+        Update the model with a new observation and label.
+
+        Parameters
+        ----------
+        observation : numpy array
+            Observation column vector.
+        label : float
+            True label corresponding to the observation.
+        """
+
+        if observation.shape[0] != self.num_variables:
+            raise ValueError(f"Observation must have {self.num_variables} variables.")
+        if observation.ndim == 1:
+            raise ValueError("Observation must be a column vector.")
+        if not isinstance(label, float):
+            raise ValueError("Label must be a float.")
+
+        # Prediction
+        prediction = self.w.T @ observation
+
+        # Error
+        error = label - prediction
+
+        # SGD weight update (for squared loss)
+        self.w += self.learning_rate * observation * error
+
+        # Bookkeeping
+        self.num_observations += 1
+        self.residual = error
+        self.residual_sqr = error ** 2
+        self.rmse = np.sqrt(self.residual_sqr)
+
+    def fit(self, observations, labels):
+        """
+        Fit the model to a set of observations and labels.
+
+        Parameters
+        ----------
+        observations : list of numpy arrays
+            List of observation vectors.
+        labels : list of floats
+            List of true labels corresponding to the observations.
+        """
+
+        if len(observations) != len(labels):
+            raise ValueError("Number of observations must be equal to the number of labels.")
+
+        for i in range(len(observations)):
+            observation = np.transpose(np.matrix(observations[i]))
+            self.update(observation, labels[i])
+
+    def predict(self, observation):
+        """
+        Predict the value of a new observation.
+
+        Parameters
+        ----------
+        observation : numpy array
+            Observation column vector.
+
+        Returns
+        -------
+        prediction : float
+            Predicted value for the observation.
+        """
+
+        if observation.shape[0] != self.num_variables:
+            raise ValueError(f"Observation must have {self.num_variables} variables.")
+
+        return (self.w.T @ observation)[0][0]
 
 
 class KalmanFilter:
