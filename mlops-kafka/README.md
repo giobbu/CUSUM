@@ -1,7 +1,7 @@
 
-## Getting Started
+## Getting Started with MLOps for streaming data in Apache Kafka
 
-From within `/mlops` dir copy `source/detector/*` and `uv` files:
+From within `/mlops-kafka` dir copy `source/detector/*` and `uv` files:
 
 ```bash
 mkdir app/detector
