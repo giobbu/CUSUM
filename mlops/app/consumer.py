@@ -3,16 +3,19 @@ from loguru import logger
 import time
 from kafka import KafkaConsumer
 from prometheus_client import start_http_server, Gauge
-
+from setting.consumer import  KafkaConsumerSettings
 from detector.cusum import PHTest_Detector
 
+consumer_settings = KafkaConsumerSettings()
+
 consumer = KafkaConsumer(
-    'test-topic',
-    bootstrap_servers='broker:29092',
-    auto_offset_reset='earliest',
-    group_id='my-group',
-    value_deserializer=lambda m: json.loads(m.decode('utf-8'))
-)
+    consumer_settings.TOPIC,
+    bootstrap_servers=consumer_settings.BOOTSTRAP_SERVERS,
+    auto_offset_reset=consumer_settings.AUTO_OFFSET_RESET,
+    group_id=consumer_settings.GROUP_ID,
+    value_deserializer=lambda m: json.loads(m.decode(consumer_settings.UTF8_DECODER)
+                                            )
+    )
 
 delay_histogram = Gauge('message_delay', 'Delay in seconds between message sent and received' )
 observation_histogram = Gauge('message_observations', 'Observed message number')
@@ -35,8 +38,21 @@ try:
         pos, neg, is_change = ph_test_detector.detection(observation)
 
         get_delay = time.time() - sent_timestamp
-        logger.info(f"Value: {observation}, Sent at: {sent_timestamp}, Received at: {time.time()}, Delay: {get_delay:.2f} seconds")
-        logger.info(f"PHTest Detector - Pos: {pos}, Neg: {neg}, Change Detected: {is_change}")
+        
+        logger.info(f"\n"
+            f"Value: {observation}, \n"
+            f"Sent at: {sent_timestamp}, \n"
+            f"Received at: {time.time()}, \n"
+            f"Delay: {get_delay:.2f} seconds"
+        )
+
+        logger.info(f"\n"
+            f"PH-Test Detector Results: \n"
+            f"Positive Change: {pos[0]}, \n"
+            f"Negative Change: {neg[0]}, \n"
+            f"Change Detected: {is_change}, \n"
+            f"Metadata: \n --- {ph_test_detector}"
+        )
         logger.info("-" * 50)
         if is_change:
             logger.warning("Change detected in the data stream!")
