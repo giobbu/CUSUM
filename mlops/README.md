@@ -63,11 +63,9 @@ Execute `producer.py`:
 ```bash
 root@ab4b47be275a:/app# uv run producer.py 
 
-2026-02-24 17:12:46.445 | INFO     | __main__:<module>:18 - Sent: {'number': 76, 'sent_timestamp': 1771953166.351782}
-2026-02-24 17:12:47.450 | INFO     | __main__:<module>:18 - Sent: {'number': 44, 'sent_timestamp': 1771953167.4496365}
-2026-02-24 17:12:48.452 | INFO     | __main__:<module>:18 - Sent: {'number': 10, 'sent_timestamp': 1771953168.4521246}
-2026-02-24 17:12:49.458 | INFO     | __main__:<module>:18 - Sent: {'number': 62, 'sent_timestamp': 1771953169.457914}
-2026-02-24 17:12:50.462 | INFO     | __main__:<module>:18 - Sent: {'number': 41, 'sent_timestamp': 1771953170.461526}
+2026-03-02 17:53:44.943 | INFO     | __main__:<module>:34 - Sent: {'observation': -7.975584007894333, 'sent_timestamp': 1772474024.9425344, 'count': 1}
+
+2026-03-02 17:53:49.945 | INFO     | __main__:<module>:34 - Sent: {'observation': -8.119080371260614, 'sent_timestamp': 1772474029.9447057, 'count': 2}
 ```
 
 Open another terminal and execute `consumer.py`:
@@ -75,38 +73,54 @@ Open another terminal and execute `consumer.py`:
 ```bash
 root@ab4b47be275a:/app# uv run consumer.py 
 
-2026-02-24 17:12:46.447 | INFO     | __main__:<module>:28 - 
-                     Value: 76, 
-                     Sent at: 1771953166.351782, 
-                     Received at: 1771953166.4472306, 
-                     Delay: 0.10 seconds
-2026-02-24 17:12:47.455 | INFO     | __main__:<module>:28 - 
-                     Value: 44, 
-                     Sent at: 1771953167.4496365, 
-                     Received at: 1771953167.4554284, 
-                     Delay: 0.01 seconds
-2026-02-24 17:12:48.460 | INFO     | __main__:<module>:28 - 
-                     Value: 10, 
-                     Sent at: 1771953168.4521246, 
-                     Received at: 1771953168.4605381, 
-                     Delay: 0.01 seconds
-2026-02-24 17:12:49.463 | INFO     | __main__:<module>:28 - 
-                     Value: 62, 
-                     Sent at: 1771953169.457914, 
-                     Received at: 1771953169.4639313, 
-                     Delay: 0.01 seconds
-2026-02-24 17:12:50.468 | INFO     | __main__:<module>:28 - 
-                     Value: 41, 
-                     Sent at: 1771953170.461526, 
-                     Received at: 1771953170.4681072, 
-                     Delay: 0.01 seconds
+# message received
+2026-03-02 17:53:44.948 | INFO     | __main__:<module>:42 - 
+Value: -7.975584007894333, 
+Sent at: 1772474024.9425344, 
+Received at: 1772474024.9481857, 
+Delay: 0.01 seconds
+# PH-Test
+2026-03-02 17:53:44.948 | INFO     | __main__:<module>:49 - 
+PH-Test Detector Results: 
+Positive Change: 0, 
+Negative Change: 0, 
+Change Detected: False, 
+Metadata: 
+ --- PH_CUSUM_Detector(warmup_period=30, delta=0.5, threshold=2)
+
+# message received
+2026-03-02 17:53:49.950 | INFO     | __main__:<module>:42 - 
+Value: -8.119080371260614, 
+Sent at: 1772474029.9447057, 
+Received at: 1772474029.9503043, 
+Delay: 0.01 seconds
+# PH-Tests
+2026-03-02 17:53:49.950 | INFO     | __main__:<module>:49 - 
+PH-Test Detector Results: 
+Positive Change: 0, 
+Negative Change: 0, 
+Change Detected: False, 
+Metadata: 
+ --- PH_CUSUM_Detector(warmup_period=30, delta=0.5, threshold=2)
 ```
 
-Open Prometheus UI at `http://0.0.0.0:9090/query` and Grafana at `http://0.0.0.0:3000/login`
+## Open in Browser
 
+- **Prometheus UI**: http://localhost:9090/query  
+- **Grafana**: http://localhost:3000/login
 
-**Debugging**
-processes listening to port `:8000`
+## Debugging
+
+### Check processes listening on port `8000`
+
 ```bash
 lsof -nP -i:8000 | grep LISTEN
 ```
+
+### Kill process using port `8000` (if needed)
+
+```bash
+kill -9 <PID>
+```
+
+Replace `<PID>` with the process ID returned from the `lsof` command.
