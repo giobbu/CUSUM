@@ -5,14 +5,41 @@ from loguru import logger
 import time
 import numpy as np
 from setting.producer import KafkaProducerSettings
+from setting.logger import LoggerSettings
 from utils.data import generate_mean_and_std_dev_break_point, plot_observations_with_breaks
 
-producer_settings = KafkaProducerSettings()
+# -------------------------
+# Configure Kafka Consumer
+# -------------------------
+logger_settings = LoggerSettings()
+logger.remove()  # remove default stderr handler
+logger.add(
+    logger_settings.PRODUCER_FILE_PATH,  # log file path
+    level=logger_settings.LEVEL,  # log level
+    rotation=logger_settings.ROTATION,  # rotate
+    retention=logger_settings.RETENTION,  # keep logs for 10 days
+    compression=logger_settings.COMPRESSION,  # compress old logs
+    enqueue=logger_settings.ENQUEUE,  # use multiprocessing queue
+    backtrace=logger_settings.BACKTRACE,  # include backtrace in logs
+    diagnose=logger_settings.DIAGNOSE,  # include variable values in logs
+    format=logger_settings.FORMAT  # log message format
+)
+# Optional: still log to console
+logger.add(
+    lambda msg: print(msg, end=""),
+    level=logger_settings.LEVEL,
+)
 
+
+# -------------------------
+# Configure Kafka Producer
+# -------------------------
+producer_settings = KafkaProducerSettings()
 producer = KafkaProducer(
                         bootstrap_servers=producer_settings.BOOTSTRAP_SERVERS,
                         value_serializer=lambda v: json.dumps(v).encode(producer_settings.UTF8_ENCODER)
                     )
+
 
 count = 0
 mean, std_dev, next_break_point = generate_mean_and_std_dev_break_point()  # Initial mean and std_dev

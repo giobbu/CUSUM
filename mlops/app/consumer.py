@@ -4,10 +4,37 @@ import time
 from kafka import KafkaConsumer
 from prometheus_client import start_http_server, Gauge
 from setting.consumer import  KafkaConsumerSettings
+from setting.logger import LoggerSettings
 from detector.cusum import PHTest_Detector
 
-consumer_settings = KafkaConsumerSettings()
+# -------------------------
+# Configure Loguru Logging
+# -------------------------
+logger_settings = LoggerSettings()
+logger.remove()  # remove default stderr handler
+logger.add(
+    logger_settings.CONSUMER_FILE_PATH,  # log file path
+    level=logger_settings.LEVEL,  # log level
+    rotation=logger_settings.ROTATION,  # rotate
+    retention=logger_settings.RETENTION,  # keep logs for 10 days
+    compression=logger_settings.COMPRESSION,  # compress old logs
+    enqueue=logger_settings.ENQUEUE,  # use multiprocessing queue
+    backtrace=logger_settings.BACKTRACE,  # include backtrace in logs
+    diagnose=logger_settings.DIAGNOSE,  # include variable values in logs
+    format=logger_settings.FORMAT  # log message format
+)
 
+# Optional: still log to console
+logger.add(
+    lambda msg: print(msg, end=""),
+    level=logger_settings.LEVEL,
+)
+
+
+# -------------------------
+# Configure Kafka Consumer
+# -------------------------
+consumer_settings = KafkaConsumerSettings()
 consumer = KafkaConsumer(
     consumer_settings.TOPIC,
     bootstrap_servers=consumer_settings.BOOTSTRAP_SERVERS,
@@ -16,6 +43,7 @@ consumer = KafkaConsumer(
     value_deserializer=lambda m: json.loads(m.decode(consumer_settings.UTF8_DECODER)
                                             )
     )
+
 
 delay_histogram = Gauge('message_delay', 'Delay in seconds between message sent and received' )
 observation_histogram = Gauge('message_observations', 'Observed message number')
