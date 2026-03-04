@@ -45,23 +45,23 @@ docker container list
 CONTAINER ID   IMAGE                 COMMAND                  CREATED        STATUS        PORTS                    NAMES
 4c0745216a04   grafana/grafana       "/run.sh"                27 hours ago   Up 27 hours   0.0.0.0:3000->3000/tcp   grafana
 311bb81142c2   prom/prometheus       "/bin/prometheus --c…"   27 hours ago   Up 27 hours   0.0.0.0:9090->9090/tcp   prometheus
-ab1ac2bdef46   mlops-app             "python3"                27 hours ago   Up 27 hours   0.0.0.0:8000->8000/tcp   app
+<container-id>   mlops-app             "python3"                27 hours ago   Up 27 hours   0.0.0.0:8000->8000/tcp   app
 6f1717e4ba88   apache/kafka:latest   "/__cacert_entrypoin…"   27 hours ago   Up 27 hours   0.0.0.0:9092->9092/tcp   broker
 ```
 
 Open a command terminal on the `mlops-app` container:
 
 ```bash
-docker exec -it 2c6b0d0fcddd bash
+docker exec -it <container-id> bash
 
-root@2c6b0d0fcddd:/app# ls
+root@<container-id>:/app# ls
 consumer.py  producer.py
 ```
 
 Execute `producer.py`:
 
 ```bash
-root@ab4b47be275a:/app# uv run producer.py 
+root@<container-id>:/app# uv run producer.py 
 
 2026-03-02 17:53:44.943 | INFO     | __main__:<module>:34 - Sent: {'observation': -7.975584007894333, 'sent_timestamp': 1772474024.9425344, 'count': 1}
 
@@ -71,7 +71,7 @@ root@ab4b47be275a:/app# uv run producer.py
 Open another terminal and execute `consumer.py`:
 
 ```bash
-root@ab4b47be275a:/app# uv run consumer.py 
+root@<container-id>:/app# uv run consumer.py 
 
 # message received
 2026-03-02 17:53:44.948 | INFO     | __main__:<module>:42 - 
