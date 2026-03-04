@@ -133,7 +133,9 @@ class StochasticGradientDescent:
         if num_variables <= 0:
             raise ValueError("Number of variables must be positive.")
         if learning_rate <= 0:
-            raise ValueError("Learning rate must be positive.")
+            raise ValueError("Learning rate should be in the range (0, 1].")
+        if learning_rate > 1:
+            raise ValueError("Learning rate should be in the range (0, 1].")
 
         self.num_variables = num_variables
         self.learning_rate = learning_rate
