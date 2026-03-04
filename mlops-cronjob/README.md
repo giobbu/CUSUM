@@ -50,3 +50,26 @@ create sample data `synthetic_data.csv`:
 cd data
 uv run generate_data.py
 ```
+
+## Manual Offline Detection
+
+To run offline detection from within the /app directory:
+
+```bash
+cd /app
+uv run detection_task.py
+```
+
+Detection results are saved to `/data/detection_results.pkl`.
+
+## Streamlit Visualization
+
+To visualize the results from the CUSUM detector:
+
+```bash
+cd /app
+uv run streamlit run dashboard.py
+```
+
+Open the browser at Streamlit address http://localhost:8501.
+The app will read the results from `/data/detection_results.pkl` and display them interactively.
