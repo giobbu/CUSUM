@@ -30,10 +30,16 @@ def save_results(results, path):
 
 try:
     data = read_data(data_path)
-    detector = CUSUM_Detector()
+    detector = CUSUM_Detector(warmup_period=800, delta=0.5, threshold=4.0)
     results = detector.offline_detection(np.array(data["value"]))
+    # add observations to results for better visualization
+    results["observations"] = data["value"].tolist()
+    results["metadata"]= {"warmup_period": 800, "delta": 0.5, "threshold": 4.0}
     logger.info("CUSUM Detector fitted successfully.")
     save_results(results, results_path)
 except Exception as e:
     logger.error(f"An error occurred: {e}")
 
+
+logger.info("Results:")
+logger.info(results)
