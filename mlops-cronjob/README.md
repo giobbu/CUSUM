@@ -1,14 +1,32 @@
 # Getting started
 
-### setup virtual environment
+### Setup virtual environment
 
 ```bash
 cp -i ../{pyproject.toml,uv.lock} .
 ```
 
-### install minikube for local cluster
+### Start Kubernetes cluster
 
-### pull image from docker registry
+Install a local Kubernetes with `minikube` following the [official documentation](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download).
+
+From the terminal start your local cluster: 
+
+```bash
+minikube start
+```
+
+In a new terminal start Kubernetes dashboard
+
+```bash
+minikube dashboard
+```
+
+### Install Helm
+
+Install package manager for Kubernetes `helm` following the [official documentation](https://helm.sh/docs/intro/install/)
+
+### Run Docker container
 
 ### copy cusum-based detectors and data generation scripts
 
