@@ -6,7 +6,7 @@ from scipy import stats
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-from source.detector.abstract import Cusum
+from detector.abstract import Cusum
 
 class CUSUM_Detector(Cusum):
     """
