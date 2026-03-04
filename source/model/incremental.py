@@ -220,8 +220,42 @@ class StochasticGradientDescent:
 
 
 class KalmanFilter:
-    """ Linear Kalman filter for state estimation. """
+    """ Kalman Filter for online state estimation in linear systems.
+    
+    Parameters
+    ----------
+    A : numpy array
+        State transition matrix.
+    H : numpy array
+        Observation matrix.
+    Q : numpy array
+        State covariance matrix.
+    R : numpy array
+        Measurement covariance matrix.
+    x0 : numpy array
+        Initial state estimate.
+    P0 : numpy array
+        Initial state covariance estimate.
+    """
+
     def __init__(self, A : np.ndarray, H : np.ndarray, Q : np.ndarray, R : np.ndarray, x0 : np.ndarray, P0 : np.ndarray) -> None:
+        """ Initialize the Kalman Filter with the given parameters. 
+        
+         Parameters
+        ----------
+        A : numpy array
+            State transition matrix.
+        H : numpy array
+            Observation matrix.
+        Q : numpy array
+            State covariance matrix.
+        R : numpy array
+            Measurement covariance matrix.
+        x0 : numpy array
+            Initial state estimate.
+        P0 : numpy array
+            Initial state covariance estimate.
+        """
         self.A = A  # state transition matrix
         self.H = H  # observation matrix
         self.Q = Q  # state covariance
@@ -230,7 +264,13 @@ class KalmanFilter:
         self.P = P0  # initial state covariance
 
     def update(self, z : np.ndarray) -> None:
-        " Update the state estimate with a new observation. "
+        """ Update the state estimate with a new observation.
+        
+        Parameters
+        ----------
+        z : numpy array
+            New observation vector.
+        """
         # Kalman filter update
         innovation = z - self.H @ self.x  # innovation
         innovation_cov = self.H @ self.P @ self.H.T + self.R  # innovation covariance
@@ -239,7 +279,15 @@ class KalmanFilter:
         self.P = (np.eye(self.P.shape[0]) - K @ self.H) @ self.P  # state covariance update
 
     def predict(self) -> tuple:
-        " Predict the next state. "
+        """ Predict the next state and its covariance.
+        
+        Returns
+        -------
+        x_pred : numpy array
+            Predicted state vector.
+        P_pred : numpy array
+            Predicted state covariance matrix.
+        """
         self.x = self.A @ self.x  # state prediction
         self.P = self.A @ self.P @ self.A.T + self.Q  # state covariance prediction
         return self.x, self.P
