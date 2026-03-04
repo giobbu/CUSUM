@@ -18,4 +18,5 @@ dependencies = [
     "scipy>=1.16.3",
     "seaborn>=0.13.2",
     "sphinx>=9.0.4",
+    "streamlit>=1.55.0",
 ]
