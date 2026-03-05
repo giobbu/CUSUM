@@ -1,6 +1,0 @@
-2026-03-04 12:40:53 | INFO | Updated mean to -1.16, std_dev to 0.79, current break point: 0, next break point: 175
-2026-03-04 12:40:53 | INFO | Sent: {'observation': -1.4334736982156187, 'sent_timestamp': 1772628053.2947166, 'count': 0}
-2026-03-04 12:40:58 | INFO | Sent: {'observation': -1.3502268870454417, 'sent_timestamp': 1772628058.3983614, 'count': 1}
-2026-03-04 12:41:03 | INFO | Sent: {'observation': -1.206219930154972, 'sent_timestamp': 1772628063.4014401, 'count': 2}
-2026-03-04 12:41:08 | INFO | Sent: {'observation': -1.3646932957743023, 'sent_timestamp': 1772628068.405287, 'count': 3}
-2026-03-04 12:41:13 | INFO | Sent: {'observation': -1.3186324296744178, 'sent_timestamp': 1772628073.4080894, 'count': 4}

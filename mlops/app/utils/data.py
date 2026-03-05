@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def generate_observations(mean, std_dev):
+    return np.random.normal(loc=mean, scale=std_dev, size=1)[0]
+
 def generate_mean_and_std_dev_break_point():
     mean = np.random.uniform(-10, 10)  # Random mean between -10 and 10
     std_dev = np.random.uniform(0.1, 1)  # Random standard deviation between 0.1 and 5

@@ -62,46 +62,24 @@ Execute `producer.py`:
 
 ```bash
 root@<container-id>:/app# uv run producer.py 
-
-2026-03-02 17:53:44.943 | INFO     | __main__:<module>:34 - Sent: {'observation': -7.975584007894333, 'sent_timestamp': 1772474024.9425344, 'count': 1}
-
-2026-03-02 17:53:49.945 | INFO     | __main__:<module>:34 - Sent: {'observation': -8.119080371260614, 'sent_timestamp': 1772474029.9447057, 'count': 2}
 ```
 
 Open another terminal and execute `consumer.py`:
 
 ```bash
 root@<container-id>:/app# uv run consumer.py 
+```
 
-# message received
-2026-03-02 17:53:44.948 | INFO     | __main__:<module>:42 - 
-Value: -7.975584007894333, 
-Sent at: 1772474024.9425344, 
-Received at: 1772474024.9481857, 
-Delay: 0.01 seconds
-# PH-Test
-2026-03-02 17:53:44.948 | INFO     | __main__:<module>:49 - 
-PH-Test Detector Results: 
-Positive Change: 0, 
-Negative Change: 0, 
-Change Detected: False, 
-Metadata: 
- --- PH_CUSUM_Detector(warmup_period=30, delta=0.5, threshold=2)
+```bash
+root@c<container-id>:/app# cd logs
 
-# message received
-2026-03-02 17:53:49.950 | INFO     | __main__:<module>:42 - 
-Value: -8.119080371260614, 
-Sent at: 1772474029.9447057, 
-Received at: 1772474029.9503043, 
-Delay: 0.01 seconds
-# PH-Tests
-2026-03-02 17:53:49.950 | INFO     | __main__:<module>:49 - 
-PH-Test Detector Results: 
-Positive Change: 0, 
-Negative Change: 0, 
-Change Detected: False, 
-Metadata: 
- --- PH_CUSUM_Detector(warmup_period=30, delta=0.5, threshold=2)
+root@c<container-id>:/app/logs# tail -f consumer.jsonl | grep '"change_detection_result"'
+
+{"timestamp": 1772718547.277965, "level": "INFO", "service": "kafka-consumer", "host": "c730b105b417", "event": "change_detection_result", "message": "CUSUM change detection result", "observation": -5.537012962870473, "positive_increase": 0, "negative_increase": 0, "is_change": false, "detector_params": {"warmup_period": 30, "delta": 0.5, "threshold": 2}}
+{"timestamp": 1772718552.281865, "level": "INFO", "service": "kafka-consumer", "host": "c730b105b417", "event": "change_detection_result", "message": "CUSUM change detection result", "observation": -5.923583643696739, "positive_increase": 0, "negative_increase": 0, "is_change": false, "detector_params": {"warmup_period": 30, "delta": 0.5, "threshold": 2}}
+{"timestamp": 1772718557.285472, "level": "INFO", "service": "kafka-consumer", "host": "c730b105b417", "event": "change_detection_result", "message": "CUSUM change detection result", "observation": -4.7693634789138315, "positive_increase": 0, "negative_increase": 0, "is_change": false, "detector_params": {"warmup_period": 30, "delta": 0.5, "threshold": 2}}
+{"timestamp": 1772718562.292707, "level": "INFO", "service": "kafka-consumer", "host": "c730b105b417", "event": "change_detection_result", "message": "CUSUM change detection result", "observation": -4.969309583579554, "positive_increase": 0, "negative_increase": 0, "is_change": false, "detector_params": {"warmup_period": 30, "delta": 0.5, "threshold": 2}}
+{"timestamp": 1772718567.296737, "level": "INFO", "service": "kafka-consumer", "host": "c730b105b417", "event": "change_detection_result", "message": "CUSUM change detection result", "observation": -4.555649305852855, "positive_increase": 0, "negative_increase": 0, "is_change": false, "detector_params": {"warmup_period": 30, "delta": 0.5, "threshold": 2}}
 ```
 
 ## Open in Browser
