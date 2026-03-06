@@ -5,7 +5,9 @@
 ![Status](https://img.shields.io/badge/status-development-orange)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14052654.svg)](https://doi.org/10.5281/zenodo.14052654)
 
+
 # CUSUM
+![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
 
 The CUSUM repository contains multiple change point detectors for sequential analysis, enabling the detection of changes in the statistical properties of time-ordered or streaming data.
 
