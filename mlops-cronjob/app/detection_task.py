@@ -4,10 +4,17 @@ import numpy as np
 import pickle
 from detector.cusum import CUSUM_Detector
 from loguru import logger
+import time
+import os
+
+date_str = time.strftime("%Y-%m-%d")
+time_str = time.strftime("%H-%M-%S")
 
 dir_path = pathlib.Path(__file__).parent.parent
 data_path = dir_path / "data" / "synthetic_data.csv"
-results_path = dir_path / "data" / "detection_results.pkl"
+
+os.makedirs(dir_path / "data" / date_str, exist_ok=True)
+results_path = dir_path / "data" / date_str / f"detection_results_{time_str}.pkl"
 
 def read_data(path):
     try:
