@@ -87,25 +87,32 @@ The dashboard will load the detection results and display them interactively.
 
 ### *Option 3* — Run via Kubernetes Cronjob
 
-Setup the following:
+This option runs the detection pipeline as a scheduled Kubernetes CronJob using a local cluster powered by `minikube`.
 
-* Install a local Kubernetes with `minikube` following the [official documentation](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download).
+#### Prerequisites
+Install the following tools:
 
-* Install package manager for Kubernetes `helm` following the [official documentation](https://helm.sh/docs/intro/install/)
+* **Minikube – local Kubernetes cluster** - installation guide: https://minikube.sigs.k8s.io/docs/start/
+* **Helm – Kubernetes package manager** - installation guide: https://helm.sh/docs/intro/install/
 
-Open the terminal start your local cluster: 
+#### Start local Kubernetes cluster
+
+Start `minikube`: 
 
 ```bash
 minikube start
 ```
+#### Mount project directory
 
-Open a new terminal and mount local folder into minikube:
+In a new terminal inside Minikube, to access local project files, mount the current project directory:
 
 ```bash
 minikube mount "$(pwd)":/host
 ```
 
-Back to previous terminal configure Docker to use Minikube’s Docker daemon:
+#### Configure Docker to use Minikube and build image
+
+Return to the first terminal and configure Docker to build images directly inside the Minikube environment:
 
 ```bash
 eval $(minikube docker-env)
@@ -117,18 +124,28 @@ Build docker image:
 docker build -t detection-cronjob:1.0 .
 ```
 
-Create a Helm chart:
+#### Install cronjob with Helm
+
+Install Helm chart:
 
 ```bash
 helm install detection detection-cronjob
 ```
 
+Verify the deployment:
+
 ```bash
 helm list
+```
 
+Example output:
+
+```bash
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 detection       default         1               2026-03-06 18:12:29.287216 +0100 CET    deployed        detection-cronjob-0.1.0 1.16.0
 ```
+
+Verify cronjob:
 
 ```bash
 kubectl get cronjobs
@@ -137,7 +154,7 @@ NAME        SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE
 detection   */1 * * * *   False     0        <time>
 ```
 
-### Debugging
+#### Debugging
 
 test the job immediatelly:
 
