@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          
+          containers:
+            - name: detection
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: project-volume
+                  mountPath: {{ .Values.volume.mountPath }}
+
+          volumes:
+            - name: project-volume
+              hostPath:
+                path: {{ .Values.volume.hostPath }}
+                type: Directory
