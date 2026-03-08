@@ -33,27 +33,6 @@ mkdir data/generator
 cp -i -r ../source/generator/* ./data/generator
 ```
 
-### (TODO) Start Kubernetes cluster
-
-Install a local Kubernetes with `minikube` following the [official documentation](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download).
-
-From the terminal start your local cluster: 
-
-```bash
-minikube start
-```
-
-In a new terminal start Kubernetes dashboard
-
-```bash
-minikube dashboard
-```
-
-### Install Helm
-
-Install package manager for Kubernetes `helm` following the [official documentation](https://helm.sh/docs/intro/install/)
-
-
 ### Generate synthetic data
 
 create sample data `synthetic_data.csv`:
@@ -104,3 +83,85 @@ uv run streamlit run dashboard.py
 Once started, open your browser at `http://localhost:8501`
 
 The dashboard will load the detection results and display them interactively.
+
+
+### *Option 3* — Run via Kubernetes Cronjob
+
+Setup the following:
+
+* Install a local Kubernetes with `minikube` following the [official documentation](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download).
+
+* Install package manager for Kubernetes `helm` following the [official documentation](https://helm.sh/docs/intro/install/)
+
+Open the terminal start your local cluster: 
+
+```bash
+minikube start
+```
+
+Open a new terminal and mount local folder into minikube:
+
+```bash
+minikube mount "$(pwd)":/host
+```
+
+Back to previous terminal configure Docker to use Minikube’s Docker daemon:
+
+```bash
+eval $(minikube docker-env)
+```
+
+Build docker image:
+
+```bash
+docker build -t detection-cronjob:1.0 .
+```
+
+Create a Helm chart:
+
+```bash
+helm install detection detection-cronjob
+```
+
+```bash
+helm list
+
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+detection       default         1               2026-03-06 18:12:29.287216 +0100 CET    deployed        detection-cronjob-0.1.0 1.16.0
+```
+
+```bash
+kubectl get cronjobs
+
+NAME        SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE
+detection   */1 * * * *   False     0        <time>
+```
+
+### Debugging
+
+test the job immediatelly:
+
+```bash
+kubectl create job --from=cronjob/detection test-run
+```
+
+```bash
+kubectl get pods --watch
+```
+
+```bash
+kubectl logs <pod-name>
+```
+
+Delet all jobs and pods:
+
+```bash
+kubectl delete jobs --all                                             
+kubectl delete pods --all
+```
+
+Suspend cronjob:
+
+```bash
+kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
+```
