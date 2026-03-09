@@ -6,11 +6,11 @@ Detection can be run manually or scheduled via a Kubernetes cron job. Results ca
 
 * Run the CUSUM detection task (Python script or scheduled job).
 
-* The script saves detection results to `/data/detection_results.pkl`.
+* The script saves detection results to `/data/<date>/detection_results.pkl`.
 
 * Launch the `Streamlit` dashboard to visualize the results.
 
-## Getting started
+## 0. Getting started
 
 ### Setup virtual environment
 
@@ -18,7 +18,7 @@ Detection can be run manually or scheduled via a Kubernetes cron job. Results ca
 cp -i ../{pyproject.toml,uv.lock} .
 ```
 
-### copy cusum-based detectors and data generation scripts
+### Add cusum-based detectors and data generation scripts
 
 * copy `source/detector` in `/app`
 
@@ -42,7 +42,7 @@ cd data
 uv run generate_data.py
 ```
 
-## Running the Detection
+## 1. Running the Detection
 
 ### *Option 1* — Run the Python Script
 
@@ -57,7 +57,7 @@ This will:
 
 * Load the collected data
 * Run the CUSUM change point detection
-* Save the results to `/data/detection_results.pkl`
+* Save the results to `/data/<date>/detection_results.pkl`
 
 ### *Option 2* — Run via Docker
 
@@ -68,22 +68,6 @@ docker run -d -v "$(pwd)":/home -it schedule-detection
 ```
 
 This runs the detection process in the background and mounts the current directory into the container.
-
-## Streamlit Visualization
-
-The detection results are stored in `/data/detection_results.pkl`
-
-To launch the visualization dashboard:
-
-```bash
-cd /app
-uv run streamlit run dashboard.py
-```
-
-Once started, open your browser at `http://localhost:8501`
-
-The dashboard will load the detection results and display them interactively.
-
 
 ### *Option 3* — Run via Kubernetes Cronjob
 
@@ -182,3 +166,18 @@ Suspend cronjob:
 ```bash
 kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
 ```
+
+## 3. Streamlit Visualization
+
+The detection results are stored in `/data/detection_results.pkl`
+
+To launch the visualization dashboard:
+
+```bash
+cd /app
+uv run streamlit run dashboard.py
+```
+
+Once started, open your browser at `http://localhost:8501`
+
+The dashboard will load the detection results and display them interactively.
