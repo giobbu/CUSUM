@@ -1,4 +1,4 @@
-Lazy Learning Model
+Lazy Learning Models
 ====================================
 
 This module contains the implementation of the Weighted K-Nearest Neighbors algorithm for lazy learning.

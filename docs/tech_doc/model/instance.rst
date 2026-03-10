@@ -1,5 +1,5 @@
-Instance-based Learning Model
-=============================
+Instance-based Learning Models
+==============================
 
 This module contains the core instance-based ML model classes.
 

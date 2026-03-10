@@ -1,2 +1,2 @@
-Batch-based Learning Model
-==========================
+Batch-based Learning Models
+===========================
