@@ -56,3 +56,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Run pip-audit
+        run: uv run pip-audit -f json -o audit.json --ignore-vuln CVE-2026-4539
+        

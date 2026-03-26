@@ -19,3 +19,8 @@ dependencies = [
     "seaborn>=0.13.2",
     "sphinx>=9.0.4",
 ]
+
+[dependency-groups]
+dev = [
+    "pip-audit>=2.10.0",
+]
