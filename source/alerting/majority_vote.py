@@ -1,8 +1,5 @@
-from collections import Counter
 from loguru import logger
-
-from collections import Counter
-from typing import List, Optional
+from typing import List
 
 class MajorityVote:
     """
