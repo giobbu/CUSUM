@@ -31,6 +31,7 @@ This site contains:
    tech_doc/detector/detector
    tech_doc/model/ml
    tech_doc/smoother/filter
+   tech_doc/alerting/alerting
 
 .. toctree::
    :maxdepth: 2
