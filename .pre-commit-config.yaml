@@ -13,6 +13,16 @@ repos:
 
   - repo: local
     hooks:
+
+      - id: detect-vulnerabilities
+        name: Run pip-audit
+        entry: uv run pip-audit
+        language: python
+        additional_dependencies:
+          - pip-audit
+        pass_filenames: false
+        args: ["--ignore-vuln", "CVE-2026-4539"]
+
       - id: pytest
         name: Run pytest
         entry: pytest  # Adjust this line if you're using a different command to run tests
