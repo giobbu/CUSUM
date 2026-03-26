@@ -1,50 +1,64 @@
 from collections import Counter
 from loguru import logger
 
+from collections import Counter
+from typing import List, Optional
+
 class MajorityVote:
-    """"
-    MajorityVote class to perform majority voting on a list of binary detections.
+    """
+    Majority voting for change point detection (0 = no change point, 1 = change point).
 
     Parameters
     ----------
-    threshold : float, optional
-        The minimum proportion of detections required to classify as an anomaly (default is 0.5).
+    threshold : float
+        Minimum proportion of positive votes required when `use_threshold=True`.
+        Must be in [0.5, 1.0].
     """
+
     def __init__(self, threshold: float = 0.5):
-        """
-        Initialize the MajorityVote class.
-        
-        Parameters
-        ----------
-        threshold : float, optional
-            The minimum proportion of detections required to classify as an anomaly (default is 0.5).
-        """
+        if not 0.5 <= threshold <= 1.0:
+            raise ValueError("Threshold must be between 0.5 and 1.0.")
         self.threshold = threshold
 
-    def vote(self, detections):
+    def vote(self, detections: List[int], use_threshold: bool = False) -> int:
         """
-        Perform majority voting on the list of detections.
-        
+        Perform majority voting.
+
         Parameters
         ----------
-        detections : list of int
-            List of binary detections (0 for normal, 1 for anomaly).
+        detections : List[int]
+            List of detections (0 or 1).
+        use_threshold : bool
+            If True, requires fraction of 1s >= self.threshold.
 
         Returns
         -------
         int
-            1 if anomaly is detected, 0 otherwise.
+            1 if change point is detected, else 0.
         """
-        count = Counter(detections)
-        most_common_label, most_common_count = count.most_common(1)[0]
-        logger.info(f"Detections: {detections}, Most common label: {most_common_label}, Count: {most_common_count}")
-        if most_common_count / len(detections) >= self.threshold:
-            if most_common_label == 1:
-                logger.warning("Anomaly detected based on majority vote.")
-                return 1
-            else:
-                logger.info("No anomaly detected based on majority vote.")
-                return 0
-        else:
+        if len(detections) == 0:
+            logger.warning("No detections provided. Returning 0.")
             return 0
+
+        n = len(detections)
+        positives = sum(detections)
+        ratio = positives/n
+
+        logger.info(
+            f"Total={len(detections)}, count-positives={positives}, ratio={ratio:.3f}"
+        )
+
+        if use_threshold:
+            if ratio >= self.threshold:
+                logger.warning("Change point detected - threshold rule).")
+                return 1
+            logger.info("No change point detected - threshold rule).")
+            return 0
+
+        if positives > n/2:
+            logger.warning("Change point detected - majority vote).")
+            return 1
+
+        logger.info("No change point detected - majority vote).")
+        return 0
             
