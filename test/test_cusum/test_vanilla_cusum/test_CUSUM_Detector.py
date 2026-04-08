@@ -77,3 +77,7 @@ def test_offline_detection_results_length(detector):
     assert len(results["pos_changes"]) == len(data)
     assert len(results["neg_changes"]) == len(data)
     assert len(results["is_drift"]) == len(data)
+
+def test_str_representation(detector):
+    expected = f"CUSUM_Detector(warmup_period=10, delta=10, threshold=20)"
+    assert str(detector) == expected

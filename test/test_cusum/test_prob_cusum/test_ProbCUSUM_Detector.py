@@ -87,3 +87,7 @@ def test_offline_detection_results_length(detector):
     results = detector.offline_detection(data)
     assert len(results["probabilities"]) == len(data)
     assert len(results["is_drift"]) == len(data)
+
+def test_str_representation(detector):
+    expected = "ProbCUSUM_Detector(warmup_period=10, threshold_probability=0.01)"
+    assert str(detector) == expected

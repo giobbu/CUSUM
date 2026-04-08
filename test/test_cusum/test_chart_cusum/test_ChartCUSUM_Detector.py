@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 
-
 def test_detection_before_warmup_period(detector):
     """Test detection method before reaching the warmup period."""
     for i in range(1, detector.warmup_period):
@@ -55,7 +54,6 @@ def test_detection_after_warmup_period_with_changepoint(detector):
     # Assertion for a changepoint
     assert any(is_cp for is_cp in is_changepoints)
 
-
 def test_offline_detection_with_invalid_data_type(detector):
     """Test offline_detection method with invalid data type."""
     data = [12.3, 14.5, 15.6, 16.8, 17.9]
@@ -84,3 +82,7 @@ def test_offline_detection_results_length(detector):
     assert len(results["lower_limits"]) == len(data)
     assert len(results["cusums"]) == len(data)
     assert len(results["is_drift"]) == len(data)
+
+def test_str_representation(detector):
+    expected = "ChartCUSUM_Detector(warmup_period=10, level=3, deviation_type=dev, target_mean=None)"
+    assert str(detector) == expected

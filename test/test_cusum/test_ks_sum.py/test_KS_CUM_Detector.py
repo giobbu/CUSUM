@@ -31,3 +31,7 @@ def test_offline_detection_results_length(detector):
     assert len(results["ks_statistics"]) == len(data)
     assert len(results["p_values"]) == len(data)
     assert len(results["is_drift"]) == len(data)
+
+def test_str_representation(detector):
+    expected = "KS_CUM_Detector(window_pre=30, window_post=30, alpha=0.05)"
+    assert str(detector) == expected
