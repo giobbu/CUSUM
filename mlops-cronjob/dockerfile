@@ -1,4 +1,7 @@
-FROM python:3.11-slim
+# -------------------------------------
+# Build the builder image
+# -------------------------------------
+FROM python:3.11-slim as builder
 
 RUN apt-get update && apt-get install -y curl lsof grep\
     && rm -rf /var/lib/apt/lists/*
@@ -11,4 +14,19 @@ WORKDIR /home
 COPY ./pyproject.toml ./uv.lock ./
 RUN uv sync --frozen --no-dev
 
-CMD ["uv", "run", "python", "-u", "app/detection_task.py"]
+# # ------------------------------------
+# # Build the runtime image
+# # ------------------------------------
+# FROM python:3.11-slim AS runtime
+
+# WORKDIR /home
+
+# COPY --from=builder /home/.venv /home/.venv
+
+# COPY ./app ./app
+
+# ENV PATH="/home/.venv/bin:${PATH}"
+
+# CMD ["uv", "run", "app/detection_task.py"]
+
+
