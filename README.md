@@ -40,7 +40,7 @@ These detectors are, therefore, well suitable for both offline analysis and real
 
 ## 2. Getting Started
 
-### Installation
+### Setup
 
 Clone the repository:
 
@@ -48,9 +48,15 @@ Clone the repository:
 git clone https://github.com/giobbu/CUSUM.git
 cd CUSUM
 ```
- and install dependencies:
+
+and install dependencies:
 ```bash
 uv sync
+```
+
+dependencies sync:
+```bash
+./upgrade_package.sh <package-name>
 ```
 
 ## 3. Documentation
