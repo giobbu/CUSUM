@@ -29,9 +29,9 @@ WORKDIR /home
 
 COPY --from=builder /home/.venv /home/.venv
 
-COPY ./app ./app
-
 ENV PATH="/home/.venv/bin:${PATH}"
+
+COPY ./app ./app
 
 CMD ["uv", "run", "app/detection_task.py"]
 
