@@ -61,10 +61,11 @@ This will:
 
 ### *Option 2* — Run via Docker
 
-Alternatively, run the detection task inside a Docker container:
+Alternatively, build and run the detection task with Docker:
 
 ```bash
-docker run -d -v "$PWD":/home -it schedule-detection
+docker build -f dockerfile.dev -t detection-cronjob-dev .
+docker run -d -v "$PWD":/home -it detection-cronjob-dev
 ```
 
 This runs the detection process in the background and mounts the current directory into the container.
