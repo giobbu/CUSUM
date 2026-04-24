@@ -64,7 +64,7 @@ This will:
 Alternatively, run the detection task inside a Docker container:
 
 ```bash
-docker run -d -v "$(pwd)":/home -it schedule-detection
+docker run -d -v "$PWD":/home -it schedule-detection
 ```
 
 This runs the detection process in the background and mounts the current directory into the container.
