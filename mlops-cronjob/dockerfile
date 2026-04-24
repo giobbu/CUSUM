@@ -1,7 +1,7 @@
 # -------------------------------------
 # Build the builder image
 # -------------------------------------
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 RUN apt-get update && apt-get install -y curl lsof grep\
     && rm -rf /var/lib/apt/lists/*
@@ -17,16 +17,22 @@ RUN uv sync --frozen --no-dev
 # # ------------------------------------
 # # Build the runtime image
 # # ------------------------------------
-# FROM python:3.11-slim AS runtime
+FROM python:3.11-slim AS runtime
 
-# WORKDIR /home
+RUN apt-get update && apt-get install -y curl lsof grep\
+    && rm -rf /var/lib/apt/lists/*
 
-# COPY --from=builder /home/.venv /home/.venv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
 
-# COPY ./app ./app
+WORKDIR /home
 
-# ENV PATH="/home/.venv/bin:${PATH}"
+COPY --from=builder /home/.venv /home/.venv
 
-# CMD ["uv", "run", "app/detection_task.py"]
+COPY ./app ./app
+
+ENV PATH="/home/.venv/bin:${PATH}"
+
+CMD ["uv", "run", "app/detection_task.py"]
 
 
