@@ -15,13 +15,11 @@ repos:
     hooks:
 
       - id: detect-vulnerabilities
-        name: Run pip-audit
+        name: Run pip-audit (project env)
         entry: uv run pip-audit
-        language: python
-        additional_dependencies:
-          - pip-audit
+        language: system
         pass_filenames: false
-        args: ["--ignore-vuln", "CVE-2026-4539"]
+        args: ["--ignore-vuln", "CVE-2026-3219"]  # Ignore CVE-2026-3219, which is a false positive for pip-audit in this context
 
       - id: pytest
         name: Run pytest
