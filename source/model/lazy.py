@@ -31,6 +31,15 @@ class WeightedKNN:
         bandwidth : float
             Bandwidth for the KDE.
         """
+        if k <= 0:
+            raise ValueError("k must be a positive integer.")
+        if decay not in ["exponential", "linear"]:
+            raise ValueError("Unsupported decay type. Use 'exponential' or 'linear'.")
+        if alpha <= 0:
+            raise ValueError("Alpha must be a positive number.")
+        if bandwidth <= 0:
+            raise ValueError("Bandwidth must be a positive number.")
+        
         self.alpha = alpha
         self.k = k
         self.decay = decay
