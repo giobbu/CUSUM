@@ -47,20 +47,20 @@ class MajorityVote:
                 raise ValueError("Hard voting expects binary detections (0 or 1).")
 
         n = len(detections)
-        ratio = sum(detections)/n
+        self.ratio = sum(detections)/n
 
-        logger.info(f"mode={mode} total={n} ratio={ratio} threshold={self.threshold}")
+        logger.info(f"mode={mode} total={n} ratio={self.ratio} threshold={self.threshold}")
 
         if mode == "soft" or (mode == "hard" and use_threshold):
-            detected = ratio >= self.threshold
+            detected = self.ratio >= self.threshold
         else:  # hard
-            detected = ratio > 0.5
+            detected = self.ratio > 0.5
 
         if detected:
-            logger.warning(f"Change point detected (mode={mode}, ratio={ratio}).")
+            logger.warning(f"Change point detected (mode={mode}, ratio={self.ratio}).")
             return 1
 
-        logger.info(f"No change point detected (mode={mode}, ratio={ratio}).")
+        logger.info(f"No change point detected (mode={mode}, ratio={self.ratio}).")
         return 0
     
 if __name__ == "__main__":
