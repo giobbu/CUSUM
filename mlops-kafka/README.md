@@ -26,7 +26,7 @@ Add `prometheus-client` module
 uv add prometheus-client
 ```
 
-From within `/mlops` build image and run the container in detached mode:
+From within `/mlops-kafka` build image and run the container in detached mode:
 
 ```bash
 docker-compose up -d

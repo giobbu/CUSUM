@@ -115,7 +115,7 @@ View details on notebook - [Here](notebooks/notebook_rls_monitoring.ipynb)
 ### C. CUSUM-Ops
 
 * Event-based CUSUM detection with Kafka, Prometheus and Grafana in [mlops-kafka](https://github.com/giobbu/CUSUM/tree/main/mlops-kafka)
-* Scheduled CUSUM detection with Kubernetes CronJob and minikube lical cluster in [mlops-cronjob](https://github.com/giobbu/CUSUM/tree/main/mlops-cronjob)
+* Scheduled CUSUM detection with Kubernetes CronJob and minikube local cluster in [mlops-cronjob](https://github.com/giobbu/CUSUM/tree/main/mlops-cronjob)
 
 ## 5. License
 This project is under the [GPL-3.0 license](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file).
