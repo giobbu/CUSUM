@@ -79,3 +79,16 @@ def test_init_with_bandwidth_zero_value():
     """Test initialization with zero bandwidth value."""
     with pytest.raises(ValueError):
         WeightedKNN(alpha=0.5, k=5, decay="exponential", bandwidth=0)
+
+def test_attributes_assigned_correctly():
+    obj = WeightedKNN(alpha=0.3, k=3, decay="linear", bandwidth=2.0)
+    assert obj.alpha == 0.3
+    assert obj.k == 3
+    assert obj.decay == "linear"
+    assert obj.bandwidth == 2.0
+
+def test_default_values():
+    obj = WeightedKNN(alpha=0.5)
+    assert obj.k == 5
+    assert obj.decay == "exponential"
+    assert obj.bandwidth == 1.0
