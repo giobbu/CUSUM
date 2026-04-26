@@ -1,70 +1,4 @@
 import pytest
-import numpy as np
-
-# from loguru import logger
-# from typing import List
-
-# class MajorityVote:
-#     """
-#     Majority voting for change point detection (0 = no change point, 1 = change point).
-
-#     Parameters
-#     ----------
-#     threshold : float
-#         Minimum proportion of positive votes required when `use_threshold=True`.
-#         Must be in [0.5, 1.0].
-#     """
-
-#     def __init__(self, threshold: float = 0.5):
-#         if not 0.5 <= threshold <= 1.0:
-#             raise ValueError("Threshold must be between 0.5 and 1.0.")
-#         self.threshold = threshold
-
-#     def vote(self, detections: List[int], use_threshold: bool = False, mode:str = "hard") -> int:
-#         """
-#         Perform majority voting.
-
-#         Parameters
-#         ----------
-#         detections : List[int]
-#             List of detections (0 or 1).
-#         use_threshold : bool
-#             If True, requires fraction of 1s >= self.threshold.
-#         mode : str
-#             "hard" for binary voting, "soft" for probabilistic voting (values in [0, 1]).
-
-#         Returns
-#         -------
-#         int
-#             1 if change point is detected, else 0.
-#         """
-#         if len(detections) == 0:
-#             raise ValueError("Detections list cannot be empty.")
-#         if mode not in ["hard", "soft"]:
-#             raise ValueError("Mode must be 'hard' or 'soft'.")
-#         if mode == "soft":
-#             if not all(0 <= d <= 1 for d in detections):
-#                 raise ValueError("All detections must be in [0, 1] for soft voting.")
-#         else:
-#             if not all(d in (0, 1) for d in detections):
-#                 raise ValueError("Hard voting expects binary detections (0 or 1).")
-
-#         n = len(detections)
-#         ratio = sum(detections)/n
-
-#         logger.info(f"mode={mode} total={n} ratio={ratio} threshold={self.threshold}")
-
-#         if mode == "soft" or (mode == "hard" and use_threshold):
-#             detected = ratio >= self.threshold
-#         else:  # hard
-#             detected = ratio > 0.5
-
-#         if detected:
-#             logger.warning(f"Change point detected (mode={mode}, ratio={ratio}).")
-#             return 1
-
-#         logger.info(f"No change point detected (mode={mode}, ratio={ratio}).")
-#         return 0
 
 def test_vote_with_empty_detections(alert):
     """Test vote method with empty detections list."""
@@ -120,3 +54,18 @@ def test_detected_value(alert):
     assert result == 1
     result = alert.vote([0, 0, 1])
     assert result == 0
+
+def test_ratio_attribute(alert):
+    """Test that ratio attribute is set correctly after voting."""
+    alert.vote([0, 1, 1])
+    assert alert.ratio == 2/3
+    alert.vote([0.2, 0.5, 0.8], mode="soft")
+    assert alert.ratio == (0.2+0.5+0.8)/3
+
+def test_threshold_edge_cases(alert):
+    """Test vote method with edge case thresholds."""
+    alert.threshold = 0.5
+    assert alert.vote([0, 1], use_threshold=True) == 1  # Ratio = 0.5 >= 0.5
+    alert.threshold = 1.0
+    assert alert.vote([1, 1], use_threshold=True) == 1  # Ratio = 1.0 >= 1.0
+    assert alert.vote([0, 1], use_threshold=True) == 0  # Ratio = 0.5 < 1.0
