@@ -1,0 +1,130 @@
+/* --- Base layout --- */
+body {
+    font-size: 16px;
+}
+
+/* Content width (Stripe is narrow & readable) */
+.main .content {
+    max-width: 760px;
+    margin: auto;
+}
+
+/* Softer background */
+body {
+    background-color: #f7fafc;
+}
+
+/* --- Typography --- */
+h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+h2 {
+    font-size: 1.6rem;
+    margin-top: 2.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.3rem;
+    color: #111827;
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin-top: 1.8rem;
+}
+
+/* Paragraph spacing */
+p {
+    line-height: 1.7;
+    color: #374151;
+}
+
+/* --- Links (Stripe blue) --- */
+a {
+    color: #635bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
+
+/* Sidebar links */
+.sidebar a {
+    color: #4b5563;
+}
+
+.sidebar a:hover {
+    color: #111827;
+}
+
+/* Active item */
+.sidebar .current > a {
+    color: #635bff;
+    font-weight: 600;
+}
+
+/* --- Code blocks --- */
+
+/* LIGHT MODE */
+[data-theme="light"] pre {
+    background: papayawhip;
+    color: #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 0.9rem;
+}
+
+/* DARK MODE */
+[data-theme="dark"] pre {
+    background: #0f172a;
+    color: #f1f5f9;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 0.9rem;
+}
+
+/* Inline code */
+
+/* LIGHT */
+[data-theme="light"] code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* DARK */
+[data-theme="dark"] code {
+    background: #1e293b;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* --- Admonitions (notes, warnings) --- */
+.admonition {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+/* --- Tables --- */
+table {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+th, td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px;
+}
+
+:root {
+    --color-brand-primary: #635bff;
+    --color-brand-content: #635bff;
+}

@@ -25,7 +25,17 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
-html_theme = 'sphinx_rtd_theme'  # RTD theme
+html_theme = "furo"
+
+
+
+html_theme_options = {
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
+    "source_repository": "https://github.com/giobbu/CUSUM",
+    "source_branch": "main",  # or "master"
+    "source_directory": "docs/",  # path to your docs folder
+}
 html_static_path = ['_static']
 html_css_files = ["custom.css"]
 
