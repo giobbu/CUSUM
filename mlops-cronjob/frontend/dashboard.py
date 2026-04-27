@@ -3,9 +3,20 @@ import plotly.graph_objects as go
 import streamlit as st
 import pickle as pkl
 from loguru import logger
+import glob
 
 dir_path = pathlib.Path(__file__).parent.parent
-results_path = dir_path / "data" / "detection_results.pkl"
+print(dir_path)
+
+#results_path = dir_path / "data" / "2026-03-08" /"detection_results_13-03-25.pkl"
+
+results_files = glob.glob(str(dir_path / "data" / "*" / "detection_results.pkl"))
+
+# get the latest file based on modification time
+if results_files:
+    latest_file = max(results_files, key=lambda x: pathlib.Path(x).stat().st_mtime)
+    results_path = latest_file
+    logger.info(f"Latest results file found: {results_path}")
 
 with open(results_path, "rb") as f:
     results = pkl.load(f)
