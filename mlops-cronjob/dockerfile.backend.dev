@@ -11,4 +11,4 @@ WORKDIR /home
 COPY ./pyproject.toml ./uv.lock ./
 RUN uv sync --frozen --no-dev
 
-CMD ["uv", "run", "app/detection_task.py"]
+CMD ["uv", "run", "backend/detection_task.py"]

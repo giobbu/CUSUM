@@ -31,8 +31,8 @@ COPY --from=builder /home/.venv /home/.venv
 
 ENV PATH="/home/.venv/bin:${PATH}"
 
-COPY ./app ./app
+COPY ./backend ./backend 
 
-CMD ["uv", "run", "app/detection_task.py"]
+CMD ["uv", "run", "backend /detection_task.py"]
 
 
