@@ -20,11 +20,11 @@ cp -i ../{pyproject.toml,uv.lock} .
 
 ### Add cusum-based detectors and data generation scripts
 
-* copy `source/detector` in `/app`
+* copy `source/detector` in `/backend`
 
 ```bash
-mkdir app/detector
-cp -i -r ../source/detector/* ./app/detector
+mkdir backend/detector
+cp -i -r ../source/detector/* backend/detector
 ```
 * copy `source/generator` in `/data`
 
@@ -38,19 +38,17 @@ cp -i -r ../source/generator/* ./data/generator
 create sample data `synthetic_data.csv`:
 
 ```bash
-cd data
-uv run generate_data.py
+uv run data/generate_data.py
 ```
 
 ## 1. Running the Detection
 
 ### *Option 1* — Run the Python Script
 
-You can run the detection task manually from the /app directory:
+You can run the detection task manually from the backend directory:
 
 ```bash
-cd /app
-uv run detection_task.py
+uv run backend/detection_task.py
 ```
 
 This will:
@@ -64,10 +62,9 @@ This will:
 Alternatively, build and run the detection task with Docker:
 
 ```bash
-docker build -f dockerfile.dev -t detection-cronjob-dev .
-docker run -d -v "$PWD":/home -it detection-cronjob-dev
+docker build -f dockerfile.backend.dev -t detection-cronjob-backend-dev .
+docker run -d -v "$PWD":/home -it detection-cronjob-backend-dev
 ```
-
 This runs the detection process in the background and mounts the current directory into the container.
 
 ### *Option 3* — Run via Kubernetes Cronjob
@@ -126,7 +123,7 @@ helm list
 Example output:
 
 ```bash
-NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                 APP VERSION
 detection       default         1               2026-03-06 18:12:29.287216 +0100 CET    deployed        detection-cronjob-0.1.0 1.16.0
 ```
 
@@ -168,17 +165,28 @@ Suspend cronjob:
 kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
 ```
 
-## 3. Streamlit Visualization
+## 2. Streamlit Dashboard
 
-The detection results are stored in `/data/detection_results.pkl`
+The detection results are stored in `/data/<date>/detection_results_<timestamp>.pkl`
+
+### *Option 1* — Run the Python Script
 
 To launch the visualization dashboard:
 
 ```bash
-cd /app
-uv run streamlit run dashboard.py
+uv run streamlit run frontend/dashboard.py
 ```
 
 Once started, open your browser at `http://localhost:8501`
 
 The dashboard will load the detection results and display them interactively.
+
+### *Option 2* — Run via Docker
+
+Alternatively, build a streamlit dashboard with Docker:
+
+```bash
+docker build -f dockerfile.frontend.dev -t dashboard-dev .
+docker run -p 8501:8501 -v "$PWD":/home -it dashboard-dev
+```
+
