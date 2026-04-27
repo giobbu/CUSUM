@@ -33,6 +33,6 @@ ENV PATH="/home/.venv/bin:${PATH}"
 
 COPY ./backend ./backend 
 
-CMD ["uv", "run", "backend /detection_task.py"]
+CMD ["uv", "run", "backend/detection_task.py"]
 
 
