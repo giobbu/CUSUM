@@ -58,3 +58,12 @@ def predict_method_valid_observation(model):
     assert isinstance(prediction, float)
     assert not np.isnan(prediction)
     assert prediction == observation[0, 0]  # Prediction should match the last observation
+
+def test_last_observation_initialization(model):
+    """Test that last_observation is initialized to zeros."""
+    assert np.array_equal(model.last_observation, np.zeros((1, model.num_variables)))
+
+def test_prediction_without_observations(model):
+    """Test that predict method returns the last observation when no new observations have been added."""
+    prediction = model.predict()
+    assert np.array_equal(prediction, model.last_observation)
