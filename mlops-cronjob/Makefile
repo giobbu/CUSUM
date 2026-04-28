@@ -1,20 +1,30 @@
 # Makefile
 
-.PHONY: help install backend-local-build backend-local-down
+.PHONY: help sync backend-up backend-down frontend-up frontend-down
 
 help:
 	@echo "MLOps Cronjob Commands:"
-	@echo "  make install               - Install dependencies (uv sync)"
-	@echo "  make backend-local-build   - Build and run backend locally"
-	@echo "  make backend-local-down    - Remove backend image"
+	@echo "  make sync - Install dependencies (uv sync)"
+	@echo "  make backend-up - Build backend image and run container"
+	@echo "  make frontend-up - Build frontend image and run container"
+	@echo "  make backend-down - Remove backend image"
+	@echo "  make frontend-down - Stop and remove frontend container and image"
 
-install:
+sync:
 	uv sync
 
-backend-local-build:
+backend-up:
 	docker build -f dockerfile.backend -t detection-cronjob-backend .
 	docker run -d -v "$$PWD":/home -it detection-cronjob-backend
 
-backend-local-down:
+frontend-up:
+	docker build -f dockerfile.frontend -t streamlit-frontend .
+	docker run -p 8501:8501 -v "$$PWD":/home -it streamlit-frontend
+
+backend-down:
 	docker rmi $(docker ps -a -q --filter ancestor=detection-cronjob-backend) -f || true
+
+frontend-down:
+	docker rm -f $(shell docker ps -a -q --filter ancestor=streamlit-frontend)
+	docker rmi -f $(shell docker images -q streamlit-frontend)
 
