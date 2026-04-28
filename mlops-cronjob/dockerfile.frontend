@@ -1,0 +1,36 @@
+# -------------------------------------
+# Build the builder image
+# -------------------------------------
+FROM python:3.11-slim AS builder
+
+RUN apt-get update && apt-get install -y curl lsof grep\
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+WORKDIR /home
+
+COPY ./pyproject.toml ./uv.lock ./
+RUN uv sync --frozen --no-dev
+
+# # ------------------------------------
+# # Build the runtime image
+# # ------------------------------------
+FROM python:3.11-slim AS runtime
+
+RUN apt-get update && apt-get install -y curl lsof grep\
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+WORKDIR /home
+
+COPY --from=builder /home/.venv /home/.venv
+
+ENV PATH="/home/.venv/bin:${PATH}"
+
+COPY ./frontend ./frontend 
+
+CMD ["uv", "run", "streamlit", "run", "frontend/dashboard.py", "--server.address=0.0.0.0", "--server.port=8501"]
