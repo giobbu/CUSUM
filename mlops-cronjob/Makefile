@@ -1,10 +1,11 @@
 # Makefile
 
-.PHONY: help sync backend-up backend-down frontend-up frontend-down
+.PHONY: help sync docker backend-up backend-down frontend-up frontend-down
 
 help:
 	@echo "MLOps Cronjob Commands:"
 	@echo "  make sync - Install dependencies (uv sync)"
+	@echo "  make docker - start docker daemon"
 	@echo "  make backend-up - Build backend image and run container"
 	@echo "  make frontend-up - Build frontend image and run container"
 	@echo "  make backend-down - Remove backend image"
@@ -12,6 +13,9 @@ help:
 
 sync:
 	uv sync
+
+docker:
+	open -a Docker
 
 backend-up:
 	docker build -f dockerfile.backend -t detection-cronjob-backend .
