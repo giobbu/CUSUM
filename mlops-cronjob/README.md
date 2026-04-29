@@ -247,6 +247,14 @@ Use Docker Compose to spin up the full microservices stack locally:
 ```bash
 docker-compose up
 ```
+
+```bash
+docker image list
+REPOSITORY           TAG       IMAGE ID       CREATED        SIZE
+streamlit-frontend   latest    9643432c64e6   29 hours ago   1.21GB
+detection-backend    latest    248c223578b7   46 hours ago   1.21GB
+apache/airflow       2.9.0     2b0695195cf0   2 years ago    2.01GB
+```
 Once all services are running, you can access:
 
 * Streamlit dashboard → http://localhost:8501
