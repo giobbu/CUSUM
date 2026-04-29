@@ -140,7 +140,6 @@ class ChangePointGenerator:
         """
         return self.data
 
-
     def add_sudden_shift(self, mean_before, mean_after, std_dev_before, std_dev_after, change_point_index):
         """
         Add a sudden shift change point to the data.
@@ -240,18 +239,96 @@ class ChangePointGenerator:
         data_with_nans : numpy array
             Data with NaN values introduced.
         """
-
         if not 0 <= percentage <= 1:
             raise ValueError("nan_percentage must be between 0 and 1.")
 
         array_size = len(self.data)
         num_nan = int(array_size * percentage)
-
         nan_indices = np.random.choice(array_size, size=num_nan, replace=False)
-        data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
+        data_with_nans = np.copy(self.data)
         data_with_nans[nan_indices] = np.nan
 
         return data_with_nans
+    
+    def _get_num_blocks(self, percentage, min_block_size):
+        """
+        Calculate the number of blocks needed to achieve the specified percentage of NaN values.
+
+        Parameters
+        ----------
+        percentage : float
+            Percentage of NaN values to introduce in the data (between 0 and 1).
+        min_block_size : int
+            Minimum size of each block of NaNs.
+        
+        Returns
+        -------
+        num_elements : int
+            Total number of elements in the data.
+        num_blocks : int
+            Number of blocks needed to achieve the specified percentage of NaN values.
+        """
+        if not 0 <= percentage <= 1:
+            raise ValueError("percentage must be between 0 and 1.")
+        if min_block_size <= 0:
+            raise ValueError("min_block_size must be a positive integer.")
+        num_elements = len(self.data)
+        num_nan = int(num_elements * percentage)
+        num_blocks = num_nan // min_block_size
+        return num_elements, num_blocks
+    
+    def _get_start_indices_for_blocks(self, num_elements, num_blocks, min_block_size):
+        """
+        Get random start indices for blocks of NaN values.
+
+        Parameters
+        ----------
+        num_elements : int
+            Total number of elements in the data.
+        num_blocks : int
+            Number of blocks needed to achieve the specified percentage of NaN values.
+        min_block_size : int
+            Minimum size of each block of NaNs.
+
+        Returns
+        -------
+        start_indices : numpy array
+            Randomly selected start indices for the blocks of NaN values.
+        """
+        if num_blocks <= 0:
+            raise ValueError("num_blocks must be a positive integer.")
+        if min_block_size <= 0:
+            raise ValueError("min_block_size must be a positive integer.")
+        if num_elements < min_block_size:
+            raise ValueError("num_elements must be greater than or equal to min_block_size.")
+        start_indices = np.random.choice(num_elements - min_block_size + 1, num_blocks, replace=False)
+        return start_indices
+    
+    def _get_block_nan(self, data_block_nans, list_start_indices, min_block_size, max_block_size):
+        """
+        Replace values with NaNs in blocks based on the provided start indices, block_min_size, and block_max_size.
+
+        Parameters
+        ----------
+        data_block_nans : numpy array
+            The data array to modify with NaN values.
+        list_start_indices : numpy array
+            Randomly selected start indices for the blocks of NaN values.
+        min_block_size : int
+            Minimum size of each block of NaNs.
+        max_block_size : int
+            Maximum size of each block of NaNs.
+
+        Returns
+        -------
+        data_block_nans : numpy array
+            The modified data array with NaN values in blocks.
+        """
+        for start_index in list_start_indices:
+            block_size = np.random.randint(min_block_size, max_block_size + 1)
+            end_index = start_index + block_size
+            data_block_nans[start_index:end_index] = np.nan
+        return data_block_nans
 
     def generate_block_nans(self, percentage, min_block_size, max_block_size):
         """
@@ -268,31 +345,17 @@ class ChangePointGenerator:
         """
         if percentage < 0 or percentage > 1:
             raise ValueError("Percentage should be between 0 and 1")
-
         if min_block_size <= 0 or max_block_size <= 0 or min_block_size > max_block_size:
             raise ValueError("Invalid block sizes")
-
-        # Calculate the number of elements to replace with NaNs
-        num_elements = len(self.data)
-        num_nans = int(num_elements * percentage)
-
-        # Calculate the number of blocks
-        num_blocks = num_nans // min_block_size
-
+        # Calculate the number of blocks needed to achieve the specified percentage of NaN values
+        num_elements, num_blocks = self._get_num_blocks(percentage, min_block_size)
         # Get random start indices for blocks
-        start_indices = np.random.choice(num_elements - min_block_size + 1, num_blocks, replace=False)
-
+        start_indices = self._get_start_indices_for_blocks(num_elements, num_blocks, min_block_size)
         # Create a copy of the original array to modify
-        data_with_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
-
+        data_block_nans = np.copy(self.data)  # Make a copy to avoid modifying the original data
         # Replace values with NaNs in blocks
-        for start_index in start_indices:
-            # Randomly select block size
-            block_size = np.random.randint(min_block_size, max_block_size + 1)
-            end_index = start_index + block_size
-            data_with_nans[start_index:end_index] = np.nan
-            
-        return data_with_nans
+        data_block_nans = self._get_block_nan(data_block_nans, start_indices, min_block_size, max_block_size) 
+        return data_block_nans
 
     def plot_data_with_nans(self, data_with_nans):
         """
