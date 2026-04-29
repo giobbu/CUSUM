@@ -1,16 +1,58 @@
 # Scheduled Job for Change Point Detection
 
-Detection can be run manually or scheduled via a Kubernetes cron job. Results can then be explored through a Streamlit dashboard.
+Change point CUSUM detection algorithms can be run as scheduled job triggered every day, hour, or minute dependening on the need.
 
-## Workflow Overview
+## Table of Contents
 
-* Run the CUSUM detection task (Python script or scheduled job).
+0. [Overview](#0-overview)
+1. [Makefile Commands](#1-makefile-commands)
+2. [Getting Started](#2-getting-started)
+    - 2.0. [Synthetic Dataset](#20-synthetic-dataset)
+    - 2.1. [Python App](#21-python-app)
+    - 2.2. [Backend and Frontend Docker Containers](#22-backend-and-frontend-docker-containers)
+    - 2.3. [Kubernets CronJob](#23-kubernetes-cronjob)
+3. [Local Development](#3-local-development)
+
+
+## 0. Overview
+
+* Run the CUSUM detection task on data stored as `/data/synthetic_data.csv`.
 
 * The script saves detection results to `/data/<date>/detection_results.pkl`.
 
-* Launch the `Streamlit` dashboard to visualize the results.
+* Launch the `Streamlit` dashboard to visualize detection results.
 
-## 0. Getting started
+## 1. Makefile Commands
+
+This project includes a Makefile to simplify common development and deployment tasks for the MLOps cronjob system.
+
+Available Commands:
+
+* `make help`
+Displays a list of all available commands with short descriptions.
+
+* `make sync`
+Installs project dependencies using uv sync.
+
+* `make docker`
+Opens/starts the Docker daemon (macOS).
+
+* `make backend-up`
+Builds the backend Docker image (detection-cronjob-backend) and runs it in a container with the current project directory mounted.
+
+* `make frontend-up`
+Builds the frontend Docker image (streamlit-frontend) and runs it, exposing the app on port 8501.
+
+* `make backend-down`
+Removes backend-related Docker images (forcefully, if necessary).
+
+* `make frontend-down`
+Stops and removes the frontend container and deletes its Docker image.
+
+
+## 2. Getting Started
+
+### 2.0. Synthetic Dataset
 
 ### Setup virtual environment
 
@@ -41,10 +83,10 @@ create sample data `synthetic_data.csv`:
 uv run data/generate_data.py
 ```
 
-## 1. Running the Detection
 
-### *Option 1* — Run the Python Script
+## 2.1. Python App
 
+### CUSUM Detection
 You can run the detection task manually from the backend directory:
 
 ```bash
@@ -53,38 +95,64 @@ uv run backend/detection_task.py
 
 This will:
 
-* Load the collected data
+* Load the collected data from `/data/synthetic_data.csv`
 * Run the CUSUM change point detection
-* Save the results to `/data/<date>/detection_results.pkl`
+* The results are saved to `/data/<date>/detection_results.pkl`
 
-### *Option 2* — Run via Docker
+### Streamlit Dashboard
 
-Alternatively, build and run the detection task with Docker:
+Launch dashboard:
+
+```bash
+uv run streamlit run frontend/dashboard.py
+```
+
+Open browser at `http://localhost:8501`
+
+The dashboard will display the most recent detection results.
+
+
+## 2.2. Backend and Frontend Docker Containers
+
+### Backend
+
+Build Docker image and run the detection task:
 
 ```bash
 docker build -f dockerfile.backend.dev -t detection-cronjob-backend-dev .
 docker run -d -v "$PWD":/home -it detection-cronjob-backend-dev
 ```
-This runs the detection process in the background and mounts the current directory into the container.
+This runs the detection process in the background mounting the current directory.
 
-### *Option 3* — Run via Kubernetes Cronjob
+### Frontend
+
+Build and start streamlit dashboard:
+
+```bash
+docker build -f dockerfile.frontend.dev -t dashboard-dev .
+docker run -p 8501:8501 -v "$PWD":/home -it dashboard-dev
+```
+
+
+
+## 2.3. Kubernetes Cronjob
 
 This option runs the detection pipeline as a scheduled Kubernetes CronJob using a local cluster powered by `minikube`.
 
-#### Prerequisites
+### Prerequisites
 Install the following tools:
 
 * **Minikube – local Kubernetes cluster** - installation guide: https://minikube.sigs.k8s.io/docs/start/
 * **Helm – Kubernetes package manager** - installation guide: https://helm.sh/docs/intro/install/
 
-#### Start local Kubernetes cluster
+### Kubernetes Local Cluster
 
 Start `minikube`: 
 
 ```bash
 minikube start
 ```
-#### Mount project directory
+### Mount Volume
 
 In a new terminal inside Minikube, to access local project files, mount the current project directory:
 
@@ -92,7 +160,7 @@ In a new terminal inside Minikube, to access local project files, mount the curr
 minikube mount "$(pwd)":/host
 ```
 
-#### Configure Docker to use Minikube and build image
+### Configure Docker to use Minikube
 
 Return to the first terminal and configure Docker to build images directly inside the Minikube environment:
 
@@ -106,7 +174,7 @@ Build docker image:
 docker build -t detection-cronjob:1.0 .
 ```
 
-#### Install cronjob with Helm
+### Install CronJob with Helm
 
 Install Helm chart:
 
@@ -136,7 +204,7 @@ NAME        SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE
 detection   */1 * * * *   False     0        <time>
 ```
 
-#### Debugging
+### Debugging
 
 test the job immediatelly:
 
@@ -165,28 +233,21 @@ Suspend cronjob:
 kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
 ```
 
-## 2. Streamlit Dashboard
+## 3. Local Development
 
-The detection results are stored in `/data/<date>/detection_results_<timestamp>.pkl`
-
-### *Option 1* — Run the Python Script
-
-To launch the visualization dashboard:
+Use Docker Compose to spin up the full microservices stack locally:
 
 ```bash
-uv run streamlit run frontend/dashboard.py
+docker-compose up
 ```
+Once all services are running, you can access:
 
-Once started, open your browser at `http://localhost:8501`
+* Streamlit dashboard → http://localhost:8501
+* Airflow UI → http://localhost:8080
 
-The dashboard will load the detection results and display them interactively.
+The first startup may take a few minutes as images are built and services initialize.
 
-### *Option 2* — Run via Docker
-
-Alternatively, build a streamlit dashboard with Docker:
-
+To stop and remove all running services:
 ```bash
-docker build -f dockerfile.frontend.dev -t dashboard-dev .
-docker run -p 8501:8501 -v "$PWD":/home -it dashboard-dev
+docker compose down --rmi all
 ```
-
