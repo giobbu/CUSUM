@@ -33,6 +33,66 @@ class MultiDataStreams:
         self.list_data_streams = []
         self.dict_missing = None
 
+    def __str__(self):
+        """
+        Return a string representation of the MultiDataStreams instance.
+
+        Returns
+        -------
+        str
+            A string describing the MultiDataStreams instance.
+        """
+        return f"MultiDataStreams(num_streams={len(self.list_generators)}, dict_streams={self.dict_streams})"
+
+    def _add_point_missingness(self, generator, percentage):
+        """
+        Add point missingness to the data streams.
+
+        Parameters
+        ----------
+        generator : ChangePointGenerator
+            The ChangePointGenerator instance to modify.
+        percentage : float
+            The percentage of data points to be made missing.
+        """
+        return generator.generate_point_nans(percentage)
+    
+    def _add_block_missingness(self, generator, percentage, min_block_size, max_block_size):
+        """
+        Add block missingness to the data streams.
+
+        Parameters
+        ----------
+        generator : ChangePointGenerator
+            The ChangePointGenerator instance to modify.
+        percentage : float
+            The percentage of data points to be made missing.
+        min_block_size : int
+            The minimum size of blocks for block missingness.
+        max_block_size : int
+            The maximum size of blocks for block missingness.
+        """
+        return generator.generate_block_nans(percentage, min_block_size, max_block_size)
+    
+    def _get_missing_dict_stream(self, index):
+        """
+        Get the missing data dictionary for a specific stream.
+
+        Parameters
+        ----------
+        index : int
+            The index of the stream for which to retrieve the missing data dictionary.
+
+        Returns
+        -------
+        dict or None
+            The missing data dictionary for the specified stream, or None if not set.
+        """
+        if self.dict_missing is not None:
+            return self.dict_missing[index]
+        return None
+
+
     def generate_data_streams(self, dict_missing=None):
         """
         Generate data for all ChangePointGenerator instances and store the results.
@@ -47,23 +107,24 @@ class MultiDataStreams:
             - 'max_block_size': int, maximum size of blocks for block missingness (only for 'block' type)
             If None, no missing data will be introduced.
         """
-        self.dict_missing = dict_missing
         for i, generator in enumerate(self.list_generators):
             generator.generate_data()
-            if self.dict_missing is not None:
-                if self.dict_missing[i] is not None:
-                    miss_params = self.dict_missing[i]
-                    if miss_params['type'] == 'point':
-                        data_stream = generator.generate_point_nans(miss_params['percentage'])
-                    elif miss_params['type'] == 'block':
-                        data_stream = generator.generate_block_nans(miss_params['percentage'], miss_params['min_block_size'], miss_params['max_block_size'])
-                    else:
-                        raise ValueError("Invalid missingness type. Use 'point' or 'block'.")
+            dict_missing_stream = self._get_missing_dict_stream(i)
+            if dict_missing_stream is not None:
+                if dict_missing_stream['type'] == 'point':
+                    data_stream = self._add_point_missingness(generator,
+                                                              dict_missing_stream['percentage'])
+                elif dict_missing_stream['type'] == 'block':
+                    data_stream = self._add_block_missingness(generator, 
+                                                              dict_missing_stream['percentage'],
+                                                              dict_missing_stream['min_block_size'],
+                                                              dict_missing_stream['max_block_size']
+                                                              )
                 else:
-                    data_stream = generator.get_data()
-                self.list_data_streams.append(data_stream)
+                    raise ValueError("Invalid missingness type. Use 'point' or 'block'.")
             else:
-                self.list_data_streams.append(generator.get_data())
+                data_stream = generator.get_data()
+            self.list_data_streams.append(data_stream)
 
     def get_all_streams(self):
         """
@@ -102,6 +163,11 @@ class MultiDataStreams:
             axes[i].grid(True)
         plt.tight_layout()
         plt.show()
+
+if __name__ == "__main__":
+    mds = MultiDataStreams(num_streams=2, dict_streams=[{"seed": 42}, {"seed": 43}])
+    mds.generate_data_streams(dict_missing=[{"type": "point", "percentage": 0.1}, {"type": "block", "percentage": 0.2, "min_block_size": 5, "max_block_size": 10}])
+    mds.plot_all_streams()
 
             
             
