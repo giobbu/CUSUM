@@ -40,8 +40,6 @@ These detectors are, therefore, well suitable for both offline analysis and real
 
 ## 2. Getting Started
 
-### Setup
-
 Clone the repository:
 
 ```bash
@@ -61,7 +59,7 @@ dependencies sync:
 
 ## 3. Documentation
 
-Documentation is available at [CUSUM Docs](https://CUSUM.readthedocs.io/en/latest/)
+Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io/en/latest/)
 
 
 ## 4. Examples
@@ -70,24 +68,6 @@ Documentation is available at [CUSUM Docs](https://CUSUM.readthedocs.io/en/lates
 
 View details on docs - [Here](https://cusum.readthedocs.io/en/latest/tech_doc/detector/cusum/prob_cusum.html)
 
-```python
-from source.generator.change_point_generator import ChangePointGenerator
-from source.detector.cusum import ProbCUSUM_Detector
-
-# data generator
-generator = ChangePointGenerator(num_segments=2, segment_length=300, change_point_type='sudden_shift', seed=1)
-generator.generate_data()
-data_stream = generator.get_data()
-
-# cusum detector
-threshold_probability = 0.01
-warmup_period = 150 
-detector = ProbCUSUM_Detector(warmup_period=warmup_period, threshold_probability=threshold_probability )
-
-for data in data_stream:
-    prob, is_change = detector.detection(data)
-    print(f"Change Detected: {is_change} \n -Probability: {prob[0]}")
-```
 
 ![Image Alt Text](img/prob_cusum_monitoring.gif)
 
