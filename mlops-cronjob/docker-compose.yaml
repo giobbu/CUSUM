@@ -1,0 +1,39 @@
+services:
+
+  airflow:
+    image: apache/airflow:2.9.0
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/workspace
+      - ./airflow-init.sh:/airflow-init.sh
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW_USERNAME=${AIRFLOW_USERNAME}
+      - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
+      - PATH_DATA=${PATH_DATA}
+    command: bash /airflow-init.sh
+
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfile.backend
+    image: detection-backend
+    container_name: detection-backend
+    volumes:
+      - ./data:/home/data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: dockerfile.frontend
+    image: streamlit-frontend
+    container_name: streamlit-frontend
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/home/data
