@@ -47,24 +47,64 @@ class ChangePointGenerator:
         self.seed = seed
         self.data = []
 
+    def _add_sudden_shift(self):
+        """
+        Add a sudden shift change point to the data.
+
+        Returns
+        -------
+        mean : float
+            Mean value.
+        std_dev : float
+            Standard deviation value.
+        """
+        mean = np.random.uniform(0, 100)
+        std_dev = np.random.uniform(5, 20)
+        return mean, std_dev
+    
+    def _add_gradual_drift(self):
+        """
+        Add a gradual drift change point to the data.
+
+        Returns
+        -------
+        mean : numpy array
+            Mean values for the gradual drift.
+        std_dev : float
+            Standard deviation value.
+        """
+        mean = np.linspace(0, 50, self.segment_length)
+        std_dev = np.random.uniform(5, 20)
+        return mean, std_dev
+    
+    def _add_periodic_change(self):
+        """
+        Add a periodic change point to the data.
+
+        Returns
+        -------
+        mean : numpy array
+            Mean values for the periodic change.
+        std_dev : float
+            Standard deviation value.
+        """
+        mean = np.sin(np.linspace(0, 2 * np.pi, self.segment_length))
+        std_dev = np.random.uniform(5, 20)
+        return mean, std_dev
+
+
     def generate_data(self):
         """
         Generate time series data with different types of change points.
         """
-
-        # Set random seed for reproducibility
         np.random.seed(self.seed)
-
+        dict_shift = {
+            'sudden_shift': self._add_sudden_shift,
+            'gradual_drift': self._add_gradual_drift,
+            'periodic_change': self._add_periodic_change
+        }
         for _ in range(self.num_segments):
-            if self.change_point_type == 'sudden_shift':
-                mean = np.random.uniform(0, 100)
-                std_dev = np.random.uniform(5, 20)
-            elif self.change_point_type == 'gradual_drift':
-                mean = np.linspace(0, 50, self.segment_length)
-                std_dev = np.random.uniform(5, 20)
-            elif self.change_point_type == 'periodic_change':
-                mean = np.sin(np.linspace(0, 2 * np.pi, self.segment_length))
-                std_dev = np.random.uniform(5, 20)
+            mean, std_dev = dict_shift[self.change_point_type]()
             segment_data = np.random.normal(mean, std_dev, self.segment_length)
             self.data.extend(segment_data)
         self.data = np.array(self.data)
