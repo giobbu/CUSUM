@@ -1,6 +1,6 @@
 # Makefile
 
-.PHONY: help sync docker backend-up backend-down frontend-up frontend-down
+.PHONY: help sync docker backend-up backend-down frontend-up frontend-down local-devup local-devdown
 
 help:
 	@echo "MLOps Cronjob Commands:"
