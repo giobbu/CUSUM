@@ -73,9 +73,9 @@ class ChangePointGenerator:
         std_dev : float
             Standard deviation value.
         """
-        mean = np.linspace(0, 50, self.segment_length)
+        mean_array = np.linspace(0, 50, self.segment_length)
         std_dev = np.random.uniform(5, 20)
-        return mean, std_dev
+        return mean_array, std_dev
     
     def _add_periodic_change(self):
         """
@@ -88,9 +88,29 @@ class ChangePointGenerator:
         std_dev : float
             Standard deviation value.
         """
-        mean = np.sin(np.linspace(0, 2 * np.pi, self.segment_length))
+        mean_array = np.sin(np.linspace(0, 2 * np.pi, self.segment_length))
         std_dev = np.random.uniform(5, 20)
-        return mean, std_dev
+        return mean_array, std_dev
+    
+    
+    
+    def _segment_data(self, mean, std_dev):
+        """
+        Generate a segment of data based on the provided mean and standard deviation.
+
+        Parameters
+        ----------
+        mean : float or numpy array
+            Mean value(s) for the segment.
+        std_dev : float
+            Standard deviation value for the segment.
+
+        Returns
+        -------
+        segment_data : numpy array
+            Generated segment of data.
+        """
+        return np.random.normal(mean, std_dev, self.segment_length)
 
 
     def generate_data(self):
@@ -105,7 +125,7 @@ class ChangePointGenerator:
         }
         for _ in range(self.num_segments):
             mean, std_dev = dict_shift[self.change_point_type]()
-            segment_data = np.random.normal(mean, std_dev, self.segment_length)
+            segment_data = self._segment_data(mean, std_dev)
             self.data.extend(segment_data)
         self.data = np.array(self.data)
 
