@@ -132,8 +132,15 @@ Build and start streamlit dashboard:
 docker build -f dockerfile.frontend.dev -t dashboard-dev .
 docker run -p 8501:8501 -v "$PWD":/home -it dashboard-dev
 ```
-
-
+---
+> ⚠️ **Makefile Commands**
+>
+> - `make backend-up` to build and start backend
+> - `make frontend-up` to build and start frontend
+> 
+> - `make backend-down` to remove backend
+> - `make frontend-down` to remove frontend
+---
 
 ## 2.3. Kubernetes Cronjob
 
@@ -251,3 +258,10 @@ To stop and remove all running services:
 ```bash
 docker compose down --rmi all
 ```
+
+---
+> ⚠️ **Makefile Commands**
+>
+> - `make local-devup` to install and start services
+> - `make local-devdown` to stop services and remove images
+---
