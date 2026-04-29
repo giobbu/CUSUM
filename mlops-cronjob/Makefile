@@ -10,6 +10,8 @@ help:
 	@echo "  make frontend-up - Build frontend image and run container"
 	@echo "  make backend-down - Remove backend image"
 	@echo "  make frontend-down - Stop and remove frontend container and image"
+	@echo "  make local-devup - Start local development environment (airflow, backend and frontend)"
+	@echo "  make local-devdown - Stop and remove local development environment (airflow, backend and frontend)"
 
 sync:
 	uv sync
@@ -31,4 +33,10 @@ backend-down:
 frontend-down:
 	docker rm -f $(shell docker ps -a -q --filter ancestor=streamlit-frontend)
 	docker rmi -f $(shell docker images -q streamlit-frontend)
+
+local-devup:
+	docker-compose -f docker-compose.yaml up -d
+
+local-devdown:
+	docker-compose -f docker-compose.yaml down --rmi all
 
