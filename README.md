@@ -47,15 +47,36 @@ git clone https://github.com/giobbu/CUSUM.git
 cd CUSUM
 ```
 
-and install dependencies:
+### Using Makefile (Recommended)
+
+The repository includes a Makefile for easy setup and common tasks:
+
 ```bash
-uv sync
+# Install dependencies using uv sync
+make install
+
+# Run tests with coverage
+make test
+
+# Upgrade a specific package
+make upgrade PACKAGE=<package-name>
+
+# View all available commands
+make help
 ```
 
-dependencies sync:
+### Manual Setup
+
+Alternatively, set up manually using uv:
+
 ```bash
-./upgrade_package.sh <package-name>
+# Install dependencies
+uv sync
+
+# Run tests
+pytest --cov=source test/
 ```
+
 
 ## 3. Documentation
 
