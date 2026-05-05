@@ -21,6 +21,10 @@ if results_files:
 with open(results_path, "rb") as f:
     results = pkl.load(f)
 
+
+data = latest_file.split("/")[-2]
+
+
 observations = results.get("observations", [])
 change_points = results.get("change_points", [])
 positive_changes = results.get("pos_changes", [])
@@ -29,7 +33,8 @@ metadata = results.get("metadata", {})
 
 
 # add title for streamlit app
-st.title("CUSUM Change Point Detection Results")
+st.title(f"CUSUM - {data}")
+st.subheader(f"Observations and Detected Change Points")
 
 # Create a line plot of observations with change points marked
 # large size for better visibility
@@ -54,6 +59,9 @@ for cp in change_points:
     )
 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
+
+# create separate section for positive and negative changes
+st.subheader("Positive and Negative Changes")
 # add figure with positive and negative changes
 fig2 = go.Figure()
 fig2.add_trace(
