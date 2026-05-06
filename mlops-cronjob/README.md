@@ -270,6 +270,6 @@ docker compose down --rmi all
 ---
 > ⚠️ **Makefile Commands**
 >
-> - `make local-devup` to install and start services
-> - `make local-devdown` to stop services and remove images
+> - `make local-up` to install and start services
+> - `make local-down` to stop services and remove images
 ---

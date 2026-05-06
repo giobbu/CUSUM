@@ -1,20 +1,10 @@
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./.htpasswd:/etc/nginx/.htpasswd:ro
-    depends_on:
-      - airflow
-      - frontend
-    restart: unless-stopped
 
   airflow:
     image: apache/airflow:2.9.0
     container_name: airflow
+    ports:
+      - "8080:8080"
     volumes:
       - ./dags:/opt/airflow/dags
       - /var/run/docker.sock:/var/run/docker.sock
@@ -22,13 +12,10 @@ services:
       - ./airflow-init.sh:/airflow-init.sh
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost/airflow
-      - AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX=True
       - AIRFLOW_USERNAME=${AIRFLOW_USERNAME}
       - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
       - PATH_DATA=${PATH_DATA}
     command: bash /airflow-init.sh
-    restart: unless-stopped
 
   backend:
     build:
@@ -38,7 +25,6 @@ services:
     container_name: detection-backend
     volumes:
       - ./data:/home/data
-    restart: unless-stopped
 
   frontend:
     build:
@@ -46,6 +32,8 @@ services:
       dockerfile: dockerfile.frontend
     image: streamlit-frontend
     container_name: streamlit-frontend
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
     volumes:
       - ./data:/home/data
-    restart: unless-stopped

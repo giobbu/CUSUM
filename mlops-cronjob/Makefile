@@ -1,6 +1,6 @@
 # Makefile
 
-.PHONY: help sync docker backend-up backend-down frontend-up frontend-down local-devup local-devdown
+.PHONY: help sync docker backend-up backend-down frontend-up frontend-down local-up local-down aws-up aws-down
 
 help:
 	@echo "MLOps Cronjob Commands:"
@@ -10,8 +10,8 @@ help:
 	@echo "  make frontend-up - Build frontend image and run container"
 	@echo "  make backend-down - Remove backend image"
 	@echo "  make frontend-down - Stop and remove frontend container and image"
-	@echo "  make local-devup - Start local development environment (airflow, backend and frontend)"
-	@echo "  make local-devdown - Stop and remove local development environment (airflow, backend and frontend)"
+	@echo "  make local-up - Start local development environment (airflow, backend and frontend)"
+	@echo "  make local-down - Stop and remove local development environment (airflow, backend and frontend)"
 
 sync:
 	uv sync
@@ -34,9 +34,15 @@ frontend-down:
 	docker rm -f $(shell docker ps -a -q --filter ancestor=streamlit-frontend)
 	docker rmi -f $(shell docker images -q streamlit-frontend)
 
-local-devup:
-	docker-compose -f docker-compose.yaml up -d
+local-up:
+	docker-compose -f docker-compose.dev.yaml up -d
 
-local-devdown:
-	docker-compose -f docker-compose.yaml down --rmi all
+local-down:
+	docker-compose -f docker-compose.dev.yaml down --rmi all
+
+aws-up:
+	docker-compose -f docker-compose.aws.yaml up -d
+
+aws-down:
+	docker-compose -f docker-compose.aws.yaml down --rmi all
 
