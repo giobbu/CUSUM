@@ -35,10 +35,10 @@ frontend-down:
 	docker rmi -f $(shell docker images -q streamlit-frontend)
 
 local-up:
-	docker-compose -f docker-compose.dev.yaml up -d
+	docker-compose -f docker-compose.local.yaml up -d
 
 local-down:
-	docker-compose -f docker-compose.dev.yaml down --rmi all
+	docker-compose -f docker-compose.local.yaml down --rmi all
 
 aws-up:
 	docker-compose -f docker-compose.aws.yaml up -d
