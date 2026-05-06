@@ -12,6 +12,7 @@ Change point CUSUM detection algorithms can be run as scheduled job triggered ev
     - 2.2. [Backend and Frontend Docker Containers](#22-backend-and-frontend-docker-containers)
     - 2.3. [Kubernets CronJob](#23-kubernetes-cronjob)
 3. [Local Development](#3-local-development)
+4. [AWS EC2 Development](#4-aws-ec2-development)
 
 
 ## 0. Overview
@@ -273,3 +274,7 @@ docker compose down --rmi all
 > - `make local-up` to install and start services
 > - `make local-down` to stop services and remove images
 ---
+
+
+## 4. AWS EC2 Development
+
