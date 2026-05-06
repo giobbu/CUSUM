@@ -1,4 +1,6 @@
 .env
+.htpasswd
+
 .coverage
 htmlcov/
 notebooks/*
