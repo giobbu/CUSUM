@@ -116,7 +116,7 @@ The dashboard will display the most recent detection results.
 
 ### Backend
 
-Build Docker image and run the detection task:
+Build Docker image and run the detection task (files located in `quick-start`):
 
 ```bash
 docker build -f dockerfile.backend.dev -t detection-cronjob-backend-dev .
@@ -245,7 +245,7 @@ kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
 Use Docker Compose to spin up the full microservices stack locally:
 
 ```bash
-docker-compose up
+docker-compose -f docker-compose.local.yaml -d
 ```
 
 ```bash
