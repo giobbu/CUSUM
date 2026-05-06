@@ -1,3 +1,9 @@
+# terraform
+*.hcl 
+.terraform
+*.tfstate
+*.tfstate.backup
+
 .env
 .htpasswd
 
