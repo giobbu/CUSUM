@@ -12,7 +12,7 @@ Change point CUSUM detection algorithms can be run as scheduled job triggered ev
     - 2.2. [Backend and Frontend Docker Containers](#22-backend-and-frontend-docker-containers)
     - 2.3. [Kubernets CronJob](#23-kubernetes-cronjob)
 3. [Local Development](#3-local-development)
-4. [AWS EC2 Development](#4-aws-ec2-development)
+4. [AWS EC2 PoC](#4-aws-ec2-poc)
 
 
 ## 0. Overview
@@ -276,5 +276,16 @@ docker compose down --rmi all
 ---
 
 
-## 4. AWS EC2 Development
+## 4. AWS EC2 PoC
+
+`cd terraform` and creates the following resources:
+
+* networking
+    1. vpc
+    2. igw
+    3. private and public subnets
+    4. private and public route tables
+    5. public route table association
+
+
 
