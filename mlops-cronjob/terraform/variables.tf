@@ -1,3 +1,7 @@
+####################################################
+# VPC with public and private subnets
+####################################################
+
 variable "aws_region" {
   type        = string
   description = "AWS region to use for resources."
@@ -37,13 +41,45 @@ variable "public_subnets_cidrs_block" {
 variable "private_subnets_cidrs_block" {
   type        = list(string)
   description = "CIDR blocks for private subnets"
-  default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]  # private in 100s
+  default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+}
+
+####################################################
+# Bastion Host and Private Instances
+####################################################
+
+variable "instance_type" {
+  type        = string
+  description = "Type for EC2 Instance"
+  default     = "t3.micro"
+}
+
+variable "sg_ingress_public" {
+  type = list(object({
+    description = string
+    port   = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+
+  default = [
+    {
+      description = "Allow SSH access"
+      port   = 22
+      protocol    = "tcp"
+      cidr_blocks = ["87.13.46.103"]
+    },
+  ]
 }
 
 
-
-
-
+variable "sg_ingress_private" {
+  type = list(object({
+    description = string
+    port        = number
+  }))
+  default = []
+}
 
 
 variable "company" {
@@ -71,5 +107,5 @@ variable "environment" {
 }
 
 variable "instance_key" {
-  default = "WorkshopKeyPair"
+  default = "CronKeyPair"
 }

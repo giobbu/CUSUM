@@ -278,7 +278,7 @@ docker compose down --rmi all
 
 ## 4. AWS EC2 PoC
 
-`cd terraform` and creates the following resources:
+`cd terraform` and creates the aws resources:
 
 * networking
     1. vpc
@@ -286,6 +286,27 @@ docker compose down --rmi all
     3. private and public subnets
     4. private and public route tables
     5. public route table association
+
+* instances
+    1. bastion host and private ec2
+    2. public and private security groups
+
+run the following 
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+this outputs the public and private ip addresses.
+
+connect to the private instance
+
+```bash
+chmod 400 CronKeyPair.pem
+
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@<public-ip-address>" ec2-user@<private-ip-address>
+```
 
 
 
