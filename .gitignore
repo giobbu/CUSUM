@@ -1,4 +1,6 @@
 # terraform
+*.pem
+.terraform.tfstate.lock.info
 *.hcl 
 .terraform
 *.tfstate

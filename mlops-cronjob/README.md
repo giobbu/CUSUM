@@ -12,7 +12,7 @@ Change point CUSUM detection algorithms can be run as scheduled job triggered ev
     - 2.2. [Backend and Frontend Docker Containers](#22-backend-and-frontend-docker-containers)
     - 2.3. [Kubernets CronJob](#23-kubernetes-cronjob)
 3. [Local Development](#3-local-development)
-4. [AWS EC2 PoC](#4-aws-ec2-poc)
+4. [AWS EC2 PoC in Terraform](#4-aws-ec2-poc-in-terraform)
 
 
 ## 0. Overview
@@ -276,9 +276,9 @@ docker compose down --rmi all
 ---
 
 
-## 4. AWS EC2 PoC
+## 4. AWS EC2 PoC in Terraform
 
-`cd terraform` and creates the following resources:
+`cd terraform` and creates the aws resources:
 
 * networking
     1. vpc
@@ -286,6 +286,27 @@ docker compose down --rmi all
     3. private and public subnets
     4. private and public route tables
     5. public route table association
+
+* instances
+    1. bastion host and private ec2
+    2. public and private security groups
+
+run the following 
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+this outputs the public and private ip addresses.
+
+connect to the private instance
+
+```bash
+chmod 400 CronKeyPair.pem
+
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@<public-ip-address>" ec2-user@<private-ip-address>
+```
 
 
 
