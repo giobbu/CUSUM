@@ -67,7 +67,7 @@ variable "sg_ingress_public" {
       description = "Allow SSH access"
       port   = 22
       protocol    = "tcp"
-      cidr_blocks = ["87.13.46.103"]
+      cidr_blocks = ["87.13.46.103/32"]
     },
   ]
 }
@@ -77,10 +77,11 @@ variable "sg_ingress_private" {
   type = list(object({
     description = string
     port        = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
   default = []
 }
-
 
 variable "company" {
   type        = string

@@ -43,10 +43,19 @@ module "private_instance" {
 # Amend Private SG to allow traffic from Bastion SG
 ####################################################
 
-resource "aws_security_group_rule" "public_in_ssh" {
+resource "aws_security_group_rule" "private_ssh_from_bastion" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22
+  protocol                 = "tcp"
+  security_group_id        = module.private_instance.security_group_id
+  source_security_group_id = module.public_bastion.security_group_id
+}
+
+resource "aws_security_group_rule" "private_http_from_bastion" {
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
   protocol                 = "tcp"
   security_group_id        = module.private_instance.security_group_id
   source_security_group_id = module.public_bastion.security_group_id
