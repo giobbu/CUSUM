@@ -305,7 +305,7 @@ connect to the private instance
 ```bash
 chmod 400 CronKeyPair.pem
 
-ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@<public-ip-address>" ec2-user@<private-ip-address>
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw bastion_host_ip)
 ```
 
 
