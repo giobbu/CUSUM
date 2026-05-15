@@ -246,7 +246,7 @@ kubectl patch cronjob detection-cronjob -p '{"spec":{"suspend":true}}'
 Use Docker Compose to spin up the full microservices stack locally:
 
 ```bash
-docker-compose -f docker-compose.local.yaml -d
+docker-compose -f docker-compose.local.yaml up -d
 ```
 
 ```bash
@@ -292,6 +292,11 @@ docker compose down --rmi all
     2. public and private security groups
     3. NAT instance
 
+* registry
+    1. ECR
+    2. Instance Profile for EC2 IAM role access
+
+
 run the following 
 
 ```bash
@@ -311,13 +316,77 @@ chmod 400 CronKeyPair.pem
 ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
 ```
 
-Install NGNIX
+Copy docker-compose file to EC2
 ```bash
-# install nginx on private EC2...
-sudo amazon-linux-extras install nginx1 -y
+cd Terraform
+BASTION_IP=$(terraform output -raw bastion_host_ip)
+PRIVATE_IP=$(terraform output -raw private_ec2_ip)
+cd ..
 
-sudo systemctl start nginx
-sudo systemctl enable nginx
+scp -r -i Terraform/CronKeyPair.pem \
+  -o ProxyCommand="ssh -i Terraform/CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" \
+  data/ .env dockerfile.backend dockerfile.frontend docker-compose.aws.yaml nginx.conf airflow-init.sh \
+  ec2-user@$PRIVATE_IP:~/
+```
+
+Install Docker
+```bash
+sudo yum update -y
+sudo yum install docker -y
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# install docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# verify installation
+docker-compose --version
+```
+
+Build and Push to ECR from local machine
+```bash
+#login
+aws ecr get-login-password --region <aws_zone> | sudo docker login --username AWS --password-stdin AWS_ACCOUNT_ID.dkr.ecr.<aws_zone>.amazonaws.com
+
+# build images locally
+docker build -t detection-backend:latest -f dockerfile.backend .
+docker build -t streamlit-frontend:latest -f dockerfile.frontend .
+
+# tag for ECR
+docker tag detection-backend:latest \
+  <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:detection-backend
+docker tag streamlit-frontend:latest \
+  <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:streamlit-frontend
+
+# push to ECR
+docker push <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:detection-backend
+docker push <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:streamlit-frontend
+
+# list images
+aws ecr list-images --repository-name cusum-repo --region <aws_zone>
+repo --region <aws_zone>
+{
+    "imageIds": [
+        {
+            "imageTag": "detection-backend", 
+            "imageDigest": "sha256:2f6318251ff5bd400686875156dd66c7199077adc89553d3e0bf90c0875109d1"
+        }, 
+        {
+            "imageTag": "streamlit-frontend", 
+            "imageDigest": "sha256:395a8181ba0bd1aece389a5271ac7aa54fde167aaba9288b304da955f999842a"
+        }
+    ]
+}
+```
+
+Spin up services
+```bash
+sudo docker-compose -f docker-compose.aws.yaml up -d
 ```
 
 Disable NAT
@@ -331,6 +400,13 @@ Port forwarding
 ssh -i CronKeyPair.pem -L 8080:$(terraform output -raw private_ec2_ip):80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-use
 ```
 Open `localhost:8080`
+
+Teardown infrastructure
+```bash
+terraform destroy -var="enable_nat={true,false}"
+```
+
+
 
 
 
