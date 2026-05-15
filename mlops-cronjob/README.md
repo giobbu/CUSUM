@@ -297,8 +297,7 @@ docker compose down --rmi all
     2. Instance Profile for EC2 IAM role access
 
 
-run the following 
-
+#### Setup infrastructure
 ```bash
 terraform init
 terraform plan
@@ -308,25 +307,22 @@ terraform apply -var="enable_nat=true"
 ```
 Outputs the public and private ip addresses `terraform/outputs.tf`.
 
+#### Install services
+Set env var
+```bash
+BASTION_IP=$(terraform output -raw bastion_host_ip)
+PRIVATE_IP=$(terraform output -raw private_ec2_ip)
+AWS_ACCOUNT=<YOUR_AWS_ACCOUNT_ID>
+AWS_ZONE=<YOUR_AWS_REGION>
+```
+
+
 Connect to the private instance
 ```bash
 # change permissions
 chmod 400 CronKeyPair.pem
 # connect to ec2
-ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
-```
-
-Copy docker-compose file to EC2
-```bash
-cd Terraform
-BASTION_IP=$(terraform output -raw bastion_host_ip)
-PRIVATE_IP=$(terraform output -raw private_ec2_ip)
-cd ..
-
-scp -r -i Terraform/CronKeyPair.pem \
-  -o ProxyCommand="ssh -i Terraform/CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" \
-  data/ .env dockerfile.backend dockerfile.frontend docker-compose.aws.yaml nginx.conf airflow-init.sh \
-  ec2-user@$PRIVATE_IP:~/
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" ec2-user@$PRIVATE_IP
 ```
 
 Install Docker
@@ -339,19 +335,24 @@ sudo systemctl enable docker
 # install docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
   -o /usr/local/bin/docker-compose
-
 sudo chmod +x /usr/local/bin/docker-compose
-
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-# verify installation
 docker-compose --version
+```
+
+Copy docker-compose file to EC2
+```bash
+cd ..
+scp -r -i Terraform/CronKeyPair.pem \
+  -o ProxyCommand="ssh -i Terraform/CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" \
+  data/ .env dockerfile.backend dockerfile.frontend docker-compose.aws.yaml nginx.conf airflow-init.sh \
+  ec2-user@$PRIVATE_IP:~/
 ```
 
 Build and Push to ECR from local machine
 ```bash
 #login
-aws ecr get-login-password --region <aws_zone> | sudo docker login --username AWS --password-stdin AWS_ACCOUNT_ID.dkr.ecr.<aws_zone>.amazonaws.com
+aws ecr get-login-password --region $AWS_ZONE | sudo docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com
 
 # build images locally
 docker build -t detection-backend:latest -f dockerfile.backend .
@@ -359,17 +360,17 @@ docker build -t streamlit-frontend:latest -f dockerfile.frontend .
 
 # tag for ECR
 docker tag detection-backend:latest \
-  <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:detection-backend
+  $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:detection-backend
 docker tag streamlit-frontend:latest \
-  <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:streamlit-frontend
+  $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:streamlit-frontend
 
 # push to ECR
-docker push <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:detection-backend
-docker push <aws_account_id>.dkr.ecr.<aws_zone>.amazonaws.com/cusum-repo:streamlit-frontend
+docker push $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:detection-backend
+docker push $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:streamlit-frontend
 
 # list images
-aws ecr list-images --repository-name cusum-repo --region <aws_zone>
-repo --region <aws_zone>
+aws ecr list-images --repository-name cusum-repo --region $AWS_ZONE
+repo --region $AWS_ZONE
 {
     "imageIds": [
         {
@@ -397,14 +398,18 @@ terraform apply -var="enable_nat=false"
 
 Port forwarding
 ```bash
-ssh -i CronKeyPair.pem -L 8080:$(terraform output -raw private_ec2_ip):80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-use
+ssh -i CronKeyPair.pem -L 8080:$PRIVATE_IP:80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" ec2-use$PRIVATE_IP
 ```
+
 Open `localhost:8080`
 
-Teardown infrastructure
-```bash
-terraform destroy -var="enable_nat={true,false}"
-```
+
+---
+> ⚠️ **Teardown infrastructure**
+>
+> - `terraform destroy -var="enable_nat={true,false}"`
+---
+
 
 
 
