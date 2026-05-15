@@ -20,3 +20,9 @@ variable "sg_ingress_ports" {
     },
   ]
 }
+
+variable "instance_profile" {
+  type        = string
+  description = "IAM instance profile name"
+  default     = null
+}

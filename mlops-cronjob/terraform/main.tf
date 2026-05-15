@@ -37,6 +37,8 @@ module "private_instance" {
   sg_ingress_ports = var.sg_ingress_private
   common_tags      = local.common_tags
   naming_prefix    = local.naming_prefix
+  instance_profile = aws_iam_instance_profile.ec2_profile.name
+
 }
 
 ####################################################

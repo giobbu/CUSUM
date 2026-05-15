@@ -59,6 +59,8 @@ resource "aws_instance" "ec2" {
   key_name        = var.instance_key
   subnet_id       = var.subnet_id
   security_groups = [aws_security_group.security_group.id]
+  iam_instance_profile   = var.instance_profile
+
 
   tags = merge(var.common_tags, {
     Name = "${var.naming_prefix}-ec2-${var.ec2_name}"
