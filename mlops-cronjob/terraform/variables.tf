@@ -44,6 +44,12 @@ variable "private_subnets_cidrs_block" {
   default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 
+variable "enable_nat" {
+  type        = bool
+  description = "Enable NAT Gateway for private subnet internet access"
+  default     = false
+}
+
 ####################################################
 # Bastion Host and Private Instances
 ####################################################

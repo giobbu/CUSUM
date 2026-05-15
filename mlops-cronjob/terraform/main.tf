@@ -13,6 +13,8 @@ module "vpc" {
   enable_dns_support    = var.enable_dns_support
   common_tags           = local.common_tags
   naming_prefix         = local.naming_prefix
+  enable_nat                  = var.enable_nat
+
 }
 
 module "public_bastion"  {
@@ -62,3 +64,4 @@ resource "aws_security_group_rule" "private_http_from_bastion" {
   security_group_id        = module.private_instance.security_group_id
   source_security_group_id = module.public_bastion.security_group_id
 }
+
