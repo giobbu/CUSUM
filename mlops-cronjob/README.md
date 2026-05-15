@@ -300,7 +300,7 @@ docker compose down --rmi all
 #### Setup infrastructure
 ```bash
 terraform init
-terraform plan
+terraform plan -var="enable_nat=true"
 
 # create everything including NAT
 terraform apply -var="enable_nat=true"
@@ -352,25 +352,35 @@ scp -r -i Terraform/CronKeyPair.pem \
 Build and Push to ECR from local machine
 ```bash
 #login
-aws ecr get-login-password --region $AWS_ZONE | sudo docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com
+aws ecr get-login-password --region $AWS_ZONE | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com
 
-# build images locally
-docker build -t detection-backend:latest -f dockerfile.backend .
-docker build -t streamlit-frontend:latest -f dockerfile.frontend .
+# build tagged images locally
+docker buildx build \
+  --platform linux/amd64 \
+  --provenance=false \
+  -t $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:detection-backend \
+  -f dockerfile.backend .
 
-# tag for ECR
-docker tag detection-backend:latest \
-  $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:detection-backend
-docker tag streamlit-frontend:latest \
-  $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:streamlit-frontend
+docker buildx build \
+  --platform linux/amd64 \
+  --provenance=false \
+  -t $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:streamlit-frontend \
+  -f dockerfile.frontend .
 
 # push to ECR
 docker push $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:detection-backend
 docker push $AWS_ACCOUNT.dkr.ecr.$AWS_ZONE.amazonaws.com/cusum-repo:streamlit-frontend
+```
 
+Connect to EC2
+```bash
+# connect
+cd terraform
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$BASTION_IP" ec2-user@$PRIVATE_IP
 # list images
-aws ecr list-images --repository-name cusum-repo --region $AWS_ZONE
-repo --region $AWS_ZONE
+aws ecr list-images --repository-name cusum-repo --region <awz_zone>
+
+repo --region <awz_zone>
 {
     "imageIds": [
         {
