@@ -281,8 +281,8 @@ docker compose down --rmi all
 `cd terraform` and creates the aws resources:
 
 * networking
-    1. vpc
-    2. igw
+    1. VPC
+    2. IGW
     3. private and public subnets
     4. private and public route tables
     5. public route table association
@@ -290,22 +290,44 @@ docker compose down --rmi all
 * instances
     1. bastion host and private ec2
     2. public and private security groups
+    3. NAT instance
 
 run the following 
 
 ```bash
 terraform init
 terraform plan
-terraform apply
+
+# create everything including NAT
+terraform apply -var="enable_nat=true"
 ```
-this outputs the public and private ip addresses.
+Outputs the public and private ip addresses.
 
-connect to the private instance
-
+Connect to the private instance
 ```bash
 chmod 400 CronKeyPair.pem
 
-ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw bastion_host_ip)
+ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
+```
+
+Install NGNIX
+```bash
+# install nginx on private EC2...
+sudo amazon-linux-extras install nginx1 -y
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+Disable NAT
+```bash
+# destroy only NAT
+terraform apply -var="enable_nat=false"
+```
+
+Port forwarding
+```bash
+ssh -i CronKeyPair.pem -L 8080:$(terraform output -raw private_ec2_ip):80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
 ```
 
 

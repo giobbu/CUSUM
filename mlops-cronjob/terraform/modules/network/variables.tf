@@ -8,3 +8,8 @@ variable "public_subnets_cidrs_block" {}
 variable "private_subnets_cidrs_block" {}
 variable "common_tags" {}
 variable "naming_prefix" {}
+
+variable "enable_nat" {
+  type    = bool
+  default = true
+}

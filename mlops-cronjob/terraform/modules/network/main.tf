@@ -87,12 +87,33 @@ resource "aws_route_table_association" "public_rt_asso" {
 }
 
 
+
+
+####################################################
+# Set Elastic IP
+####################################################
+resource "aws_eip" "nat" {
+  count = var.enable_nat ? 1 : 0
+  vpc   = true
+}
+
+####################################################
+# Set NAT instance
+####################################################
+resource "aws_nat_gateway" "nat" {
+  count         = var.enable_nat ? 1 : 0
+  allocation_id = aws_eip.nat[0].id
+  subnet_id     = values(aws_subnet.public_subnets)[0].id
+}
+
 ####################################################
 # Set default route table as private route table
 ####################################################
 resource "aws_default_route_table" "private_route_table" {
   default_route_table_id = aws_vpc.app_vpc.default_route_table_id
-  tags = merge(var.common_tags, {
-    Name = "${var.naming_prefix}-priv-rt_tbl"
-  })
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat[0].id
+  }
 }

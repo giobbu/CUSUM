@@ -72,7 +72,6 @@ variable "sg_ingress_public" {
   ]
 }
 
-
 variable "sg_ingress_private" {
   type = list(object({
     description = string
@@ -82,6 +81,7 @@ variable "sg_ingress_private" {
   }))
   default = []
 }
+
 
 variable "company" {
   type        = string
