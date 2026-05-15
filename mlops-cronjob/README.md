@@ -301,12 +301,13 @@ terraform plan
 # create everything including NAT
 terraform apply -var="enable_nat=true"
 ```
-Outputs the public and private ip addresses.
+Outputs the public and private ip addresses `terraform/outputs.tf`.
 
 Connect to the private instance
 ```bash
+# change permissions
 chmod 400 CronKeyPair.pem
-
+# connect to ec2
 ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
 ```
 
@@ -327,8 +328,9 @@ terraform apply -var="enable_nat=false"
 
 Port forwarding
 ```bash
-ssh -i CronKeyPair.pem -L 8080:$(terraform output -raw private_ec2_ip):80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-user@$(terraform output -raw private_ec2_ip)
+ssh -i CronKeyPair.pem -L 8080:$(terraform output -raw private_ec2_ip):80 -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user@$(terraform output -raw bastion_host_ip)" ec2-use
 ```
+Open `localhost:8080`
 
 
 
