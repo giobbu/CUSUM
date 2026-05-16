@@ -312,8 +312,6 @@ Set env var
 ```bash
 BASTION_IP=$(terraform output -raw bastion_host_ip)
 PRIVATE_IP=$(terraform output -raw private_ec2_ip)
-AWS_ACCOUNT=<YOUR_AWS_ACCOUNT_ID>
-AWS_ZONE=<YOUR_AWS_REGION>
 ```
 
 
@@ -328,7 +326,7 @@ ssh -i CronKeyPair.pem -o ProxyCommand="ssh -i CronKeyPair.pem -W %h:%p ec2-user
 Install Docker
 ```bash
 sudo yum update -y
-sudo yum install docker -y
+sudo amazon-linux-extras install docker -y
 sudo systemctl start docker
 sudo systemctl enable docker
 
