@@ -31,14 +31,14 @@ services:
     restart: unless-stopped
 
   backend:
-    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/cusum-repo:detection-backend
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_ZONE}.amazonaws.com/cusum-repo:detection-backend
     container_name: detection-backend
     volumes:
       - ./data:/home/data
     restart: unless-stopped
 
   frontend:
-    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/cusum-repo:streamlit-frontend
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_ZONE}.amazonaws.com/cusum-repo:streamlit-frontend
     container_name: streamlit-frontend
     volumes:
       - ./data:/home/data
