@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - TZ=Europe/Rome
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_EDITOR_BASE_URL=http://localhost:5678
+      - WEBHOOK_URL=http://localhost:5678
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      # Ollama running on macOS host
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./articles:/home/node/.n8n-files
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - n8n-network
+
+networks:
+  n8n-network:
+
+volumes:
+  n8n_data:

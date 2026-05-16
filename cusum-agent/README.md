@@ -19,6 +19,23 @@
     Retrieves and delivers relevant emergency protocol information to support timely decision-making and effective response actions.
     [TODO Tools]
 
-### 3. Setup
+### 3. ## Setup n8n and ollama (with GPU) in docker
 
-#### n8n with Docker
+spin up n8n service
+```bash
+docker-compose up -d
+```
+
+start ollama on local machine
+```bash
+ollama serve
+```
+
+list chat/embedding models or pull
+```bash
+ollama list
+
+ollama pull <model-name>
+```
+
+to start on canvas open `http://localhost:5678` 
