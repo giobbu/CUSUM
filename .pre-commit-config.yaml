@@ -19,8 +19,8 @@ repos:
         entry: uv run pip-audit
         language: system
         pass_filenames: false
-        # Ignore CVE-2026-3219, which is a false positive for pip-audit in this context
-        args: ["--ignore-vuln", "CVE-2026-3219"]
+        # Ignore PYSEC-2026-196, which is a false positive for pip-audit in this context
+        args: ["--ignore-vuln", "PYSEC-2026-196"]
 
       - id: pytest
         name: Run pytest

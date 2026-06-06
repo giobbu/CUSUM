@@ -15,10 +15,11 @@ The CUSUM repository contains multiple change point detectors for sequential ana
 
 0. [Overview](#0-overview)
 1. [CUSUM Detectors](#1-cusum-detectors)
-2. [Getting Started](#2-getting-started)
-3. [Documentation](#3-documentation)
-4. [Examples](#4-examples)
-5. [License](#5-license)
+2. [Setup](#2-setup)
+3. [Quickstart](#3-quickstart)
+4. [Documentation](#4-documentation)
+5. [Examples](#5-examples)
+6. [License](#6-license)
 
 ## 0. Overview
 
@@ -38,7 +39,7 @@ The implemented detectors support both:
 
 These detectors are, therefore, well suitable for both offline analysis and real-time monitoring in streaming environmnets.
 
-## 2. Getting Started
+## 2. Setup
 
 Clone the repository:
 
@@ -77,13 +78,47 @@ uv sync
 pytest --cov=source test/
 ```
 
+## 3. Quickstart
 
-## 3. Documentation
+```python
+from source.generator.change_point_generator import ChangePointGenerator
+from source.detector.cusum import CUSUM_Detector
+
+# config Data Generator
+NUM_SEGM = 3
+LEN_SEGM = 1000
+TYPE_CHANGE = "sudden_shift"
+SEED = 42
+
+# Generate time series data with change points
+generator = ChangePointGenerator(num_segments=NUM_SEGM, 
+                                 segment_length=LEN_SEGM, 
+                                 change_point_type=TYPE_CHANGE, 
+                                 seed=SEED)
+generator.generate_data()
+
+# config CUSUM Detector
+WARMUP = 500
+DELTA = 3
+THRESHOLD = 1
+
+# CUSUM Detector init and run
+cusum_detector = CUSUM_Detector(warmup_period=WARMUP, delta=DELTA, threshold=THRESHOLD)
+results = cusum_detector.offline_detection(generator.data)
+
+# Plot the detected change points
+cusum_detector.plot_change_points(generator.data, 
+                                  results["change_points"], 
+                                  results["pos_changes"], 
+                                  results["neg_changes"]) 
+```
+
+
+## 4. Documentation
 
 Documentation is available at [CUSUM Documentation](https://CUSUM.readthedocs.io/en/latest/)
 
-
-## 4. Examples
+## 5. Examples
 
 ### A. Probabilistic CUSUM detector
 
@@ -118,7 +153,7 @@ View details on notebook - [Here](notebooks/notebook_rls_monitoring.ipynb)
 * Event-based CUSUM detection with Kafka, Prometheus and Grafana in [mlops-kafka](https://github.com/giobbu/CUSUM/tree/main/mlops-kafka)
 * Scheduled CUSUM detection with Kubernetes CronJob and minikube local cluster in [mlops-cronjob](https://github.com/giobbu/CUSUM/tree/main/mlops-cronjob)
 
-## 5. License
+## 6. License
 This project is under the [GPL-3.0 license](https://github.com/giobbu/CUSUM?tab=GPL-3.0-1-ov-file).
 
 
