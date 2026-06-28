@@ -124,78 +124,6 @@ class LowPassFilter:
         return list_smooth
     
 
-class RollingAverageFilter:
-    """ 
-    Rolling Average Filter algorithm for filtering out high frequency noise.
-
-    Parameters
-    ----------
-    window : int, optional
-        Size of the moving window. 
-    """
-    def __init__(self, window: int = 3) -> None:
-        """ 
-        Initialize the RollingAverageFilter object. 
-        
-        Parameters
-        ----------
-        window : int, optional
-            Size of the moving window. 
-        """
-        if window <= 0:
-            raise ValueError("Window size must be a positive integer.")
-        self.moving_mean = None
-        self.num_iterations = 0
-        self.window = window
-        self.rolling_list = []
-
-    def update(self, observation: np.ndarray) -> None:
-        """ 
-        Update the model with the new observation.
-
-        Parameters
-        ----------
-        observation : np.ndarray
-            New observation to update the mean.
-        """
-        if not isinstance(observation, np.ndarray):
-            raise ValueError("Observation must be a numpy array.")
-        if observation.ndim != 1:
-            raise ValueError("Observation must be a 1D numpy array.")
-        
-        self.num_iterations += 1
-        if (self.moving_mean==None):  # First observation
-            self.moving_mean=observation
-            self.rolling_list.append(observation)
-        elif (self.num_iterations < self.window):  # Still filling the window
-            alpha = (self.num_iterations-1)/self.num_iterations
-            self.moving_mean = alpha*self.moving_mean + (1-alpha)*observation
-            self.rolling_list.append(observation)
-        else:  # Window is full, update the moving mean
-            self.rolling_list.append(observation)
-            self.moving_mean += (self.rolling_list[-1] - self.rolling_list[0])/self.window
-            del self.rolling_list[0]
-
-    def fit(self, observations: list[np.ndarray]) -> None:
-        """ 
-        Fit the model to a set of observations.
-
-        Parameters
-        ----------
-        observations : list of np.ndarray
-            List of observation vectors.
-
-        Returns
-        -------
-        list_smooth : list of np.ndarray
-            List of moving means after each observation.
-        """
-        list_smooth = []
-        for observation in observations:
-            self.update(observation)
-            list_smooth.append(self.moving_mean)
-        return list_smooth
-
 
 class RollingAverageFilter:
     """ 
@@ -273,6 +201,7 @@ class RollingAverageFilter:
 class KalmanFilter:
     """
     Kalman Filter algorithm for filtering out noise in linear dynamical systems.
+
     Parameters
     ----------
     F : np.ndarray
@@ -288,6 +217,7 @@ class KalmanFilter:
                  Q: np.ndarray, R: np.ndarray) -> None:
         """
         Initialize the KalmanFilter object.
+
         Parameters
         ----------
         F : np.ndarray
@@ -319,6 +249,7 @@ class KalmanFilter:
     def _init(self, observation: np.ndarray) -> None:
         """
         Bootstrap state and error covariance from the first observation.
+
         Parameters
         ----------
         observation : np.ndarray
@@ -327,6 +258,7 @@ class KalmanFilter:
         self.state      = self.H.T @ observation
         self.P          = np.eye(self.F.shape[0])
         self.innovation = np.zeros(self.H.shape[0])
+
     def _predict(self) -> None:
         """
         Advance state and error covariance through the dynamics model.
@@ -339,6 +271,7 @@ class KalmanFilter:
         """
         Correct the predicted state with a new measurement.
         Mutates self.state, self.P, and self.innovation in-place.
+
         Parameters
         ----------
         observation : np.ndarray
@@ -355,6 +288,7 @@ class KalmanFilter:
     def update(self, observation: np.ndarray) -> None:
         """
         Update the model with the new observation.
+
         Parameters
         ----------
         observation : np.ndarray
@@ -378,6 +312,7 @@ class KalmanFilter:
     def fit(self, observations: list[np.ndarray]) -> list[np.ndarray]:
         """
         Fit the filter to a set of observations.
+        
         Parameters
         ----------
         observations : list of np.ndarray
