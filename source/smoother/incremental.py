@@ -195,6 +195,77 @@ class RollingAverageFilter:
             self.update(observation)
             list_smooth.append(self.moving_mean)
         return list_smooth
+
+
+class RollingAverageFilter:
+    """ 
+    Rolling Average Filter algorithm for filtering out high frequency noise.
+
+    Parameters
+    ----------
+    window : int, optional
+        Size of the moving window. 
+    """
+    def __init__(self, window: int = 3) -> None:
+        """ 
+        Initialize the RollingAverageFilter object. 
+        
+        Parameters
+        ----------
+        window : int, optional
+            Size of the moving window. 
+        """
+        if window <= 0:
+            raise ValueError("Window size must be a positive integer.")
+        self.moving_mean = None
+        self.num_iterations = 0
+        self.window = window
+        self.rolling_list = []
+
+    def update(self, observation: np.ndarray) -> None:
+        """ 
+        Update the model with the new observation.
+
+        Parameters
+        ----------
+        observation : np.ndarray
+            New observation to update the mean.
+        """
+        if not isinstance(observation, np.ndarray):
+            raise ValueError("Observation must be a numpy array.")
+        if observation.ndim != 1:
+            raise ValueError("Observation must be a 1D numpy array.")
+        
+        self.num_iterations += 1
+        self.rolling_list.append(observation)  # always append first
+        if self.moving_mean is None:  # first observation
+            self.moving_mean = observation.copy()
+        elif len(self.rolling_list) <= self.window:  # warm-up: mean_n = mean_{n-1} + (x_n - mean_{n-1}) / n
+            self.moving_mean += (observation - self.moving_mean) / len(self.rolling_list)
+        else:
+            del self.rolling_list[0]  # remove the oldest observation to maintain the window size
+            self.moving_mean = np.mean(self.rolling_list[-self.window:], axis=0)  # full window: mean_n = mean_{n-1} + (x_n - x_{n-window}) / window
+
+    
+    def fit(self, observations: list[np.ndarray]):
+        """ 
+        Fit the model to a set of observations.
+
+        Parameters
+        ----------
+        observations : list of np.ndarray
+            List of observation vectors.
+
+        Returns
+        -------
+        list_smooth : list of np.ndarray
+            List of moving means after each observation.
+        """
+        list_smooth = []
+        for observation in observations:
+            self.update(observation)
+            list_smooth.append(self.moving_mean)
+        return list_smooth
     
 
 

@@ -27,7 +27,7 @@ def test_update_with_observations_equal_to_window(smoother):
             assert np.array_equal(smoother.moving_mean, expected_moving_mean)
             mean_2 = smoother.moving_mean
         else:
-            expected_moving_mean = mean_2 + (obs - observe_0)/smoother.window
+            expected_moving_mean = np.mean(observations[-smoother.window:], axis=0)
             smoother.update(obs)
             assert np.array_equal(smoother.moving_mean, expected_moving_mean)
         
