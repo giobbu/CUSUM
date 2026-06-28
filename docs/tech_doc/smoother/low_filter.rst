@@ -3,7 +3,7 @@ Low Pass Filter
 
 The Low Pass Filter is a fundamental tool in signal processing used to remove high-frequency noise from a signal while preserving the low-frequency components. The filter is based on a recursive algorithm that continuously updates the filtered value based on the current input and the previous filtered value.
 
-Low Pass Filter classes
+Low Pass Filter class
 -----------------------
 
 .. autoclass:: source.smoother.incremental.LowPassFilter
@@ -35,7 +35,7 @@ Example Usage
     list_filtered = []
     # update the model with each observation
     for observation in observations:
-        model.update(observation)
+        model.update(np.array([observation]))
         list_filtered.append(model.lowpass_mean)
 
     # plot the filtered values

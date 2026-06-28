@@ -37,7 +37,7 @@ Example Usage
       list_roll_means = []
       # update the model with each observation
       for observation in observations:
-         model.update(observation)
+         model.update(np.array([observation]))
          list_roll_means.append(model.moving_mean)
 
    

@@ -35,7 +35,7 @@ Example Usage
       list_means = []
       # update the model with each observation
       for observation in observations:
-         model.update(observation)
+         model.update(np.array([observation]))
          list_means.append(model.recursive_mean)
 
       # verify that the final recursive mean matches the batch mean
