@@ -84,7 +84,7 @@ pytest --cov=source test/
 from source.generator.change_point_generator import ChangePointGenerator
 from source.detector.cusum import CUSUM_Detector
 
-# config Data Generator
+# configs Data Generator
 NUM_SEGM = 3
 LEN_SEGM = 1000
 TYPE_CHANGE = "sudden_shift"
@@ -97,20 +97,24 @@ generator = ChangePointGenerator(num_segments=NUM_SEGM,
                                  seed=SEED)
 generator.generate_data()
 
-# config CUSUM Detector
+# configs CUSUM Detector
 WARMUP = 500
 DELTA = 3
 THRESHOLD = 1
 
-# CUSUM Detector init and run
-cusum_detector = CUSUM_Detector(warmup_period=WARMUP, delta=DELTA, threshold=THRESHOLD)
-results = cusum_detector.offline_detection(generator.data)
+# CUSUM Detector init
+cusum_detector = CUSUM_Detector(warmup_period=WARMUP, 
+                                delta=DELTA, 
+                                threshold=THRESHOLD)
+
+# Run offline change point detection
+results = cusum_detector.offline_detection(data=generator.data)
 
 # Plot the detected change points
-cusum_detector.plot_change_points(generator.data, 
-                                  results["change_points"], 
-                                  results["pos_changes"], 
-                                  results["neg_changes"]) 
+cusum_detector.plot_change_points(data=generator.data, 
+                                  change_points=results["change_points"], 
+                                  pos_changes=results["pos_changes"], 
+                                  neg_changes=results["neg_changes"]) 
 ```
 
 
